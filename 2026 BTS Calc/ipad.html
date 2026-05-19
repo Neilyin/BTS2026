@@ -1,0 +1,1250 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>iPad BTS 優惠計算機</title>
+  <style>
+    :root {
+      --blue:       #0071e3;
+      --blue-dark:  #0062c3;
+      --green:      #34c759;
+      --purple:     #ac39ff;
+      --bg:         #f5f5f7;
+      --card-bg:    #ffffff;
+      --text:       #1d1d1f;
+      --text-sub:   #6e6e73;
+      --border:     #d2d2d7;
+      --selected-border: #0071e3;
+      --selected-bg:     #f0f6ff;
+      --radius-sm:  10px;
+      --radius-md:  16px;
+      --radius-lg:  24px;
+      --shadow-sm:  0 2px 10px rgba(0,0,0,.08);
+      --shadow-md:  0 6px 24px rgba(0,0,0,.10);
+      --transition: .25s cubic-bezier(.4,0,.2,1);
+      --safe-top:   env(safe-area-inset-top, 0px);
+      --safe-bottom:env(safe-area-inset-bottom, 0px);
+    }
+
+    *, *::before, *::after {
+      margin: 0; padding: 0; box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      height: 100%;
+      font-family: -apple-system, BlinkMacSystemFont, 'Noto Sans TC', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ────── Layout ────── */
+    .app {
+      display: flex;
+      flex-direction: column;
+      min-height: 100%;
+      padding-top: calc(0px + var(--safe-top));
+      padding-bottom: calc(120px + var(--safe-bottom));
+    }
+
+    /* ────── Top bar ────── */
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(245,245,247,.85);
+      backdrop-filter: saturate(180%) blur(20px);
+      -webkit-backdrop-filter: saturate(180%) blur(20px);
+      border-bottom: 1px solid rgba(210,210,215,.5);
+      padding: calc(12px + var(--safe-top)) 20px 12px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .back-btn {
+      display: inline-flex; align-items: center; gap: 4px;
+      color: var(--blue); font-size: 15px; font-weight: 500;
+      background: none; border: none; cursor: pointer; padding: 4px 0;
+    }
+
+    .back-btn svg { width: 10px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+
+    .topbar-title {
+      font-size: 17px; font-weight: 700; flex: 1;
+    }
+
+    .topbar-product-switch {
+      display: flex; background: var(--border); border-radius: 8px; padding: 2px; gap: 2px;
+    }
+
+    .product-switch-btn {
+      font-size: 12px; font-weight: 600; padding: 4px 12px; border-radius: 6px;
+      border: none; background: none; cursor: pointer; color: var(--text-sub); transition: var(--transition);
+    }
+
+    .product-switch-btn.active {
+      background: var(--card-bg); color: var(--text);
+      box-shadow: 0 1px 4px rgba(0,0,0,.12);
+    }
+
+    /* ────── Progress bar ────── */
+    .progress-wrap {
+      padding: 12px 20px 0;
+      max-width: 680px; margin: 0 auto; width: 100%;
+    }
+
+    .progress-bar-track {
+      height: 3px; background: var(--border); border-radius: 2px; overflow: hidden;
+    }
+
+    .progress-bar-fill {
+      height: 100%; background: var(--blue); border-radius: 2px;
+      transition: width .4s cubic-bezier(.4,0,.2,1);
+    }
+
+    .progress-label {
+      font-size: 11px; color: var(--text-sub); margin-top: 6px; text-align: right;
+    }
+
+    /* ────── Steps container ────── */
+    .steps-wrap {
+      flex: 1; padding: 20px 20px 0; max-width: 680px; margin: 0 auto; width: 100%;
+    }
+
+    /* ────── Step card ────── */
+    .step-card {
+      background: var(--card-bg); border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-sm); margin-bottom: 12px;
+      overflow: hidden; transition: opacity var(--transition);
+    }
+
+    .step-card.locked {
+      opacity: .45; pointer-events: none;
+    }
+
+    .step-header {
+      display: flex; align-items: center; gap: 10px;
+      padding: 16px 18px; cursor: pointer;
+    }
+
+    .step-num {
+      width: 26px; height: 26px; border-radius: 50%; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 700;
+      background: var(--bg); color: var(--text-sub); border: 1.5px solid var(--border);
+      transition: var(--transition);
+    }
+
+    .step-num.done {
+      background: var(--green); color: #fff; border-color: var(--green);
+    }
+
+    .step-num.active {
+      background: var(--blue); color: #fff; border-color: var(--blue);
+    }
+
+    .step-title { font-size: 15px; font-weight: 600; flex: 1; }
+
+    .step-value {
+      font-size: 13px; color: var(--text-sub); max-width: 140px;
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-align: right;
+    }
+
+    .step-body {
+      padding: 0 18px 18px;
+      display: none;
+    }
+
+    .step-body.open { display: block; }
+
+    /* ────── 選項網格 ────── */
+    .option-grid {
+      display: grid; gap: 10px;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    }
+
+    .option-grid.cols-2 { grid-template-columns: 1fr 1fr; }
+    .option-grid.cols-1 { grid-template-columns: 1fr; }
+
+    @media (max-width: 360px) {
+      .option-grid { grid-template-columns: 1fr 1fr; }
+    }
+
+    /* ────── 選項卡片 ────── */
+    .opt {
+      border: 1.5px solid var(--border); border-radius: var(--radius-md);
+      padding: 12px; cursor: pointer; text-align: center;
+      transition: border-color var(--transition), background var(--transition), transform var(--transition);
+      background: var(--card-bg); position: relative; overflow: hidden;
+    }
+
+    .opt:active { transform: scale(.97); }
+
+    .opt.selected {
+      border-color: var(--blue); background: var(--selected-bg);
+    }
+
+    .opt.selected::after {
+      content: '✓';
+      position: absolute; top: 6px; right: 8px;
+      font-size: 11px; font-weight: 700; color: var(--blue);
+    }
+
+    .opt-img {
+      width: 100%; max-width: 80px; height: 64px;
+      object-fit: contain; display: block; margin: 0 auto 8px;
+    }
+
+    .opt-title { font-size: 13px; font-weight: 600; margin-bottom: 2px; }
+    .opt-sub   { font-size: 11px; color: var(--text-sub); line-height: 1.4; }
+    .opt-price { font-size: 12px; font-weight: 600; color: var(--blue); margin-top: 4px; }
+    .opt-badge { font-size: 10px; font-weight: 700; color: var(--green); margin-top: 2px; }
+    .opt-chip-spec { font-size: 10px; color: var(--text-sub); margin-top: 3px; line-height: 1.4; }
+
+    /* 顏色選項 */
+    .color-dot {
+      width: 28px; height: 28px; border-radius: 50%; margin: 0 auto 6px;
+      border: 2px solid var(--border); transition: border-color var(--transition);
+    }
+
+    .opt.selected .color-dot { border-color: var(--blue); }
+
+    /* ────── 尺寸選擇（特大卡片） ────── */
+    .size-opt {
+      display: flex; flex-direction: column; align-items: center;
+      border: 1.5px solid var(--border); border-radius: var(--radius-md);
+      padding: 20px 16px; cursor: pointer; background: var(--card-bg);
+      transition: border-color var(--transition), background var(--transition), transform var(--transition);
+      position: relative;
+    }
+
+    .size-opt:active { transform: scale(.97); }
+
+    .size-opt.selected {
+      border-color: var(--blue); background: var(--selected-bg);
+    }
+
+    .size-opt.selected::after {
+      content: '✓'; position: absolute; top: 10px; right: 12px;
+      font-size: 12px; font-weight: 700; color: var(--blue);
+    }
+
+    .size-opt img {
+      width: 100%; max-width: 120px; height: 90px; object-fit: contain; margin-bottom: 10px;
+    }
+
+    .size-opt .size-label { font-size: 16px; font-weight: 700; }
+    .size-opt .size-sub   { font-size: 12px; color: var(--text-sub); margin-top: 2px; }
+    .size-opt .size-price { font-size: 13px; font-weight: 600; color: var(--blue); margin-top: 6px; }
+
+    /* ────── Connectivity toggle ────── */
+    .connectivity-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+    }
+
+    /* ────── Nano notice ────── */
+    .nano-notice {
+      background: #fff8e7; border: 1px solid #ffd84a; border-radius: var(--radius-sm);
+      padding: 10px 12px; font-size: 12px; color: #7a5c00; margin-bottom: 10px; line-height: 1.5;
+    }
+
+    /* ────── 贈品選擇 ────── */
+    .gift-section { margin-bottom: 16px; }
+
+    .gift-section-title {
+      font-size: 13px; font-weight: 600; margin-bottom: 8px; color: var(--text-sub);
+      text-transform: uppercase; letter-spacing: .5px;
+    }
+
+    .gift-opt {
+      display: flex; align-items: center; gap: 12px;
+      border: 1.5px solid var(--border); border-radius: var(--radius-md);
+      padding: 12px 14px; cursor: pointer; background: var(--card-bg); margin-bottom: 8px;
+      transition: border-color var(--transition), background var(--transition);
+    }
+
+    .gift-opt.selected { border-color: var(--blue); background: var(--selected-bg); }
+
+    .gift-opt .gift-icon {
+      width: 36px; height: 36px; object-fit: contain; flex-shrink: 0;
+    }
+
+    .gift-opt .gift-info { flex: 1; }
+    .gift-opt .gift-name { font-size: 13px; font-weight: 600; }
+    .gift-opt .gift-tag  { font-size: 11px; color: var(--green); font-weight: 600; margin-top: 2px; }
+    .gift-opt .gift-tag.paid { color: var(--blue); }
+    .gift-opt .gift-tag.neutral { color: var(--text-sub); }
+
+    .gift-radio {
+      width: 20px; height: 20px; border-radius: 50%; border: 2px solid var(--border);
+      flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+      transition: var(--transition);
+    }
+
+    .gift-opt.selected .gift-radio {
+      border-color: var(--blue); background: var(--blue);
+    }
+
+    .gift-opt.selected .gift-radio::after {
+      content: ''; width: 8px; height: 8px; border-radius: 50%; background: #fff;
+    }
+
+    /* ────── 回饋試算 ────── */
+    .rebate-row {
+      display: flex; align-items: center; gap: 12px; margin-bottom: 12px;
+    }
+
+    .rebate-label { font-size: 14px; font-weight: 500; flex: 1; }
+
+    .rebate-select {
+      background: var(--bg); border: 1.5px solid var(--border); border-radius: 8px;
+      padding: 8px 12px; font-size: 14px; font-family: inherit;
+      color: var(--text); outline: none; cursor: pointer; min-width: 90px;
+      transition: border-color var(--transition);
+    }
+
+    .rebate-select:focus { border-color: var(--blue); }
+
+    .sell-gift-row {
+      display: flex; align-items: center; gap: 12px; margin-bottom: 8px;
+    }
+
+    .sell-gift-row label { font-size: 14px; font-weight: 500; flex: 1; }
+
+    .toggle-switch {
+      position: relative; width: 44px; height: 26px; cursor: pointer;
+    }
+
+    .toggle-switch input { opacity: 0; width: 0; height: 0; }
+
+    .toggle-track {
+      position: absolute; inset: 0; background: var(--border); border-radius: 13px;
+      transition: background var(--transition);
+    }
+
+    .toggle-thumb {
+      position: absolute; top: 3px; left: 3px; width: 20px; height: 20px;
+      background: #fff; border-radius: 50%; box-shadow: 0 1px 4px rgba(0,0,0,.2);
+      transition: transform var(--transition);
+    }
+
+    .toggle-switch input:checked + .toggle-track { background: var(--green); }
+    .toggle-switch input:checked ~ .toggle-thumb { transform: translateX(18px); }
+
+    .gift-price-input-wrap { display: none; margin-top: 8px; }
+    .gift-price-input-wrap.show { display: block; }
+
+    .gift-price-input {
+      width: 100%; padding: 10px 14px; border: 1.5px solid var(--border); border-radius: 8px;
+      font-size: 14px; font-family: inherit; color: var(--text); background: var(--bg);
+      outline: none; transition: border-color var(--transition);
+    }
+
+    .gift-price-input:focus { border-color: var(--blue); }
+
+    /* ────── 價格總覽 (sticky bottom) ────── */
+    .price-summary-bar {
+      position: fixed; bottom: 0; left: 0; right: 0;
+      background: rgba(255,255,255,.92);
+      backdrop-filter: saturate(180%) blur(20px);
+      -webkit-backdrop-filter: saturate(180%) blur(20px);
+      border-top: 1px solid rgba(210,210,215,.6);
+      padding: 14px 20px calc(14px + var(--safe-bottom));
+      z-index: 90;
+    }
+
+    .price-summary-inner {
+      max-width: 680px; margin: 0 auto;
+      display: flex; align-items: center; gap: 14px;
+    }
+
+    .price-summary-nums { flex: 1; }
+
+    .price-final {
+      font-size: 22px; font-weight: 700; color: var(--text); line-height: 1.2;
+    }
+
+    .price-breakdown {
+      font-size: 12px; color: var(--text-sub); margin-top: 2px; line-height: 1.5;
+    }
+
+    .price-saved {
+      font-size: 12px; font-weight: 600; color: var(--green);
+    }
+
+    .generate-btn {
+      background: var(--blue); color: #fff; font-size: 14px; font-weight: 600;
+      padding: 12px 20px; border-radius: 22px; border: none; cursor: pointer;
+      white-space: nowrap; transition: background var(--transition), transform var(--transition);
+      display: flex; align-items: center; gap: 6px;
+    }
+
+    .generate-btn:active { transform: scale(.97); }
+    .generate-btn:disabled { background: var(--border); color: var(--text-sub); cursor: not-allowed; }
+    .generate-btn.ready { background: var(--green); }
+
+    .generate-btn svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+    /* ────── 購買清單 Modal ────── */
+    .modal-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,.5);
+      z-index: 200; display: none; align-items: flex-end;
+      animation: fadeIn .2s ease;
+    }
+
+    .modal-overlay.open { display: flex; }
+
+    @keyframes fadeIn { from { opacity: 0; } }
+
+    .modal-sheet {
+      background: var(--card-bg); border-radius: 24px 24px 0 0;
+      width: 100%; max-height: 92vh; overflow-y: auto;
+      padding: 24px 20px calc(24px + var(--safe-bottom));
+      animation: slideUp .3s cubic-bezier(.4,0,.2,1);
+    }
+
+    @keyframes slideUp { from { transform: translateY(100%); } }
+
+    .modal-handle {
+      width: 40px; height: 4px; background: var(--border); border-radius: 2px;
+      margin: 0 auto 20px;
+    }
+
+    .modal-title {
+      font-size: 20px; font-weight: 700; margin-bottom: 20px; text-align: center;
+    }
+
+    .receipt-item {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 10px 0; border-bottom: 1px solid var(--bg);
+    }
+
+    .receipt-item:last-child { border-bottom: none; }
+
+    .receipt-label { font-size: 14px; color: var(--text-sub); }
+    .receipt-value { font-size: 14px; font-weight: 500; }
+    .receipt-value.free  { color: var(--green); font-weight: 600; }
+    .receipt-value.deduct { color: var(--blue); }
+
+    .receipt-divider { border: none; border-top: 1.5px solid var(--border); margin: 12px 0; }
+
+    .receipt-total {
+      display: flex; justify-content: space-between; align-items: center; padding: 12px 0;
+    }
+
+    .receipt-total-label { font-size: 17px; font-weight: 700; }
+    .receipt-total-value { font-size: 22px; font-weight: 700; color: var(--blue); }
+
+    .receipt-saved-row {
+      background: #f0fff4; border-radius: 10px; padding: 10px 14px;
+      display: flex; align-items: center; gap: 8px; margin: 8px 0 20px;
+    }
+
+    .receipt-saved-row span { font-size: 13px; font-weight: 600; color: var(--green); }
+
+    .modal-actions {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px;
+    }
+
+    .modal-btn {
+      padding: 13px; border-radius: 14px; font-size: 14px; font-weight: 600;
+      border: none; cursor: pointer; transition: opacity var(--transition);
+      display: flex; align-items: center; justify-content: center; gap: 6px;
+    }
+
+    .modal-btn:active { opacity: .8; }
+    .modal-btn.primary { background: var(--blue); color: #fff; }
+    .modal-btn.secondary { background: var(--bg); color: var(--text); border: 1.5px solid var(--border); }
+
+    .purchase-links { margin-top: 16px; }
+
+    .purchase-links-title { font-size: 13px; font-weight: 600; color: var(--text-sub); margin-bottom: 10px; }
+
+    .purchase-link-btn {
+      display: flex; align-items: center; gap: 10px;
+      padding: 12px 14px; border-radius: 12px; text-decoration: none;
+      font-size: 14px; font-weight: 600; margin-bottom: 8px;
+      transition: opacity var(--transition);
+    }
+
+    .purchase-link-btn:active { opacity: .8; }
+    .purchase-link-btn.line    { background: #06c755; color: #fff; }
+    .purchase-link-btn.official { background: var(--text); color: #fff; }
+
+    /* ────── Toast ────── */
+    .toast {
+      position: fixed; bottom: calc(100px + var(--safe-bottom));
+      left: 50%; transform: translateX(-50%) translateY(20px);
+      background: rgba(0,0,0,.8); color: #fff; font-size: 13px; font-weight: 500;
+      padding: 10px 20px; border-radius: 20px; z-index: 300;
+      opacity: 0; transition: opacity .25s, transform .25s; white-space: nowrap;
+      pointer-events: none;
+    }
+
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    /* ────── RWD ────── */
+    @media (min-width: 540px) {
+      .option-grid { grid-template-columns: repeat(3, 1fr); }
+      .option-grid.cols-2 { grid-template-columns: 1fr 1fr; }
+    }
+
+    @media (min-width: 680px) {
+      .steps-wrap { padding: 24px 32px 0; }
+      .topbar     { padding-left: 32px; padding-right: 32px; }
+      .progress-wrap { padding-left: 32px; padding-right: 32px; }
+    }
+  </style>
+</head>
+<body>
+<div class="app">
+
+  <!-- ── Top bar ── -->
+  <div class="topbar">
+    <button class="back-btn" onclick="goBack()">
+      <svg viewBox="0 0 10 16"><polyline points="8 14 2 8 8 2"/></svg>
+      返回
+    </button>
+    <span class="topbar-title" id="topbar-title">iPad 計算機</span>
+    <div class="topbar-product-switch">
+      <button class="product-switch-btn" id="switch-air" onclick="switchProduct('air')">Air</button>
+      <button class="product-switch-btn" id="switch-pro" onclick="switchProduct('pro')">Pro</button>
+    </div>
+  </div>
+
+  <!-- ── Progress ── -->
+  <div class="progress-wrap">
+    <div class="progress-bar-track">
+      <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
+    </div>
+    <p class="progress-label" id="progress-label">步驟 0 / 0</p>
+  </div>
+
+  <!-- ── Steps ── -->
+  <div class="steps-wrap" id="steps-wrap"></div>
+
+</div><!-- /.app -->
+
+<!-- ── 底部價格列 ── -->
+<div class="price-summary-bar">
+  <div class="price-summary-inner">
+    <div class="price-summary-nums">
+      <div class="price-final" id="price-final">NT$0</div>
+      <div class="price-breakdown" id="price-breakdown">尚未選擇規格</div>
+      <div class="price-saved"  id="price-saved" style="display:none"></div>
+    </div>
+    <button class="generate-btn" id="generate-btn" onclick="openModal()" disabled>
+      <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+      查看清單
+    </button>
+  </div>
+</div>
+
+<!-- ── 購買清單 Modal ── -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeModalOutside(event)">
+  <div class="modal-sheet" id="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title">🧾 BTS 購買清單</div>
+    <div id="modal-content"></div>
+    <div class="modal-actions">
+      <button class="modal-btn secondary" onclick="closeModal()">關閉</button>
+      <button class="modal-btn primary" onclick="generateImage()">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        儲存圖片
+      </button>
+    </div>
+    <div class="purchase-links">
+      <p class="purchase-links-title">透過以下管道購買</p>
+      <a id="link-bts-agent" href="#" target="_blank" class="purchase-link-btn line">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M19.365 9.863c.349 0 .63.285.63.631 0 .345-.281.63-.63.63H17.61v1.125h1.755c.349 0 .63.283.63.63 0 .344-.281.629-.63.629h-2.386c-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63h2.386c.346 0 .627.285.627.63 0 .349-.281.63-.63.63H17.61v1.125h1.755zm-3.855 3.016c0 .27-.174.51-.432.596-.064.021-.133.031-.199.031-.211 0-.391-.09-.51-.25l-2.443-3.317v2.94c0 .344-.279.629-.631.629-.346 0-.626-.285-.626-.629V8.108c0-.27.173-.51.43-.595.06-.023.136-.033.194-.033.195 0 .375.104.495.254l2.462 3.33V8.108c0-.345.282-.63.63-.63.345 0 .63.285.63.63v4.771zm-5.741 0c0 .344-.282.629-.631.629-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63.346 0 .628.285.628.63v4.771zm-2.466.629H4.917c-.345 0-.63-.285-.63-.629V8.108c0-.345.285-.63.63-.63.348 0 .63.285.63.63v4.141h1.756c.348 0 .629.283.629.63 0 .344-.282.629-.629.629M24 10.314C24 4.943 18.615.572 12 .572S0 4.943 0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.078 9.436-6.975C23.176 14.393 24 12.458 24 10.314"/></svg>
+        BTS 代購購買
+      </a>
+      <a id="link-official" href="https://www.apple.com/tw-edu/shop" target="_blank" class="purchase-link-btn official">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+        Apple 教育商店
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- ── Toast ── -->
+<div class="toast" id="toast"></div>
+
+<!-- ── bts-config.js ── -->
+<script src="bts-config.js"></script>
+<script src="config-override.js"></script>
+
+<script>
+// ═══════════════════════════════════════════
+//  狀態
+// ═══════════════════════════════════════════
+let productType = 'air';   // 'air' | 'pro'
+let cfg = null;            // 指向 BTS_CONFIG.products.ipadAir / ipadPro
+
+const state = {
+  size:         null,  // '11' | '13'
+  color:        null,
+  storageId:    null,
+  connectivity: 'wifi', // 'wifi' | 'cellular'
+  nano:         false,
+  pencil:       null,
+  keyboard:     null,
+  airpods:      null,
+  creditCard:   0,
+  referral:     0,
+  sellGift:     false,
+  giftPrice:    0
+};
+
+// 步驟定義（動態生成）
+const TOTAL_STEPS = 7; // size, color, storage, connectivity, nano(pro only), gifts, rebate
+
+// ═══════════════════════════════════════════
+//  初始化
+// ═══════════════════════════════════════════
+function init() {
+  // 從 URL 讀取 product
+  const params = new URLSearchParams(window.location.search);
+  const p = params.get('product');
+  productType = (p === 'pro') ? 'pro' : 'air';
+  updateProductConfig();
+  renderSteps();
+  updateSwitchUI();
+  updatePrice();
+}
+
+function updateProductConfig() {
+  cfg = productType === 'air'
+    ? BTS_CONFIG.products.ipadAir
+    : BTS_CONFIG.products.ipadPro;
+
+  document.getElementById('topbar-title').textContent =
+    productType === 'air' ? 'iPad Air 計算機' : 'iPad Pro 計算機';
+
+  // 重置狀態
+  Object.assign(state, {
+    size: null, color: null, storageId: null,
+    connectivity: 'wifi', nano: false,
+    pencil: null, keyboard: null, airpods: null,
+    creditCard: 0, referral: 0, sellGift: false, giftPrice: 0
+  });
+}
+
+function switchProduct(type) {
+  if (productType === type) return;
+  productType = type;
+  updateProductConfig();
+  renderSteps();
+  updateSwitchUI();
+  updatePrice();
+}
+
+function updateSwitchUI() {
+  document.getElementById('switch-air').classList.toggle('active', productType === 'air');
+  document.getElementById('switch-pro').classList.toggle('active', productType === 'pro');
+}
+
+// ═══════════════════════════════════════════
+//  步驟渲染
+// ═══════════════════════════════════════════
+function renderSteps() {
+  const wrap = document.getElementById('steps-wrap');
+  const hasNano = productType === 'pro';
+  const steps = buildStepDefs(hasNano);
+
+  wrap.innerHTML = steps.map((s, i) => renderStepCard(s, i, steps.length)).join('');
+  openStep(0);
+  updateProgress(steps);
+}
+
+function buildStepDefs(hasNano) {
+  return [
+    { id: 'size',          title: '選擇尺寸',       icon: '📐' },
+    { id: 'color',         title: '選擇顏色',       icon: '🎨' },
+    { id: 'storage',       title: '選擇容量',       icon: '💾' },
+    { id: 'connectivity',  title: '選擇連線方式',   icon: '📶' },
+    ...(hasNano ? [{ id: 'nano', title: '顯示器玻璃', icon: '✨' }] : []),
+    { id: 'gifts',         title: 'BTS 配件選擇',   icon: '🎁' },
+    { id: 'rebate',        title: '回饋試算',       icon: '💰' }
+  ];
+}
+
+function renderStepCard(step, idx, total) {
+  return `
+  <div class="step-card locked" id="step-card-${step.id}">
+    <div class="step-header" onclick="toggleStep('${step.id}')">
+      <div class="step-num" id="step-num-${step.id}">${idx + 1}</div>
+      <span class="step-title">${step.icon} ${step.title}</span>
+      <span class="step-value" id="step-value-${step.id}"></span>
+    </div>
+    <div class="step-body" id="step-body-${step.id}">
+      ${renderStepBody(step.id)}
+    </div>
+  </div>`;
+}
+
+function renderStepBody(stepId) {
+  switch (stepId) {
+    case 'size':         return renderSizeStep();
+    case 'color':        return renderColorStep();
+    case 'storage':      return renderStorageStep();
+    case 'connectivity': return renderConnectivityStep();
+    case 'nano':         return renderNanoStep();
+    case 'gifts':        return renderGiftsStep();
+    case 'rebate':       return renderRebateStep();
+    default: return '';
+  }
+}
+
+// ── Size ──
+function renderSizeStep() {
+  const sizes = Object.entries(cfg.sizes);
+  return `<div class="option-grid cols-2">
+    ${sizes.map(([sz, data]) => {
+      const minP = Math.min(...data.storage.map(s => s.price));
+      const img = cfg.colorImages?.[sz]?.['太空灰色'] || cfg.colorImages?.[sz]?.['太空黑色'] || '';
+      return `<div class="size-opt" id="size-opt-${sz}" onclick="selectSize('${sz}')">
+        <img src="${img}" alt="${sz}吋" onerror="this.style.display='none'">
+        <span class="size-label">${data.label}</span>
+        <span class="size-price">NT$${minP.toLocaleString()} 起</span>
+      </div>`;
+    }).join('')}
+  </div>`;
+}
+
+// ── Color ──
+function renderColorStep() {
+  const colorMap = {
+    '太空灰色': '#6d6d72', '藍色': '#5b8db8', '紫色': '#9b7ebf',
+    '星光色': '#e8e0d0', '太空黑色': '#1c1c1e', '銀色': '#e5e5ea'
+  };
+  return `<div class="option-grid" id="color-grid">
+    ${cfg.colors.map(c => `
+    <div class="opt" id="color-opt-${c.replace(/\s/g,'')}" onclick="selectColor('${c}')">
+      <div class="color-dot" style="background:${colorMap[c] || '#ccc'}"></div>
+      <div class="opt-title">${c}</div>
+    </div>`).join('')}
+  </div>`;
+}
+
+// ── Storage ──
+function renderStorageStep() {
+  if (!state.size) return `<p style="font-size:13px;color:var(--text-sub)">請先選擇尺寸</p>`;
+  const storageList = cfg.sizes[state.size].storage;
+  return `<div class="option-grid" id="storage-grid">
+    ${storageList.map(s => {
+      const chipSpec = s.ram ? `<div class="opt-chip-spec">${s.ram} / ${s.cpu} / ${s.gpu}</div>` : '';
+      return `<div class="opt" id="storage-opt-${s.id}" onclick="selectStorage('${s.id}')">
+        <div class="opt-title">${s.name}</div>
+        <div class="opt-price">NT$${s.price.toLocaleString()}</div>
+        ${chipSpec}
+      </div>`;
+    }).join('')}
+  </div>`;
+}
+
+// ── Connectivity ──
+function renderConnectivityStep() {
+  if (!state.size || !state.storageId) return `<p style="font-size:13px;color:var(--text-sub)">請先選擇容量</p>`;
+  const baseP = getBasePrice();
+  const cellExtra = cfg.sizes[state.size].cellularExtra;
+  return `<div class="connectivity-grid">
+    <div class="opt" id="conn-wifi" onclick="selectConnectivity('wifi')">
+      <div class="opt-title">Wi-Fi</div>
+      <div class="opt-price">NT$${baseP.toLocaleString()}</div>
+    </div>
+    <div class="opt" id="conn-cellular" onclick="selectConnectivity('cellular')">
+      <div class="opt-title">Wi-Fi + 行動網路</div>
+      <div class="opt-price">NT$${(baseP + cellExtra).toLocaleString()}</div>
+      <div class="opt-sub">+NT$${cellExtra.toLocaleString()}</div>
+    </div>
+  </div>`;
+}
+
+// ── Nano (Pro only) ──
+function renderNanoStep() {
+  const storageOpt = state.storageId ? cfg.sizes[state.size]?.storage.find(s => s.id === state.storageId) : null;
+  const eligible   = storageOpt && cfg.nanoEligible?.includes(state.storageId);
+  const notice = !eligible
+    ? `<div class="nano-notice">⚠️ 奈米紋理玻璃僅適用於 1TB 或 2TB 機型。</div>`
+    : '';
+
+  return `${notice}
+  <div class="option-grid cols-2">
+    <div class="opt" id="nano-opt-no" onclick="selectNano(false)">
+      <div class="opt-title">標準玻璃</div>
+      <div class="opt-sub">預設配置</div>
+      <div class="opt-price">不加價</div>
+    </div>
+    <div class="opt ${!eligible ? 'locked' : ''}" id="nano-opt-yes" onclick="${eligible ? "selectNano(true)" : ''}">
+      <div class="opt-title">奈米紋理玻璃</div>
+      <div class="opt-sub">減少眩光</div>
+      <div class="opt-price">+NT$${cfg.nanoPrice.toLocaleString()}</div>
+      ${!eligible ? '<div class="opt-badge" style="color:var(--text-sub)">需選 1TB+</div>' : ''}
+    </div>
+  </div>`;
+}
+
+// ── Gifts ──
+function renderGiftsStep() {
+  const gifts  = BTS_CONFIG.btsGifts;
+  const kbList = productType === 'air'
+    ? (gifts.ipadAirKeyboard[state.size] || gifts.ipadAirKeyboard['11'])
+    : (gifts.ipadProKeyboard[state.size] || gifts.ipadProKeyboard['11']);
+
+  return `
+  <div class="gift-section">
+    <p class="gift-section-title">Apple Pencil（生產力套組）</p>
+    ${gifts.ipadPencil.map(g => renderGiftOpt(g, 'pencil')).join('')}
+  </div>
+  <div class="gift-section">
+    <p class="gift-section-title">鍵盤（生產力套組）</p>
+    ${kbList.map(g => renderGiftOpt(g, 'keyboard')).join('')}
+  </div>
+  <div class="gift-section">
+    <p class="gift-section-title">AirPods 套組</p>
+    ${gifts.ipadAirpods.map(g => renderGiftOpt(g, 'airpods')).join('')}
+  </div>`;
+}
+
+function renderGiftOpt(g, category) {
+  const btsP = g.btsPrice ?? g.btcPrice ?? 0;
+  const tagClass = btsP === 0 ? '' : btsP < g.originalPrice ? 'paid' : 'neutral';
+  return `<div class="gift-opt" id="gift-${category}-${g.id}" onclick="selectGift('${category}', '${g.id}', ${btsP})">
+    <div class="gift-info">
+      <div class="gift-name">${g.name}</div>
+      <div class="gift-tag ${tagClass}">${g.tag}</div>
+    </div>
+    <div class="gift-radio"></div>
+  </div>`;
+}
+
+// ── Rebate ──
+function renderRebateStep() {
+  const ccOpts = BTS_CONFIG.meta.creditCardRebateOptions;
+  const refOpts = BTS_CONFIG.meta.referralRebateOptions;
+
+  return `
+  <div class="rebate-row">
+    <span class="rebate-label">💳 信用卡回饋</span>
+    <select class="rebate-select" onchange="setRebate('creditCard', this.value)">
+      ${ccOpts.map(v => `<option value="${v}">${v}%</option>`).join('')}
+    </select>
+  </div>
+  <div class="rebate-row">
+    <span class="rebate-label">🔗 導購回饋</span>
+    <select class="rebate-select" onchange="setRebate('referral', this.value)">
+      ${refOpts.map(v => `<option value="${v}">${v}%</option>`).join('')}
+    </select>
+  </div>
+  <div class="sell-gift-row">
+    <label>💵 打算賣掉贈品嗎？</label>
+    <label class="toggle-switch">
+      <input type="checkbox" id="sell-gift-toggle" onchange="toggleSellGift(this.checked)">
+      <div class="toggle-track"></div>
+      <div class="toggle-thumb"></div>
+    </label>
+  </div>
+  <div class="gift-price-input-wrap" id="gift-price-wrap">
+    <input class="gift-price-input" type="number" placeholder="預估贈品售價（NT$）" min="0"
+           oninput="setGiftPrice(this.value)">
+  </div>`;
+}
+
+// ═══════════════════════════════════════════
+//  Step 開關邏輯
+// ═══════════════════════════════════════════
+function openStep(idx) {
+  const steps = buildStepDefs(productType === 'pro');
+  steps.forEach((s, i) => {
+    const card = document.getElementById(`step-card-${s.id}`);
+    const body = document.getElementById(`step-body-${s.id}`);
+    const num  = document.getElementById(`step-num-${s.id}`);
+    if (!card) return;
+
+    if (i < idx) {
+      card.classList.remove('locked');
+      body.classList.remove('open');
+      num.classList.remove('active'); num.classList.add('done');
+      num.textContent = '✓';
+    } else if (i === idx) {
+      card.classList.remove('locked');
+      body.classList.add('open');
+      num.classList.add('active'); num.classList.remove('done');
+      num.textContent = i + 1;
+      // 重新渲染 body（確保依賴前步驟的內容是最新的）
+      body.innerHTML = renderStepBody(s.id);
+      // scroll to
+      setTimeout(() => card.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 100);
+    } else {
+      card.classList.add('locked');
+      body.classList.remove('open');
+      num.classList.remove('active', 'done');
+      num.textContent = i + 1;
+    }
+  });
+}
+
+function toggleStep(stepId) {
+  const steps = buildStepDefs(productType === 'pro');
+  const idx   = steps.findIndex(s => s.id === stepId);
+  const card  = document.getElementById(`step-card-${stepId}`);
+  if (card.classList.contains('locked')) return;
+  const body  = document.getElementById(`step-body-${stepId}`);
+  if (!body.classList.contains('open')) {
+    openStep(idx);
+  }
+}
+
+function advanceToStep(stepId) {
+  const steps = buildStepDefs(productType === 'pro');
+  const idx   = steps.findIndex(s => s.id === stepId);
+  openStep(idx);
+  updateProgress(steps);
+}
+
+function updateProgress(steps) {
+  const done   = steps.filter(s => getStepValue(s.id) !== null).length;
+  const pct    = Math.round((done / steps.length) * 100);
+  document.getElementById('progress-fill').style.width  = pct + '%';
+  document.getElementById('progress-label').textContent = `步驟 ${done} / ${steps.length}`;
+}
+
+function getStepValue(stepId) {
+  switch (stepId) {
+    case 'size':         return state.size;
+    case 'color':        return state.color;
+    case 'storage':      return state.storageId;
+    case 'connectivity': return state.connectivity;
+    case 'nano':         return state.nano !== null ? String(state.nano) : null;
+    case 'gifts':        return state.pencil;
+    case 'rebate':       return 'done'; // always considered filled
+    default: return null;
+  }
+}
+
+// ═══════════════════════════════════════════
+//  選擇動作
+// ═══════════════════════════════════════════
+function selectSize(sz) {
+  state.size = sz;
+  state.storageId = null; // reset downstream
+  state.nano = false;
+
+  selectOptUI('size-opt', sz);
+  setStepValue('size', cfg.sizes[sz].label);
+  showToast(`已選擇 ${cfg.sizes[sz].label}`);
+  advanceToStep('color');
+  updatePrice();
+}
+
+function selectColor(c) {
+  state.color = c;
+  // 更新圖片
+  const img = cfg.colorImages?.[state.size]?.[c];
+  if (img) {
+    document.querySelectorAll('.size-opt img').forEach(el => { el.src = img; });
+  }
+  selectOptUI('color-opt', c.replace(/\s/g,''));
+  setStepValue('color', c);
+  showToast(`已選擇 ${c}`);
+  advanceToStep('storage');
+  updatePrice();
+}
+
+function selectStorage(id) {
+  state.storageId = id;
+  state.nano = false;  // reset nano when storage changes
+
+  const s = cfg.sizes[state.size].storage.find(x => x.id === id);
+  selectOptUI('storage-opt', id);
+  setStepValue('storage', `${s.name}${s.ram ? ' / '+s.ram : ''}`);
+  showToast(`已選擇 ${s.name}`);
+  advanceToStep('connectivity');
+  updatePrice();
+}
+
+function selectConnectivity(type) {
+  state.connectivity = type;
+  selectOptUI('conn', type);
+  setStepValue('connectivity', type === 'wifi' ? 'Wi-Fi' : 'Wi-Fi + 行動網路');
+  advanceToStep(productType === 'pro' ? 'nano' : 'gifts');
+  updatePrice();
+}
+
+function selectNano(val) {
+  if (val && !cfg.nanoEligible?.includes(state.storageId)) return;
+  state.nano = val;
+  selectOptUI('nano-opt', val ? 'yes' : 'no');
+  setStepValue('nano', val ? '奈米紋理玻璃 +NT$3,500' : '標準玻璃');
+  advanceToStep('gifts');
+  updatePrice();
+}
+
+function selectGift(category, id, price) {
+  state[category] = { id, price };
+
+  // 取消同類別舊選中
+  document.querySelectorAll(`[id^="gift-${category}-"]`).forEach(el => el.classList.remove('selected'));
+  document.getElementById(`gift-${category}-${id}`)?.classList.add('selected');
+
+  // 如果三個 category 都選了，前進到 rebate
+  if (state.pencil && state.keyboard && state.airpods) {
+    const pencilName = BTS_CONFIG.btsGifts.ipadPencil.find(g => g.id === state.pencil.id)?.name || '';
+    setStepValue('gifts', pencilName + ' 等');
+    advanceToStep('rebate');
+  }
+  updatePrice();
+}
+
+function setRebate(type, val) {
+  state[type] = parseFloat(val) || 0;
+  updatePrice();
+  checkComplete();
+}
+
+function toggleSellGift(checked) {
+  state.sellGift = checked;
+  const wrap = document.getElementById('gift-price-wrap');
+  if (wrap) wrap.classList.toggle('show', checked);
+  if (!checked) state.giftPrice = 0;
+  updatePrice();
+}
+
+function setGiftPrice(val) {
+  state.giftPrice = parseFloat(val) || 0;
+  updatePrice();
+}
+
+// ═══════════════════════════════════════════
+//  UI 輔助
+// ═══════════════════════════════════════════
+function selectOptUI(prefix, key) {
+  document.querySelectorAll(`[id^="${prefix}-"]`).forEach(el => el.classList.remove('selected'));
+  document.getElementById(`${prefix}-${key}`)?.classList.add('selected');
+}
+
+function setStepValue(stepId, text) {
+  const el = document.getElementById(`step-value-${stepId}`);
+  if (el) el.textContent = text;
+}
+
+// ═══════════════════════════════════════════
+//  價格計算
+// ═══════════════════════════════════════════
+function getBasePrice() {
+  if (!state.size || !state.storageId) return 0;
+  const s = cfg.sizes[state.size].storage.find(x => x.id === state.storageId);
+  return s ? s.price : 0;
+}
+
+function calcPrice() {
+  let base = getBasePrice();
+  if (!base) return null;
+
+  if (state.connectivity === 'cellular')
+    base += cfg.sizes[state.size].cellularExtra;
+
+  if (state.nano && productType === 'pro')
+    base += cfg.nanoPrice;
+
+  const giftCost = (state.pencil?.price || 0)
+                 + (state.keyboard?.price || 0)
+                 + (state.airpods?.price || 0);
+
+  const subtotal = base + giftCost;
+
+  const ccRebate  = Math.round(subtotal * (state.creditCard / 100));
+  const refRebate = Math.round(subtotal * (state.referral   / 100));
+  const giftSale  = state.sellGift ? state.giftPrice : 0;
+  const final     = subtotal - ccRebate - refRebate - giftSale;
+
+  // 省下的原價總計
+  const savedGifts = (getBtsGiftOriginalTotal()) - giftCost;
+  const totalSaved = ccRebate + refRebate + giftSale + savedGifts;
+
+  return { base, giftCost, subtotal, ccRebate, refRebate, giftSale, final, totalSaved };
+}
+
+function getBtsGiftOriginalTotal() {
+  const pencilOrig = BTS_CONFIG.btsGifts.ipadPencil.find(g => g.id === state.pencil?.id)?.originalPrice || 0;
+  const kbList     = productType === 'air'
+    ? BTS_CONFIG.btsGifts.ipadAirKeyboard[state.size] || []
+    : BTS_CONFIG.btsGifts.ipadProKeyboard[state.size] || [];
+  const kbOrig     = kbList.find(g => g.id === state.keyboard?.id)?.originalPrice || 0;
+  const apOrig     = BTS_CONFIG.btsGifts.ipadAirpods.find(g => g.id === state.airpods?.id)?.originalPrice || 0;
+  return pencilOrig + kbOrig + apOrig;
+}
+
+function updatePrice() {
+  const r = calcPrice();
+  const finalEl = document.getElementById('price-final');
+  const breakEl = document.getElementById('price-breakdown');
+  const savedEl = document.getElementById('price-saved');
+
+  if (!r) {
+    finalEl.textContent = 'NT$–';
+    breakEl.textContent = '請完成規格選擇';
+    savedEl.style.display = 'none';
+    return;
+  }
+
+  finalEl.textContent = `NT$${r.final.toLocaleString()}`;
+
+  const parts = [];
+  if (r.ccRebate)  parts.push(`信用卡 -NT$${r.ccRebate.toLocaleString()}`);
+  if (r.refRebate) parts.push(`導購 -NT$${r.refRebate.toLocaleString()}`);
+  if (r.giftSale)  parts.push(`贈品售 -NT$${r.giftSale.toLocaleString()}`);
+  breakEl.textContent = parts.length ? parts.join(' · ') : `定價 NT$${r.subtotal.toLocaleString()}`;
+
+  if (r.totalSaved > 0) {
+    savedEl.style.display = '';
+    savedEl.textContent = `🎉 合計省下 NT$${r.totalSaved.toLocaleString()}`;
+  } else {
+    savedEl.style.display = 'none';
+  }
+
+  checkComplete();
+}
+
+function checkComplete() {
+  const hasNano = productType === 'pro';
+  const required = ['size','color','storageId','connectivity','pencil','keyboard','airpods'];
+  if (hasNano) required.push('nano');
+  const done = required.every(k => state[k] !== null && state[k] !== undefined);
+  const btn  = document.getElementById('generate-btn');
+  btn.disabled = !done;
+  if (done) btn.classList.add('ready'); else btn.classList.remove('ready');
+}
+
+// ═══════════════════════════════════════════
+//  Modal
+// ═══════════════════════════════════════════
+function openModal() {
+  const r = calcPrice();
+  if (!r) return;
+
+  const sizeCfg    = cfg.sizes[state.size];
+  const storageCfg = sizeCfg.storage.find(s => s.id === state.storageId);
+  const pencilCfg  = BTS_CONFIG.btsGifts.ipadPencil.find(g => g.id === state.pencil?.id);
+  const kbList     = productType === 'air'
+    ? BTS_CONFIG.btsGifts.ipadAirKeyboard[state.size] || []
+    : BTS_CONFIG.btsGifts.ipadProKeyboard[state.size] || [];
+  const kbCfg      = kbList.find(g => g.id === state.keyboard?.id);
+  const apCfg      = BTS_CONFIG.btsGifts.ipadAirpods.find(g => g.id === state.airpods?.id);
+
+  const productName = `iPad ${productType === 'air' ? 'Air' : 'Pro'} ${sizeCfg.label}`;
+
+  let html = `
+  <div class="receipt-item">
+    <span class="receipt-label">產品</span>
+    <span class="receipt-value">${productName}</span>
+  </div>
+  <div class="receipt-item">
+    <span class="receipt-label">顏色</span>
+    <span class="receipt-value">${state.color || '–'}</span>
+  </div>
+  <div class="receipt-item">
+    <span class="receipt-label">容量</span>
+    <span class="receipt-value">${storageCfg?.name || '–'}${storageCfg?.ram ? ' / '+storageCfg.ram : ''}</span>
+  </div>
+  <div class="receipt-item">
+    <span class="receipt-label">連線</span>
+    <span class="receipt-value">${state.connectivity === 'wifi' ? 'Wi-Fi' : 'Wi-Fi + 行動網路'}</span>
+  </div>`;
+
+  if (productType === 'pro') {
+    html += `<div class="receipt-item">
+      <span class="receipt-label">顯示器玻璃</span>
+      <span class="receipt-value">${state.nano ? '奈米紋理玻璃' : '標準玻璃'}</span>
+    </div>`;
+  }
+
+  html += `<hr class="receipt-divider">`;
+
+  // Gifts
+  if (pencilCfg && pencilCfg.id !== 'none') {
+    html += receiptGiftRow(pencilCfg.name, pencilCfg.btsPrice ?? pencilCfg.btcPrice ?? 0, pencilCfg.originalPrice);
+  }
+  if (kbCfg && kbCfg.id !== 'none') {
+    html += receiptGiftRow(kbCfg.name, kbCfg.btsPrice ?? 0, kbCfg.originalPrice);
+  }
+  if (apCfg && apCfg.id !== 'none') {
+    html += receiptGiftRow(apCfg.name, apCfg.btsPrice ?? 0, apCfg.originalPrice);
+  }
+
+  html += `<hr class="receipt-divider">
+  <div class="receipt-item">
+    <span class="receipt-label">教育商店定價</span>
+    <span class="receipt-value">NT$${r.subtotal.toLocaleString()}</span>
+  </div>`;
+
+  if (r.ccRebate)  html += `<div class="receipt-item"><span class="receipt-label">信用卡回饋 (${state.creditCard}%)</span><span class="receipt-value deduct">-NT$${r.ccRebate.toLocaleString()}</span></div>`;
+  if (r.refRebate) html += `<div class="receipt-item"><span class="receipt-label">導購回饋 (${state.referral}%)</span><span class="receipt-value deduct">-NT$${r.refRebate.toLocaleString()}</span></div>`;
+  if (r.giftSale)  html += `<div class="receipt-item"><span class="receipt-label">贈品售出</span><span class="receipt-value deduct">-NT$${r.giftSale.toLocaleString()}</span></div>`;
+
+  html += `<div class="receipt-total">
+    <span class="receipt-total-label">💰 實際入手價</span>
+    <span class="receipt-total-value">NT$${r.final.toLocaleString()}</span>
+  </div>`;
+
+  if (r.totalSaved > 0) {
+    html += `<div class="receipt-saved-row"><span>🎉 合計省下 NT$${r.totalSaved.toLocaleString()}</span></div>`;
+  }
+
+  html += `<p style="font-size:11px;color:var(--text-sub);text-align:center;margin-top:4px">DESIGNED BY Neil尼歐</p>`;
+
+  document.getElementById('modal-content').innerHTML = html;
+  document.getElementById('link-bts-agent').href = BTS_CONFIG.meta.purchaseLinks.btsAgent;
+  document.getElementById('modal-overlay').classList.add('open');
+}
+
+function receiptGiftRow(name, btsPrice, origPrice) {
+  const saving = origPrice - btsPrice;
+  const valClass = btsPrice === 0 ? 'free' : '';
+  const valText  = btsPrice === 0 ? '免費' : `NT$${btsPrice.toLocaleString()}`;
+  const savingTxt = saving > 0 ? ` (省 NT$${saving.toLocaleString()})` : '';
+  return `<div class="receipt-item">
+    <span class="receipt-label">${name}</span>
+    <span class="receipt-value ${valClass}">${valText}${savingTxt}</span>
+  </div>`;
+}
+
+function closeModal() { document.getElementById('modal-overlay').classList.remove('open'); }
+function closeModalOutside(e) { if (e.target === document.getElementById('modal-overlay')) closeModal(); }
+
+function generateImage() {
+  showToast('圖片生成功能即將推出！');
+}
+
+// ═══════════════════════════════════════════
+//  Navigation
+// ═══════════════════════════════════════════
+function goBack() {
+  if (typeof google !== 'undefined' && google.script) {
+    window.top.location.href = '?page=ipad';
+  } else {
+    window.location.href = 'index.html?page=ipad';
+  }
+}
+
+// ═══════════════════════════════════════════
+//  Toast
+// ═══════════════════════════════════════════
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2000);
+}
+
+// ── 啟動 ──
+init();
+</script>
+</body>
+</html>

@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BTS 後台管理</title>
+  <style>
+    :root {
+      --blue:    #0071e3;
+      --green:   #34c759;
+      --red:     #ff3b30;
+      --orange:  #ff9500;
+      --bg:      #f5f5f7;
+      --card:    #ffffff;
+      --text:    #1d1d1f;
+      --sub:     #6e6e73;
+      --border:  #d2d2d7;
+      --sel-bg:  #f0f6ff;
+      --radius:  12px;
+      --shadow:  0 2px 12px rgba(0,0,0,.08);
+      --sidebar: 220px;
+    }
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    body { font-family:-apple-system,BlinkMacSystemFont,'Noto Sans TC',sans-serif; background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+
+    /* ── Layout ── */
+    .layout { display:flex; min-height:100vh; }
+
+    /* ── Sidebar ── */
+    .sidebar {
+      width:var(--sidebar); background:var(--card); border-right:1px solid var(--border);
+      position:fixed; top:0; left:0; height:100vh; overflow-y:auto; z-index:50;
+      display:flex; flex-direction:column;
+    }
+    .sidebar-logo { padding:20px 18px 12px; border-bottom:1px solid var(--border); }
+    .sidebar-logo h1 { font-size:15px; font-weight:700; }
+    .sidebar-logo p  { font-size:11px; color:var(--sub); margin-top:2px; }
+    .nav-group { padding:10px 0; border-bottom:1px solid var(--border); }
+    .nav-group-label { font-size:10px; font-weight:700; color:var(--sub); padding:6px 18px 4px; text-transform:uppercase; letter-spacing:.5px; }
+    .nav-item {
+      display:flex; align-items:center; gap:8px;
+      padding:9px 18px; font-size:13px; font-weight:500; cursor:pointer;
+      border-radius:0; transition:background .15s; color:var(--text);
+    }
+    .nav-item:hover { background:var(--bg); }
+    .nav-item.active { background:var(--sel-bg); color:var(--blue); font-weight:600; }
+    .nav-item .nav-dot { width:6px; height:6px; border-radius:50%; background:var(--border); flex-shrink:0; }
+    .nav-item.active .nav-dot { background:var(--blue); }
+    .sidebar-footer { margin-top:auto; padding:16px 18px; border-top:1px solid var(--border); }
+    .save-btn-sidebar {
+      width:100%; padding:10px; background:var(--blue); color:#fff;
+      border:none; border-radius:10px; font-size:13px; font-weight:600; cursor:pointer;
+      transition:background .2s; display:flex; align-items:center; justify-content:center; gap:6px;
+    }
+    .save-btn-sidebar:hover { background:#005bbf; }
+    .save-btn-sidebar.saved { background:var(--green); }
+
+    /* ── Main ── */
+    .main { margin-left:var(--sidebar); flex:1; padding:28px 32px; max-width:900px; }
+
+    /* ── Section header ── */
+    .section-header { margin-bottom:24px; }
+    .section-header h2 { font-size:22px; font-weight:700; }
+    .section-header p  { font-size:13px; color:var(--sub); margin-top:4px; }
+
+    /* ── Card ── */
+    .card { background:var(--card); border-radius:var(--radius); box-shadow:var(--shadow); padding:20px 24px; margin-bottom:16px; }
+    .card-title { font-size:14px; font-weight:700; margin-bottom:16px; padding-bottom:10px; border-bottom:1px solid var(--border); display:flex; align-items:center; gap:8px; }
+    .card-title span { font-size:16px; }
+
+    /* ── Form elements ── */
+    .field-row { display:flex; align-items:center; gap:12px; margin-bottom:12px; }
+    .field-row:last-child { margin-bottom:0; }
+    .field-label { font-size:13px; font-weight:500; min-width:140px; flex-shrink:0; }
+    .field-label.small { min-width:80px; font-size:12px; }
+    .field-input {
+      flex:1; padding:8px 12px; border:1.5px solid var(--border); border-radius:8px;
+      font-size:13px; font-family:inherit; color:var(--text); background:var(--bg);
+      outline:none; transition:border-color .2s;
+    }
+    .field-input:focus { border-color:var(--blue); background:#fff; }
+    .field-input.url-input { font-size:11px; font-family:monospace; }
+    .field-input.price-input { max-width:120px; text-align:right; }
+
+    /* 圖片預覽 */
+    .img-preview { width:48px; height:36px; object-fit:contain; border-radius:6px; border:1px solid var(--border); background:var(--bg); flex-shrink:0; }
+
+    /* ── Grid for image rows ── */
+    .img-grid { display:grid; gap:10px; }
+    .img-row { display:flex; align-items:center; gap:10px; padding:8px; background:var(--bg); border-radius:8px; }
+    .img-row-label { font-size:12px; font-weight:600; min-width:70px; }
+
+    /* ── Price table ── */
+    .price-table { width:100%; border-collapse:collapse; }
+    .price-table th { font-size:11px; font-weight:700; color:var(--sub); text-align:left; padding:6px 8px; border-bottom:1.5px solid var(--border); text-transform:uppercase; letter-spacing:.4px; }
+    .price-table td { padding:6px 8px; border-bottom:1px solid var(--bg); vertical-align:middle; }
+    .price-table tr:last-child td { border-bottom:none; }
+    .price-table td .field-input { margin:0; }
+
+    /* ── Gift row ── */
+    .gift-row { display:flex; align-items:center; gap:8px; padding:10px; background:var(--bg); border-radius:8px; margin-bottom:8px; }
+    .gift-row-name { font-size:13px; font-weight:500; flex:1; }
+    .gift-price-group { display:flex; align-items:center; gap:6px; }
+    .gift-price-group label { font-size:11px; color:var(--sub); white-space:nowrap; }
+
+    /* ── Tab panels ── */
+    .tab-panel { display:none; }
+    .tab-panel.active { display:block; }
+
+    /* ── Subsection tabs (Air/Pro toggle) ── */
+    .sub-tabs { display:flex; gap:8px; margin-bottom:16px; }
+    .sub-tab { padding:6px 16px; border-radius:20px; font-size:13px; font-weight:600; cursor:pointer; border:1.5px solid var(--border); background:var(--card); color:var(--sub); transition:.15s; }
+    .sub-tab.active { background:var(--blue); color:#fff; border-color:var(--blue); }
+
+    /* ── Chip accordion ── */
+    .chip-accordion { border:1.5px solid var(--border); border-radius:10px; margin-bottom:10px; overflow:hidden; }
+    .chip-acc-header { display:flex; align-items:center; justify-content:space-between; padding:12px 14px; cursor:pointer; background:var(--card); font-size:13px; font-weight:600; }
+    .chip-acc-header:hover { background:var(--bg); }
+    .chip-acc-body { display:none; padding:12px 14px; border-top:1px solid var(--border); background:var(--bg); }
+    .chip-acc-body.open { display:block; }
+    .chip-acc-arrow { transition:transform .2s; }
+    .chip-acc-arrow.open { transform:rotate(90deg); }
+
+    /* ── Badge ── */
+    .badge { font-size:10px; font-weight:700; padding:2px 7px; border-radius:5px; }
+    .badge.air { background:#e8f7ed; color:#1a7a3b; }
+    .badge.pro { background:#f0f6ff; color:var(--blue); }
+    .badge.max { background:#f5f0ff; color:#6c2bd9; }
+
+    /* ── Action bar ── */
+    .action-bar { display:flex; align-items:center; gap:10px; margin-bottom:20px; padding:14px 20px; background:var(--card); border-radius:var(--radius); box-shadow:var(--shadow); }
+    .action-bar p { flex:1; font-size:13px; color:var(--sub); }
+    .btn { padding:8px 16px; border-radius:8px; font-size:13px; font-weight:600; border:none; cursor:pointer; transition:.15s; }
+    .btn:active { opacity:.8; }
+    .btn.primary  { background:var(--blue); color:#fff; }
+    .btn.danger   { background:var(--red);  color:#fff; }
+    .btn.secondary { background:var(--bg); border:1.5px solid var(--border); color:var(--text); }
+    .btn.success  { background:var(--green); color:#fff; }
+
+    /* ── Toast ── */
+    .toast { position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(20px); background:rgba(0,0,0,.85); color:#fff; font-size:13px; font-weight:500; padding:10px 20px; border-radius:20px; z-index:999; opacity:0; transition:.25s; pointer-events:none; }
+    .toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+
+    /* ── RWD ── */
+    @media(max-width:768px) {
+      :root { --sidebar:0px; }
+      .sidebar { display:none; }
+      .main { margin-left:0; padding:16px; }
+    }
+  </style>
+</head>
+<body>
+<div class="layout">
+
+  <!-- ── Sidebar ── -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <h1>⚙️ BTS 後台</h1>
+      <p>2026 Apple BTS 管理介面</p>
+    </div>
+
+    <nav>
+      <div class="nav-group">
+        <p class="nav-group-label">活動設定</p>
+        <div class="nav-item active" onclick="switchTab('meta')"><span class="nav-dot"></span>活動總設定</div>
+        <div class="nav-item" onclick="switchTab('gifts')"><span class="nav-dot"></span>BTS 贈品</div>
+      </div>
+      <div class="nav-group">
+        <p class="nav-group-label">產品圖片</p>
+        <div class="nav-item" onclick="switchTab('images-ipad')"><span class="nav-dot"></span>iPad 圖片</div>
+        <div class="nav-item" onclick="switchTab('images-mac')"><span class="nav-dot"></span>MacBook 圖片</div>
+      </div>
+      <div class="nav-group">
+        <p class="nav-group-label">產品價格</p>
+        <div class="nav-item" onclick="switchTab('price-ipad')"><span class="nav-dot"></span>iPad 價格</div>
+        <div class="nav-item" onclick="switchTab('price-mac')"><span class="nav-dot"></span>MacBook 價格</div>
+      </div>
+    </nav>
+
+    <div class="sidebar-footer">
+      <button class="save-btn-sidebar" id="sidebar-save-btn" onclick="saveAll()">
+        💾 儲存所有設定
+      </button>
+    </div>
+  </aside>
+
+  <!-- ── Main ── -->
+  <main class="main">
+
+    <!-- Action bar -->
+    <div class="action-bar">
+      <p id="status-text">讀取中…</p>
+      <button class="btn secondary" onclick="exportJSON()">匯出 JSON</button>
+      <button class="btn danger"    onclick="resetAll()">清除覆蓋</button>
+      <button class="btn primary"   onclick="saveAll()">💾 儲存</button>
+    </div>
+
+    <!-- ══ Tab: 活動總設定 ══ -->
+    <div class="tab-panel active" id="tab-meta">
+      <div class="section-header"><h2>活動總設定</h2><p>購買連結、回饋選項</p></div>
+
+      <div class="card">
+        <div class="card-title"><span>🔗</span> 購買連結</div>
+        <div id="links-fields"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span>💳</span> 回饋選項（用逗號分隔，例：0,0.5,1,1.5,2）</div>
+        <div class="field-row">
+          <span class="field-label">信用卡回饋 (%)</span>
+          <input class="field-input" id="cc-rebate-opts" type="text">
+        </div>
+        <div class="field-row">
+          <span class="field-label">導購回饋 (%)</span>
+          <input class="field-input" id="ref-rebate-opts" type="text">
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ Tab: BTS 贈品 ══ -->
+    <div class="tab-panel" id="tab-gifts">
+      <div class="section-header"><h2>BTS 贈品設定</h2><p>各套組的 BTS 實付價（0 = 免費）</p></div>
+
+      <div class="card">
+        <div class="card-title"><span>✏️</span> iPad Pencil 套組</div>
+        <div id="gift-ipadPencil"></div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span>⌨️</span> iPad Air 鍵盤（11吋）</div>
+        <div id="gift-ipadAirKeyboard-11"></div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span>⌨️</span> iPad Air 鍵盤（13吋）</div>
+        <div id="gift-ipadAirKeyboard-13"></div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span>⌨️</span> iPad Pro 鍵盤（11吋）</div>
+        <div id="gift-ipadProKeyboard-11"></div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span>⌨️</span> iPad Pro 鍵盤（13吋）</div>
+        <div id="gift-ipadProKeyboard-13"></div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span>🎵</span> iPad AirPods 套組</div>
+        <div id="gift-ipadAirpods"></div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span>🖱️</span> MacBook 生產力套組</div>
+        <div id="gift-macbookProductivity"></div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span>🎵</span> MacBook AirPods 套組</div>
+        <div id="gift-macbookAirpods"></div>
+      </div>
+    </div>
+
+    <!-- ══ Tab: iPad 圖片 ══ -->
+    <div class="tab-panel" id="tab-images-ipad">
+      <div class="section-header"><h2>iPad 圖片連結</h2><p>每個尺寸 × 顏色 的圖片 URL（建議用 Google Drive thumbnail 格式）</p></div>
+      <div class="sub-tabs">
+        <div class="sub-tab active" onclick="switchSubTab('img-ipad','air',this)">iPad Air</div>
+        <div class="sub-tab"       onclick="switchSubTab('img-ipad','pro',this)">iPad Pro</div>
+      </div>
+      <div id="img-ipad-air"><div id="img-grid-air"></div></div>
+      <div id="img-ipad-pro" style="display:none"><div id="img-grid-pro"></div></div>
+    </div>
+
+    <!-- ══ Tab: MacBook 圖片 ══ -->
+    <div class="tab-panel" id="tab-images-mac">
+      <div class="section-header"><h2>MacBook 圖片連結</h2><p>每個尺寸 × 顏色 的圖片 URL</p></div>
+      <div class="sub-tabs">
+        <div class="sub-tab active" onclick="switchSubTab('img-mac','air',this)">MacBook Air</div>
+        <div class="sub-tab"       onclick="switchSubTab('img-mac','pro',this)">MacBook Pro</div>
+      </div>
+      <div id="img-mac-air"><div id="img-grid-mac-air"></div></div>
+      <div id="img-mac-pro" style="display:none"><div id="img-grid-mac-pro"></div></div>
+    </div>
+
+    <!-- ══ Tab: iPad 價格 ══ -->
+    <div class="tab-panel" id="tab-price-ipad">
+      <div class="section-header"><h2>iPad 價格</h2><p>教育商店定價（NT$）</p></div>
+      <div class="sub-tabs">
+        <div class="sub-tab active" onclick="switchSubTab('price-ipad-tab','air',this)">iPad Air</div>
+        <div class="sub-tab"       onclick="switchSubTab('price-ipad-tab','pro',this)">iPad Pro</div>
+      </div>
+      <div id="price-ipad-tab-air"><div id="price-table-ipad-air"></div></div>
+      <div id="price-ipad-tab-pro" style="display:none"><div id="price-table-ipad-pro"></div></div>
+    </div>
+
+    <!-- ══ Tab: MacBook 價格 ══ -->
+    <div class="tab-panel" id="tab-price-mac">
+      <div class="section-header"><h2>MacBook 價格</h2><p>教育商店定價（NT$）</p></div>
+      <div class="sub-tabs">
+        <div class="sub-tab active" onclick="switchSubTab('price-mac-tab','air',this)">MacBook Air</div>
+        <div class="sub-tab"       onclick="switchSubTab('price-mac-tab','pro',this)">MacBook Pro</div>
+      </div>
+      <div id="price-mac-tab-air"><div id="price-table-mac-air"></div></div>
+      <div id="price-mac-tab-pro" style="display:none"><div id="price-table-mac-pro"></div></div>
+    </div>
+
+  </main>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="bts-config.js"></script>
+<script src="config-override.js"></script>
+<script>
+// ═══════════════════════════════════════════
+//  工作用的可編輯 config 副本
+// ═══════════════════════════════════════════
+let cfg = JSON.parse(JSON.stringify(BTS_CONFIG));  // deep clone
+
+// ═══════════════════════════════════════════
+//  Tab 切換
+// ═══════════════════════════════════════════
+function switchTab(id) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById(`tab-${id}`).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+}
+
+function switchSubTab(groupId, key, el) {
+  const parent = el.closest('.tab-panel') || document.body;
+  parent.querySelectorAll(`[id^="${groupId}-"]`).forEach(d => d.style.display = 'none');
+  const target = document.getElementById(`${groupId}-${key}`);
+  if (target) target.style.display = '';
+  el.closest('.sub-tabs').querySelectorAll('.sub-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+}
+
+// ═══════════════════════════════════════════
+//  Render helpers
+// ═══════════════════════════════════════════
+function priceInput(value, onchange) {
+  return `<input class="field-input price-input" type="number" value="${value}" min="0" oninput="${onchange}">`;
+}
+
+function urlInput(value, onchange, id) {
+  return `<input class="field-input url-input" id="${id||''}" type="url" value="${escHtml(value)}" placeholder="https://..." oninput="${onchange}">`;
+}
+
+function escHtml(s) { return String(s).replace(/"/g, '&quot;'); }
+
+// ── 更新 img preview ──
+function updateImgPreview(inputEl) {
+  const previewId = inputEl.id + '-preview';
+  const prev = document.getElementById(previewId);
+  if (prev) prev.src = inputEl.value || '';
+}
+
+// ═══════════════════════════════════════════
+//  Render: 活動總設定
+// ═══════════════════════════════════════════
+function renderMeta() {
+  const links = cfg.meta.purchaseLinks;
+  const linkLabels = { line:'LINE 導購連結', btsAgent:'BTS代購 GAS連結', official:'Apple 官方教育商店', dcard:'Dcard', youtube:'YouTube', instagram:'Instagram', website:'官網' };
+  document.getElementById('links-fields').innerHTML =
+    Object.entries(links).map(([k,v]) => `
+    <div class="field-row">
+      <span class="field-label">${linkLabels[k]||k}</span>
+      <input class="field-input url-input" type="url" value="${escHtml(v)}"
+             oninput="cfg.meta.purchaseLinks['${k}']=this.value">
+    </div>`).join('');
+
+  document.getElementById('cc-rebate-opts').value  = cfg.meta.creditCardRebateOptions.join(',');
+  document.getElementById('ref-rebate-opts').value = cfg.meta.referralRebateOptions.join(',');
+
+  document.getElementById('cc-rebate-opts').oninput  = e => cfg.meta.creditCardRebateOptions = e.target.value.split(',').map(Number).filter(n=>!isNaN(n));
+  document.getElementById('ref-rebate-opts').oninput = e => cfg.meta.referralRebateOptions    = e.target.value.split(',').map(Number).filter(n=>!isNaN(n));
+}
+
+// ═══════════════════════════════════════════
+//  Render: BTS 贈品
+// ═══════════════════════════════════════════
+function renderGiftList(containerId, giftArr, cfgPath) {
+  const el = document.getElementById(containerId);
+  if (!el) return;
+  el.innerHTML = giftArr.map((g, i) => {
+    const p = g.btsPrice ?? g.btcPrice ?? 0;
+    return `<div class="gift-row">
+      <span class="gift-name">${g.name}</span>
+      <div class="gift-price-group">
+        <label>BTS 實付 NT$</label>
+        <input class="field-input price-input" type="number" min="0" value="${p}"
+               oninput="setGiftPrice('${cfgPath}',${i},this.value)">
+        <label style="margin-left:8px">原價 NT$</label>
+        <input class="field-input price-input" type="number" min="0" value="${g.originalPrice}"
+               oninput="setGiftOrigPrice('${cfgPath}',${i},this.value)">
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function setGiftPrice(path, idx, val) {
+  const arr = getNestedArr(cfg, path);
+  if (!arr) return;
+  const key = 'btsPrice' in arr[idx] ? 'btsPrice' : 'btcPrice';
+  arr[idx][key] = parseFloat(val)||0;
+}
+
+function setGiftOrigPrice(path, idx, val) {
+  const arr = getNestedArr(cfg, path);
+  if (arr) arr[idx].originalPrice = parseFloat(val)||0;
+}
+
+function getNestedArr(obj, path) {
+  return path.split('.').reduce((o,k) => o?.[k], obj);
+}
+
+function renderGifts() {
+  const g = cfg.btsGifts;
+  renderGiftList('gift-ipadPencil',          g.ipadPencil,             'btsGifts.ipadPencil');
+  renderGiftList('gift-ipadAirKeyboard-11',  g.ipadAirKeyboard['11'],  "btsGifts.ipadAirKeyboard.11");
+  renderGiftList('gift-ipadAirKeyboard-13',  g.ipadAirKeyboard['13'],  "btsGifts.ipadAirKeyboard.13");
+  renderGiftList('gift-ipadProKeyboard-11',  g.ipadProKeyboard['11'],  "btsGifts.ipadProKeyboard.11");
+  renderGiftList('gift-ipadProKeyboard-13',  g.ipadProKeyboard['13'],  "btsGifts.ipadProKeyboard.13");
+  renderGiftList('gift-ipadAirpods',         g.ipadAirpods,            'btsGifts.ipadAirpods');
+  renderGiftList('gift-macbookProductivity', g.macbookProductivity,    'btsGifts.macbookProductivity');
+  renderGiftList('gift-macbookAirpods',      g.macbookAirpods,         'btsGifts.macbookAirpods');
+}
+
+// ═══════════════════════════════════════════
+//  Render: 圖片管理
+// ═══════════════════════════════════════════
+function renderImgGrid(containerId, colorImages, productKey, sizesObj) {
+  const el = document.getElementById(containerId);
+  if (!el) return;
+  const sizes = Object.keys(sizesObj || colorImages);
+  el.innerHTML = sizes.map(sz => {
+    const colorMap = colorImages[sz] || {};
+    const colors   = Object.keys(colorMap);
+    return `<div class="card">
+      <div class="card-title"><span>📐</span>${sz} 吋</div>
+      <div class="img-grid">
+        ${colors.map(c => {
+          const inputId = `img-${productKey}-${sz}-${c.replace(/\s/g,'')}`;
+          return `<div class="img-row">
+            <span class="img-row-label">${c}</span>
+            <img class="img-preview" id="${inputId}-preview" src="${escHtml(colorMap[c]||'')}" onerror="this.src=''">
+            <input class="field-input url-input" id="${inputId}" type="url"
+                   value="${escHtml(colorMap[c]||'')}"
+                   placeholder="https://drive.google.com/thumbnail?id=..."
+                   oninput="setImgUrl('${productKey}','${sz}','${c}',this.value);updateImgPreview(this)">
+          </div>`;
+        }).join('')}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function setImgUrl(productKey, sz, color, val) {
+  const prodMap = {
+    'ipadAir':    cfg.products.ipadAir.colorImages,
+    'ipadPro':    cfg.products.ipadPro.colorImages,
+    'macbookAir': cfg.products.macbookAir.colorImages,
+    'macbookPro': cfg.products.macbookPro.colorImages
+  };
+  const cImgs = prodMap[productKey];
+  if (!cImgs) return;
+  if (!cImgs[sz]) cImgs[sz] = {};
+  cImgs[sz][color] = val;
+}
+
+function renderImages() {
+  renderImgGrid('img-grid-air',     cfg.products.ipadAir.colorImages,    'ipadAir',    cfg.products.ipadAir.sizes);
+  renderImgGrid('img-grid-pro',     cfg.products.ipadPro.colorImages,    'ipadPro',    cfg.products.ipadPro.sizes);
+  renderImgGrid('img-grid-mac-air', cfg.products.macbookAir.colorImages, 'macbookAir', cfg.products.macbookAir.sizes);
+  renderImgGrid('img-grid-mac-pro', cfg.products.macbookPro.colorImages, 'macbookPro', cfg.products.macbookPro.sizes);
+}
+
+// ═══════════════════════════════════════════
+//  Render: iPad 價格
+// ═══════════════════════════════════════════
+function renderIpadPrices() {
+  renderIpadSizePrice('price-table-ipad-air', cfg.products.ipadAir,  'ipadAir');
+  renderIpadSizePrice('price-table-ipad-pro', cfg.products.ipadPro,  'ipadPro');
+}
+
+function renderIpadSizePrice(containerId, prod, prodKey) {
+  const el = document.getElementById(containerId);
+  if (!el) return;
+  el.innerHTML = Object.entries(prod.sizes).map(([sz, data]) => `
+  <div class="card">
+    <div class="card-title"><span>📐</span>${data.label}
+      <span style="font-size:12px;color:var(--sub);font-weight:400">Cellular 加價</span>
+      <input class="field-input price-input" type="number" value="${data.cellularExtra}"
+             oninput="cfg.products.${prodKey}.sizes['${sz}'].cellularExtra=+this.value" style="width:90px">
+    </div>
+    <table class="price-table">
+      <thead><tr><th>容量</th><th>教育價 (NT$)</th>${prodKey==='ipadPro'?'<th>RAM</th>':''}</tr></thead>
+      <tbody>
+        ${data.storage.map((s,i) => `
+        <tr>
+          <td>${s.name}</td>
+          <td><input class="field-input price-input" type="number" value="${s.price}"
+               oninput="cfg.products.${prodKey}.sizes['${sz}'].storage[${i}].price=+this.value"></td>
+          ${prodKey==='ipadPro' ? `<td style="font-size:12px;color:var(--sub)">${s.ram} · ${s.cpu}</td>` : ''}
+        </tr>`).join('')}
+      </tbody>
+    </table>
+    ${prodKey==='ipadPro' ? `<div class="field-row" style="margin-top:12px">
+      <span class="field-label small">奈米紋理加價</span>
+      <input class="field-input price-input" type="number" value="${prod.nanoPrice}"
+             oninput="cfg.products.ipadPro.nanoPrice=+this.value">
+    </div>` : ''}
+  </div>`).join('');
+}
+
+// ═══════════════════════════════════════════
+//  Render: MacBook 價格
+// ═══════════════════════════════════════════
+function renderMacPrices() {
+  renderMacAirPrices();
+  renderMacProPrices();
+}
+
+function renderMacAirPrices() {
+  const el = document.getElementById('price-table-mac-air');
+  if (!el) return;
+  const air = cfg.products.macbookAir;
+  el.innerHTML = Object.entries(air.sizes).map(([sz, data]) => `
+  <div class="card">
+    <div class="card-title"><span>💻</span>MacBook Air ${data.label}
+      <input class="field-input price-input" type="number" value="${data.basePrice}"
+             oninput="cfg.products.macbookAir.sizes['${sz}'].basePrice=+this.value" style="margin-left:auto">
+      <span style="font-size:12px;color:var(--sub)">起始價</span>
+    </div>
+    <div class="chip-accordion">
+      <div class="chip-acc-header" onclick="toggleAcc(this)">
+        晶片升級 <span class="chip-acc-arrow">▶</span>
+      </div>
+      <div class="chip-acc-body">
+        ${data.chips.map((c,ci) => `
+        <div class="field-row">
+          <span class="field-label small">${c.detail}</span>
+          <span style="font-size:12px;color:var(--sub);flex:1">加價</span>
+          <input class="field-input price-input" type="number" value="${c.priceAdj}"
+                 oninput="cfg.products.macbookAir.sizes['${sz}'].chips[${ci}].priceAdj=+this.value">
+        </div>`).join('')}
+      </div>
+    </div>
+    <div class="chip-accordion">
+      <div class="chip-acc-header" onclick="toggleAcc(this)">
+        記憶體升級 <span class="chip-acc-arrow">▶</span>
+      </div>
+      <div class="chip-acc-body">
+        ${data.memory.map((m,mi) => `
+        <div class="field-row">
+          <span class="field-label small">${m.name}</span>
+          <input class="field-input price-input" type="number" value="${m.priceAdj}"
+                 oninput="cfg.products.macbookAir.sizes['${sz}'].memory[${mi}].priceAdj=+this.value">
+        </div>`).join('')}
+      </div>
+    </div>
+    <div class="chip-accordion">
+      <div class="chip-acc-header" onclick="toggleAcc(this)">
+        儲存升級 <span class="chip-acc-arrow">▶</span>
+      </div>
+      <div class="chip-acc-body">
+        ${data.storage.map((s,si) => `
+        <div class="field-row">
+          <span class="field-label small">${s.name}</span>
+          <input class="field-input price-input" type="number" value="${s.priceAdj}"
+                 oninput="cfg.products.macbookAir.sizes['${sz}'].storage[${si}].priceAdj=+this.value">
+        </div>`).join('')}
+      </div>
+    </div>
+  </div>`).join('');
+}
+
+function renderMacProPrices() {
+  const el = document.getElementById('price-table-mac-pro');
+  if (!el) return;
+  const pro = cfg.products.macbookPro;
+  const tierBadge = { base:'air', pro:'pro', max:'max' };
+  el.innerHTML = `
+  <div class="card">
+    <div class="card-title"><span>✨</span>奈米紋理玻璃加價
+      <input class="field-input price-input" type="number" value="${pro.nanoPrice}"
+             oninput="cfg.products.macbookPro.nanoPrice=+this.value" style="margin-left:auto">
+    </div>
+  </div>
+  ${Object.entries(pro.sizes).map(([sz, data]) =>
+    data.chips.map((chip, ci) => `
+    <div class="card">
+      <div class="card-title">
+        <span>💻</span>${sz}吋 ${chip.name} ${chip.detail}
+        <span class="badge ${tierBadge[chip.tier]||'air'}">${chip.tier?.toUpperCase()}</span>
+        <input class="field-input price-input" type="number" value="${chip.basePrice}"
+               oninput="cfg.products.macbookPro.sizes['${sz}'].chips[${ci}].basePrice=+this.value" style="margin-left:auto">
+        <span style="font-size:12px;color:var(--sub)">基礎價</span>
+      </div>
+      <div class="chip-accordion">
+        <div class="chip-acc-header" onclick="toggleAcc(this)">記憶體升級 <span class="chip-acc-arrow">▶</span></div>
+        <div class="chip-acc-body">
+          ${chip.memory.map((m,mi) => `
+          <div class="field-row">
+            <span class="field-label small">${m.name}</span>
+            <input class="field-input price-input" type="number" value="${m.priceAdj}"
+                   oninput="cfg.products.macbookPro.sizes['${sz}'].chips[${ci}].memory[${mi}].priceAdj=+this.value">
+          </div>`).join('')}
+        </div>
+      </div>
+      <div class="chip-accordion">
+        <div class="chip-acc-header" onclick="toggleAcc(this)">儲存升級 <span class="chip-acc-arrow">▶</span></div>
+        <div class="chip-acc-body">
+          ${chip.storage.map((s,si) => `
+          <div class="field-row">
+            <span class="field-label small">${s.name}</span>
+            <input class="field-input price-input" type="number" value="${s.priceAdj}"
+                   oninput="cfg.products.macbookPro.sizes['${sz}'].chips[${ci}].storage[${si}].priceAdj=+this.value">
+          </div>`).join('')}
+        </div>
+      </div>
+    </div>`).join('')
+  ).join('')}`;
+}
+
+function toggleAcc(headerEl) {
+  const body  = headerEl.nextElementSibling;
+  const arrow = headerEl.querySelector('.chip-acc-arrow');
+  body.classList.toggle('open');
+  arrow.classList.toggle('open');
+}
+
+// ═══════════════════════════════════════════
+//  Save / Export / Reset
+// ═══════════════════════════════════════════
+function saveAll() {
+  const ok = saveConfigOverride(cfg);
+  if (ok) {
+    toast('✅ 設定已儲存到本地');
+    const btn = document.getElementById('sidebar-save-btn');
+    btn.classList.add('saved'); btn.textContent = '✅ 已儲存';
+    setTimeout(() => { btn.classList.remove('saved'); btn.innerHTML = '💾 儲存所有設定'; }, 2000);
+    updateStatus();
+  } else {
+    toast('❌ 儲存失敗，請確認瀏覽器允許 localStorage');
+  }
+}
+
+function exportJSON() {
+  const blob = new Blob([JSON.stringify(cfg, null, 2)], { type:'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'bts-config-override.json';
+  a.click();
+  toast('📥 JSON 已匯出');
+}
+
+function resetAll() {
+  if (!confirm('確定要清除所有本地覆蓋設定並回復預設值嗎？')) return;
+  clearConfigOverride();
+  cfg = JSON.parse(JSON.stringify(BTS_CONFIG));
+  renderAll();
+  toast('🔄 已回復預設值');
+  updateStatus();
+}
+
+function updateStatus() {
+  const saved = getActiveConfig();
+  const el = document.getElementById('status-text');
+  if (saved) {
+    const keys = Object.keys(saved).length;
+    el.textContent = `✅ 本地設定已覆蓋（${keys} 個區塊）`;
+    el.style.color = 'var(--green)';
+  } else {
+    el.textContent = '📋 使用預設值（尚未有本地覆蓋）';
+    el.style.color = 'var(--sub)';
+  }
+}
+
+// ═══════════════════════════════════════════
+//  Toast
+// ═══════════════════════════════════════════
+let toastTimer;
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ═══════════════════════════════════════════
+//  Init
+// ═══════════════════════════════════════════
+function renderAll() {
+  renderMeta();
+  renderGifts();
+  renderImages();
+  renderIpadPrices();
+  renderMacPrices();
+}
+
+renderAll();
+updateStatus();
+</script>
+</body>
+</html>

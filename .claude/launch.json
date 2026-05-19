@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "BTS Calc",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["-e", "const http=require('http'),fs=require('fs'),path=require('path'),url=require('url');const PORT=3000;const BASE=path.resolve('2026 BTS Calc');http.createServer((req,res)=>{const pathname=url.parse(req.url).pathname;let fp=path.join(BASE,decodeURIComponent(pathname==='/'?'/index.html':pathname));try{const d=fs.readFileSync(fp);const ext=path.extname(fp);const m={html:'text/html',js:'application/javascript',css:'text/css',png:'image/png',jpg:'image/jpeg',json:'application/json'};res.writeHead(200,{'Content-Type':m[ext.slice(1)]||'text/plain'});res.end(d);}catch(e){res.writeHead(404);res.end('Not found: '+fp);}}).listen(PORT,()=>console.log('Server running on port '+PORT));"],
+      "port": 3000
+    }
+  ]
+}
