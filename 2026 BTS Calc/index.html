@@ -4,7 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>2026 Apple BTS 優惠計算機</title>
-  <style>
+      <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap');
+
     :root {
       --blue:        #0071e3;
       --blue-dark:   #0062c3;
@@ -12,19 +14,33 @@
       --bg:          #f5f5f7;
       --card-bg:     #ffffff;
       --text:        #1d1d1f;
-      --text-sub:    #6e6e73;
-      --border:      #d2d2d7;
+      --text-sub:    #86868b;
+      --border:      rgba(0, 0, 0, 0.08);
       --radius-sm:   12px;
       --radius-md:   20px;
       --radius-lg:   28px;
-      --shadow-sm:   0 2px 12px rgba(0,0,0,.08);
-      --shadow-md:   0 8px 32px rgba(0,0,0,.10);
-      --shadow-hover:0 16px 48px rgba(0,0,0,.14);
-      --transition:  .35s cubic-bezier(.4,0,.2,1);
+      --shadow-sm:   0 4px 20px rgba(0,0,0,.02);
+      --shadow-md:   0 12px 40px rgba(0,0,0,.05);
+      --shadow-hover:0 20px 60px rgba(0,0,0,.08);
+      --transition:  .5s cubic-bezier(0.16, 1, 0.3, 1);
       --safe-top:    env(safe-area-inset-top, 0px);
       --safe-bottom: env(safe-area-inset-bottom, 0px);
+
+      /* Liquid Glass effect tokens */
+      --glass-bg:       rgba(255, 255, 255, 0.65);
+      --glass-blur:     blur(20px) saturate(190%);
+      --glass-border:   rgba(255, 255, 255, 0.4);
+      --glass-shadow:
+        0 1px 0 rgba(255, 255, 255, 0.4) inset,
+        0 10px 40px rgba(0, 0, 0, 0.02),
+        0 1px 3px rgba(0, 0, 0, 0.01);
+      --glass-shadow-hover:
+        0 1px 0 rgba(255, 255, 255, 0.5) inset,
+        0 20px 50px rgba(0, 0, 0, 0.05),
+        0 4px 12px rgba(0, 0, 0, 0.02);
     }
 
+    
     *, *::before, *::after {
       margin: 0; padding: 0;
       box-sizing: border-box;
@@ -33,22 +49,61 @@
 
     html, body {
       height: 100%;
-      font-family: -apple-system, BlinkMacSystemFont, 'Noto Sans TC', 'PingFang TC', sans-serif;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Noto Sans TC', sans-serif;
       background: var(--bg);
       color: var(--text);
       -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
     }
 
-    /* ── 全域捲動容器 ── */
+    /* ── Liquid Background Blobs ── */
+    .liquid-bg {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      overflow: hidden;
+      pointer-events: none;
+      background: var(--bg);
+      transition: background-color 0.5s ease;
+    }
+    .blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(100px);
+      opacity: 0.35;
+      animation: float 25s infinite alternate ease-in-out;
+    }
+    .blob-1 {
+      width: 50vw;
+      height: 50vw;
+      background: radial-gradient(circle, rgba(0, 113, 227, 0.12) 0%, rgba(0, 113, 227, 0) 70%);
+      top: -15%;
+      left: 10%;
+    }
+    .blob-2 {
+      width: 55vw;
+      height: 55vw;
+      background: radial-gradient(circle, rgba(94, 92, 230, 0.10) 0%, rgba(94, 92, 230, 0) 70%);
+      bottom: -15%;
+      right: 10%;
+      animation-duration: 30s;
+    }
+    @keyframes float {
+      0% { transform: translate(0, 0) scale(1); }
+      50% { transform: translate(30px, -50px) scale(1.05); }
+      100% { transform: translate(-15px, 15px) scale(0.95); }
+    }
+
     .page-wrap {
       min-height: 100%;
       display: flex;
       flex-direction: column;
       padding-top: calc(16px + var(--safe-top));
       padding-bottom: calc(32px + var(--safe-bottom));
+      position: relative;
+      z-index: 1;
     }
 
-    /* ── Header ── */
     .header {
       text-align: center;
       padding: 32px 24px 0;
@@ -75,10 +130,11 @@
       font-size: 12px;
       font-weight: 700;
       letter-spacing: .8px;
-      padding: 4px 12px;
+      padding: 6px 16px;
       border-radius: 20px;
       margin-bottom: 20px;
       text-transform: uppercase;
+      box-shadow: 0 4px 12px rgba(94, 92, 230, 0.2);
     }
 
     .bts-pill::before {
@@ -95,11 +151,12 @@
     }
 
     .header h1 {
-      font-size: clamp(24px, 5vw, 36px);
-      font-weight: 700;
-      letter-spacing: -.5px;
-      line-height: 1.2;
-      margin-bottom: 8px;
+      font-family: 'Outfit', sans-serif;
+      font-size: clamp(28px, 6vw, 42px);
+      font-weight: 800;
+      letter-spacing: -.8px;
+      line-height: 1.15;
+      margin-bottom: 10px;
     }
 
     .header p {
@@ -108,9 +165,9 @@
       max-width: 360px;
       margin: 0 auto;
       line-height: 1.5;
+      font-weight: 500;
     }
 
-    /* ── 畫面切換容器 ── */
     .screens {
       flex: 1;
       position: relative;
@@ -140,11 +197,10 @@
       transform: translateX(-60px);
     }
 
-    /* ── 選擇產品線 (screen-0) ── */
     .product-line-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 16px;
+      gap: 20px;
       max-width: 640px;
       margin: 0 auto;
     }
@@ -154,21 +210,23 @@
     }
 
     .product-line-card {
-      background: var(--card-bg);
+      background: var(--glass-bg);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
+      border: 1px solid var(--glass-border);
+      box-shadow: var(--glass-shadow);
       border-radius: var(--radius-lg);
-      box-shadow: var(--shadow-sm);
-      padding: 28px 20px 24px;
+      padding: 32px 24px 28px;
       cursor: pointer;
       text-align: center;
-      transition: transform var(--transition), box-shadow var(--transition);
-      border: 1.5px solid transparent;
+      transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
       user-select: none;
     }
 
     .product-line-card:hover {
-      transform: translateY(-4px);
-      box-shadow: var(--shadow-hover);
-      border-color: var(--blue);
+      transform: translateY(-6px);
+      box-shadow: var(--glass-shadow-hover);
+      border-color: rgba(0, 113, 227, 0.25);
     }
 
     .product-line-card:active {
@@ -176,58 +234,69 @@
     }
 
     .product-line-card .card-icon {
-      width: 80px; height: 80px;
-      margin: 0 auto 16px;
+      width: 88px; height: 88px;
+      margin: 0 auto 20px;
       object-fit: contain;
       display: block;
+      transition: transform var(--transition);
+    }
+    .product-line-card:hover .card-icon {
+      transform: scale(1.05);
     }
 
     .product-line-card h2 {
-      font-size: 20px;
+      font-family: 'Outfit', sans-serif;
+      font-size: 22px;
       font-weight: 700;
-      margin-bottom: 4px;
+      margin-bottom: 6px;
     }
 
     .product-line-card .card-sub {
       font-size: 13px;
       color: var(--text-sub);
-      margin-bottom: 14px;
+      margin-bottom: 16px;
       line-height: 1.4;
+      font-weight: 500;
     }
 
     .card-starting-price {
-      font-size: 13px;
+      font-size: 13.5px;
       color: var(--blue);
-      font-weight: 600;
+      font-weight: 700;
     }
 
     .card-arrow {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      width: 32px; height: 32px;
-      background: var(--bg);
+      width: 36px; height: 36px;
+      background: rgba(0,0,0,0.03);
       border-radius: 50%;
-      margin-top: 12px;
-      transition: background var(--transition);
+      margin-top: 14px;
+      transition: all var(--transition);
     }
-
-    .product-line-card:hover .card-arrow { background: #e8f0fd; }
+    
+    .product-line-card:hover .card-arrow {
+      background: var(--blue);
+    }
+    .product-line-card:hover .card-arrow svg {
+      stroke: #fff;
+    }
 
     .card-arrow svg {
       width: 14px; height: 14px;
       fill: none;
       stroke: var(--blue);
-      stroke-width: 2;
+      stroke-width: 2.5;
       stroke-linecap: round;
       stroke-linejoin: round;
+      transition: stroke var(--transition);
     }
 
-    /* ── 子產品選擇 (screen-1) ── */
     .sub-header {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 14px;
       max-width: 640px;
       margin: 0 auto 28px;
     }
@@ -236,38 +305,46 @@
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      background: var(--card-bg);
-      border: 1.5px solid var(--border);
+      background: var(--glass-bg);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
+      border: 1px solid var(--glass-border);
       border-radius: 20px;
-      padding: 6px 14px 6px 10px;
-      font-size: 14px;
-      font-weight: 500;
+      padding: 8px 16px;
+      font-size: 13.5px;
+      font-weight: 600;
       color: var(--text);
       cursor: pointer;
-      transition: border-color var(--transition), background var(--transition);
+      transition: all var(--transition);
       white-space: nowrap;
+      box-shadow: var(--glass-shadow);
     }
 
-    .back-btn:hover { border-color: var(--blue); background: #f0f6ff; }
+    .back-btn:hover {
+      border-color: rgba(0, 113, 227, 0.3);
+      background: var(--sel-bg);
+      transform: translateX(-2px);
+    }
 
     .back-btn svg {
       width: 14px; height: 14px;
       fill: none;
       stroke: currentColor;
-      stroke-width: 2;
+      stroke-width: 2.5;
       stroke-linecap: round;
       stroke-linejoin: round;
     }
 
     .sub-header-title {
-      font-size: 20px;
-      font-weight: 700;
+      font-family: 'Outfit', sans-serif;
+      font-size: 22px;
+      font-weight: 800;
     }
 
     .sub-product-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 16px;
+      gap: 20px;
       max-width: 640px;
       margin: 0 auto;
     }
@@ -276,14 +353,15 @@
       .sub-product-grid { grid-template-columns: 1fr; }
     }
 
-    /* ── 子產品卡片 ── */
     .product-card {
-      background: var(--card-bg);
+      background: var(--glass-bg);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
+      border: 1px solid var(--glass-border);
+      box-shadow: var(--glass-shadow);
       border-radius: var(--radius-lg);
-      box-shadow: var(--shadow-sm);
       cursor: pointer;
       overflow: hidden;
-      border: 1.5px solid transparent;
       transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
       text-decoration: none;
       color: inherit;
@@ -293,32 +371,37 @@
     }
 
     .product-card:hover {
-      transform: translateY(-4px);
-      box-shadow: var(--shadow-hover);
-      border-color: var(--blue);
+      transform: translateY(-6px);
+      box-shadow: var(--glass-shadow-hover);
+      border-color: rgba(0, 113, 227, 0.3);
     }
 
     .product-card:active { transform: scale(.97); }
 
     .product-card-img-wrap {
-      background: linear-gradient(160deg, #f0f0f5 0%, #e8e8ef 100%);
-      padding: 28px 20px 16px;
+      background: linear-gradient(160deg, rgba(240,240,245,0.4) 0%, rgba(232,232,239,0.4) 100%);
+      padding: 32px 20px 20px;
       display: flex;
       align-items: center;
       justify-content: center;
-      min-height: 150px;
+      min-height: 160px;
+      border-bottom: 1px solid var(--border);
     }
 
     .product-card-img-wrap img {
       width: 100%;
-      max-width: 140px;
-      height: 120px;
+      max-width: 130px;
+      height: 110px;
       object-fit: contain;
       display: block;
+      transition: transform var(--transition);
+    }
+    .product-card:hover .product-card-img-wrap img {
+      transform: scale(1.06);
     }
 
     .product-card-body {
-      padding: 16px 18px 20px;
+      padding: 18px 20px 24px;
       flex: 1;
       display: flex;
       flex-direction: column;
@@ -327,53 +410,56 @@
     .product-card-badge {
       display: inline-flex;
       align-items: center;
-      background: #f0f6ff;
+      background: var(--sel-bg);
       color: var(--blue);
       font-size: 11px;
       font-weight: 700;
-      padding: 3px 8px;
+      padding: 4px 10px;
       border-radius: 6px;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
       width: fit-content;
+      border: 1px solid rgba(0, 113, 227, 0.15);
     }
 
     .product-card h3 {
-      font-size: 18px;
+      font-size: 19px;
       font-weight: 700;
-      margin-bottom: 4px;
+      margin-bottom: 6px;
     }
 
     .product-card .product-desc {
-      font-size: 12px;
+      font-size: 12.5px;
       color: var(--text-sub);
       line-height: 1.5;
-      margin-bottom: 12px;
+      margin-bottom: 14px;
       flex: 1;
+      font-weight: 500;
     }
 
     .product-card .product-price {
-      font-size: 13px;
-      font-weight: 600;
+      font-size: 13.5px;
+      font-weight: 700;
       color: var(--blue);
-      margin-bottom: 12px;
+      margin-bottom: 14px;
     }
 
     .product-card .product-features {
       display: flex;
       flex-wrap: wrap;
-      gap: 4px;
-      margin-bottom: 14px;
+      gap: 6px;
+      margin-bottom: 16px;
     }
 
     .feature-tag {
       font-size: 11px;
-      background: var(--bg);
+      background: rgba(0,0,0,0.03);
       color: var(--text-sub);
       padding: 3px 8px;
       border-radius: 6px;
       border: 1px solid var(--border);
+      font-weight: 500;
     }
-
+    
     .product-card .cta-row {
       display: flex;
       align-items: center;
@@ -387,13 +473,17 @@
       background: var(--blue);
       color: #fff;
       font-size: 13px;
-      font-weight: 600;
-      padding: 8px 16px;
+      font-weight: 700;
+      padding: 10px 18px;
       border-radius: 20px;
-      transition: background var(--transition);
+      transition: all var(--transition);
+      box-shadow: 0 4px 12px rgba(0, 113, 227, 0.2);
     }
 
-    .product-card:hover .cta-btn { background: var(--blue-dark); }
+    .product-card:hover .cta-btn {
+      background: var(--blue-dark);
+      box-shadow: 0 6px 16px rgba(0, 113, 227, 0.35);
+    }
 
     .cta-btn svg {
       width: 12px; height: 12px;
@@ -404,37 +494,41 @@
       stroke-linejoin: round;
     }
 
-    /* ── 底部說明 ── */
     .footer-note {
       text-align: center;
       font-size: 12px;
       color: var(--text-sub);
-      padding: 24px 24px 0;
+      padding: 32px 24px 0;
       max-width: 480px;
       margin: 0 auto;
       line-height: 1.6;
+      font-weight: 500;
+      position: relative;
+      z-index: 2;
     }
 
     .footer-note a {
       color: var(--blue);
       text-decoration: none;
+      font-weight: 600;
     }
 
-    /* ── Divider ── */
     .screen-divider {
       text-align: center;
       font-size: 13px;
       color: var(--text-sub);
       margin: 8px 0 24px;
-      font-weight: 500;
+      font-weight: 600;
     }
 
-    /* ── 比較提示 ── */
     .compare-hint {
       max-width: 640px;
-      margin: 16px auto 0;
-      background: var(--card-bg);
-      border: 1.5px solid var(--border);
+      margin: 20px auto 0;
+      background: var(--glass-bg);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
+      border: 1px solid var(--glass-border);
+      box-shadow: var(--glass-shadow);
       border-radius: var(--radius-md);
       padding: 14px 18px;
       display: flex;
@@ -453,11 +547,11 @@
       font-size: 13px;
       color: var(--text-sub);
       line-height: 1.5;
+      font-weight: 500;
     }
 
-    .compare-hint strong { color: var(--text); }
+    .compare-hint strong { color: var(--text); font-weight: 700; }
 
-    /* ── RWD: 平板 / 桌機放大 ── */
     @media (min-width: 640px) {
       .header { padding-top: 48px; }
       .screen { padding: 40px 32px 0; }
@@ -467,6 +561,10 @@
   </style>
 </head>
 <body>
+<div class="liquid-bg">
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+</div>
 <div class="page-wrap">
 
   <!-- ── Header ── -->

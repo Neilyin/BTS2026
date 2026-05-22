@@ -4,502 +4,441 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>iPad BTS 優惠計算機</title>
-  <style>
+      <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap');
+
     :root {
       --blue:       #0071e3;
       --blue-dark:  #0062c3;
       --green:      #34c759;
-      --purple:     #ac39ff;
+      --orange:     #ff9f0a;
       --bg:         #f5f5f7;
       --card-bg:    #ffffff;
       --text:       #1d1d1f;
-      --text-sub:   #6e6e73;
-      --border:     #d2d2d7;
-      --selected-border: #0071e3;
-      --selected-bg:     #f0f6ff;
-      --radius-sm:  10px;
-      --radius-md:  16px;
-      --radius-lg:  24px;
-      --shadow-sm:  0 2px 10px rgba(0,0,0,.08);
-      --shadow-md:  0 6px 24px rgba(0,0,0,.10);
-      --transition: .25s cubic-bezier(.4,0,.2,1);
-      --safe-top:   env(safe-area-inset-top, 0px);
-      --safe-bottom:env(safe-area-inset-bottom, 0px);
+      --text-sub:   #86868b;
+      --border:     rgba(0, 0, 0, 0.08);
+      --sel-border: #0071e3;
+      --sel-bg:     rgba(0, 113, 227, 0.05);
+      --radius-sm:  12px;
+      --radius-md:  18px;
+      --radius-lg:  26px;
+      --shadow-sm:  0 4px 20px rgba(0,0,0,.02);
+      --shadow-md:  0 12px 40px rgba(0,0,0,.05);
+      --transition: .5s cubic-bezier(0.16, 1, 0.3, 1);
+      --safe-top:   env(safe-area-inset-top,0px);
+      --safe-bottom:env(safe-area-inset-bottom,0px);
+
+      /* Liquid Glass effect tokens */
+      --glass-bg:       rgba(255, 255, 255, 0.65);
+      --glass-blur:     blur(20px) saturate(190%);
+      --glass-border:   rgba(255, 255, 255, 0.4);
+      --glass-shadow:
+        0 1px 0 rgba(255, 255, 255, 0.4) inset,
+        0 10px 40px rgba(0, 0, 0, 0.02),
+        0 1px 3px rgba(0, 0, 0, 0.01);
+      --glass-shadow-hover:
+        0 1px 0 rgba(255, 255, 255, 0.5) inset,
+        0 20px 50px rgba(0, 0, 0, 0.05),
+        0 4px 12px rgba(0, 0, 0, 0.02);
     }
 
-    *, *::before, *::after {
-      margin: 0; padding: 0; box-sizing: border-box;
-      -webkit-tap-highlight-color: transparent;
-    }
+    
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+    html, body { height:100%; font-family:'Inter', -apple-system, BlinkMacSystemFont, 'Noto Sans TC', sans-serif; background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
 
-    html, body {
-      height: 100%;
-      font-family: -apple-system, BlinkMacSystemFont, 'Noto Sans TC', sans-serif;
+    /* ── Liquid Background Blobs ── */
+    .liquid-bg {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      overflow: hidden;
+      pointer-events: none;
       background: var(--bg);
-      color: var(--text);
-      -webkit-font-smoothing: antialiased;
+      transition: background-color 0.5s ease;
+    }
+    .blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(100px);
+      opacity: 0.35;
+      animation: float 25s infinite alternate ease-in-out;
+    }
+    .blob-1 {
+      width: 50vw;
+      height: 50vw;
+      background: radial-gradient(circle, rgba(0, 113, 227, 0.12) 0%, rgba(0, 113, 227, 0) 70%);
+      top: -15%;
+      left: 10%;
+    }
+    .blob-2 {
+      width: 55vw;
+      height: 55vw;
+      background: radial-gradient(circle, rgba(94, 92, 230, 0.10) 0%, rgba(94, 92, 230, 0) 70%);
+      bottom: -15%;
+      right: 10%;
+      animation-duration: 30s;
+    }
+    @keyframes float {
+      0% { transform: translate(0, 0) scale(1); }
+      50% { transform: translate(30px, -50px) scale(1.05); }
+      100% { transform: translate(-15px, 15px) scale(0.95); }
     }
 
-    /* ────── Layout ────── */
-    .app {
+    .app { display:flex; flex-direction:column; min-height:100%; padding-bottom:calc(120px + var(--safe-bottom)); position:relative; z-index:1; }
+
+    /* ── Topbar ── */
+    .topbar {
+      position:sticky; top:0; z-index:100;
+      background: var(--glass-bg);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
+      border-bottom: 1px solid var(--border);
+      padding:calc(12px + var(--safe-top)) 20px 12px;
+      display:flex; align-items:center; gap:12px;
+      transition: background var(--transition);
+    }
+    .back-btn { display:inline-flex; align-items:center; gap:4px; color:var(--blue); font-size:15px; font-weight:600; background:none; border:none; cursor:pointer; padding:4px 0; transition: transform var(--transition); }
+    .back-btn:hover { transform: translateX(-2px); }
+    .back-btn svg { width:10px; height:16px; fill:none; stroke:currentColor; stroke-width:2.5; stroke-linecap:round; stroke-linejoin:round; }
+    .topbar-title { font-family: 'Outfit', sans-serif; font-size:17px; font-weight:700; flex:1; }
+    
+    .product-switch { display:flex; background:rgba(0,0,0,0.06); border-radius:8px; padding:2px; gap:2px; }
+        .sw-btn { font-size:12px; font-weight:700; padding:4px 14px; border-radius:6px; border:none; background:none; cursor:pointer; color:var(--text-sub); transition:all var(--transition); }
+    .sw-btn.active { background:var(--card-bg); color:var(--text); box-shadow:0 2px 6px rgba(0,0,0,.08); }
+
+    /* ── Progress ── */
+    .progress-wrap { padding:16px 20px 0; max-width:680px; margin:0 auto; width:100%; }
+    .progress-track { height:4px; background:var(--border); border-radius:2px; overflow:hidden; }
+    .progress-fill  { height:100%; background:var(--blue); border-radius:2px; transition:width .4s cubic-bezier(.4,0,.2,1); }
+    .progress-label { font-size:11px; color:var(--text-sub); margin-top:6px; text-align:right; font-weight:600; }
+
+    /* ── Steps ── */
+    .steps-wrap { flex:1; padding:20px 20px 0; max-width:680px; margin:0 auto; width:100%; }
+    .step-card {
+      background: var(--glass-bg);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
+      border: 1px solid var(--glass-border);
+      box-shadow: var(--glass-shadow);
+      border-radius: var(--radius-lg);
+      margin-bottom: 12px;
+      overflow: hidden;
+      transition: all var(--transition);
+    }
+    .step-card:hover:not(.locked) {
+      border-color: rgba(0, 113, 227, 0.15);
+      box-shadow: var(--glass-shadow-hover);
+    }
+    .step-card.locked { opacity:.45; pointer-events:none; }
+    .step-header { display:flex; align-items:center; gap:12px; padding:16px 18px; cursor:pointer; }
+    .step-num { width:26px; height:26px; border-radius:50%; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; background:rgba(0,0,0,0.03); color:var(--text-sub); border:1.5px solid var(--border); transition:all var(--transition); }
+        .step-num.done   { background:var(--green); color:#fff; border-color:var(--green); }
+    .step-num.active { background:var(--blue);  color:#fff; border-color:var(--blue);  }
+    .step-title { font-size:15.5px; font-weight:700; flex:1; }
+    .step-value { font-size:13px; color:var(--text-sub); max-width:160px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; text-align:right; font-weight:600; }
+    .step-body { padding:0 18px 18px; display:none; }
+    .step-body.open { display:block; }
+
+    /* ── Option grids ── */
+    .opt-grid { display:grid; gap:10px; grid-template-columns:repeat(auto-fill, minmax(140px,1fr)); }
+    .opt-grid.cols-2 { grid-template-columns:1fr 1fr; }
+    .opt-grid.cols-1 { grid-template-columns:1fr; }
+    @media(max-width:360px){ .opt-grid { grid-template-columns:1fr 1fr; } }
+
+    /* ── Option card ── */
+    .opt {
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 12px;
+      cursor: pointer;
+      text-align: center;
+      transition: all var(--transition);
+      background: rgba(255,255,255,0.25);
+      position: relative;
+      overflow: hidden;
+    }
+        .opt:hover:not(.disabled):not(.selected) {
+      border-color: rgba(0, 113, 227, 0.3);
+      background: rgba(0, 113, 227, 0.02);
+    }
+    .opt.selected {
+      border-color: var(--sel-border);
+      background: var(--sel-bg);
+      box-shadow: 0 4px 12px rgba(0, 113, 227, 0.08);
+    }
+    .opt.selected::after { content:'✓'; position:absolute; top:6px; right:8px; font-size:11px; font-weight:700; color:var(--blue); }
+    .opt.disabled { opacity:.4; pointer-events:none; }
+    .opt-img { width:100%; max-width:88px; height:64px; object-fit:contain; display:block; margin:0 auto 8px; transition: transform var(--transition); }
+    .opt:hover:not(.disabled) .opt-img { transform: scale(1.05); }
+    .opt-title { font-size:13px; font-weight:700; margin-bottom:2px; }
+    .opt-sub   { font-size:11px; color:var(--text-sub); line-height:1.4; font-weight: 500; }
+    .opt-price { font-size:12px; font-weight:700; color:var(--blue); margin-top:4px; }
+    .opt-badge { font-size:10px; font-weight:700; color:var(--green); margin-top:2px; }
+    .opt-tag   { font-size:10px; background:rgba(0,0,0,0.03); border:1px solid var(--border); border-radius:4px; padding:2px 6px; display:inline-block; margin-top:4px; color:var(--text-sub); font-weight:500; }
+    
+    /* Color dot */
+    .color-dot { width:28px; height:28px; border-radius:50%; margin:0 auto 6px; border:2px solid var(--border); transition:all var(--transition); }
+    .opt.selected .color-dot { border-color:var(--blue); transform: scale(1.08); }
+
+    /* Size big card */
+    .size-opt {
       display: flex;
       flex-direction: column;
-      min-height: 100%;
-      padding-top: calc(0px + var(--safe-top));
-      padding-bottom: calc(120px + var(--safe-bottom));
+      align-items: center;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 20px 16px;
+      cursor: pointer;
+      background: rgba(255,255,255,0.25);
+      transition: all var(--transition);
+      position: relative;
     }
+        .size-opt:hover:not(.selected) {
+      border-color: rgba(0, 113, 227, 0.3);
+      background: rgba(0, 113, 227, 0.02);
+    }
+    .size-opt.selected {
+      border-color: var(--sel-border);
+      background: var(--sel-bg);
+      box-shadow: 0 4px 12px rgba(0, 113, 227, 0.08);
+    }
+    .size-opt.selected::after { content:'✓'; position:absolute; top:10px; right:12px; font-size:12px; font-weight:700; color:var(--blue); }
+    .size-opt img { width:100%; max-width:120px; height:90px; object-fit:contain; margin-bottom:10px; transition: transform var(--transition); }
+    .size-opt:hover img { transform: scale(1.05); }
+    .size-opt .sz-label { font-size:16px; font-weight:700; }
+    .size-opt .sz-sub   { font-size:12px; color:var(--text-sub); margin-top:2px; font-weight:500; }
+    .size-opt .sz-price { font-size:13.5px; font-weight:700; color:var(--blue); margin-top:6px; }
 
-    /* ────── Top bar ────── */
-    .topbar {
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      background: rgba(245,245,247,.85);
-      backdrop-filter: saturate(180%) blur(20px);
-      -webkit-backdrop-filter: saturate(180%) blur(20px);
-      border-bottom: 1px solid rgba(210,210,215,.5);
-      padding: calc(12px + var(--safe-top)) 20px 12px;
+    /* Chip card */
+    .chip-opt {
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 14px;
+      cursor: pointer;
+      background: rgba(255,255,255,0.25);
+      transition: all var(--transition);
+      position: relative;
+    }
+        .chip-opt:hover:not(.selected) {
+      border-color: rgba(0, 113, 227, 0.3);
+      background: rgba(0, 113, 227, 0.02);
+    }
+    .chip-opt.selected {
+      border-color: var(--sel-border);
+      background: var(--sel-bg);
+      box-shadow: 0 4px 12px rgba(0, 113, 227, 0.08);
+    }
+    .chip-opt.selected::after { content:'✓'; position:absolute; top:10px; right:12px; font-size:11px; font-weight:700; color:var(--blue); }
+    .chip-name   { font-size:15px; font-weight:700; }
+    .chip-detail { font-size:12px; color:var(--text-sub); margin-bottom:4px; font-weight:500; }
+    .chip-price  { font-size:13.5px; font-weight:700; color:var(--blue); margin:6px 0 2px; }
+    .chip-includes { font-size:11px; color:var(--text-sub); line-height:1.5; font-weight:500; }
+    .chip-desc   { font-size:11px; color:var(--text-sub); margin-top:4px; padding-top:4px; border-top:1px solid var(--border); font-weight:500; }
+
+    /* Warning banner */
+    .warn-banner { background:rgba(255, 159, 10, 0.1); border:1px solid rgba(255, 159, 10, 0.3); border-radius:var(--radius-sm); padding:10px 12px; font-size:12px; color:var(--orange); margin-bottom:10px; line-height:1.5; font-weight:500; }
+
+    /* Gift rows */
+    .gift-section { margin-bottom:16px; }
+    .gift-section-title { font-size:12px; font-weight:700; color:var(--text-sub); text-transform:uppercase; letter-spacing:.5px; margin-bottom:8px; }
+    .gift-opt {
       display: flex;
       align-items: center;
       gap: 12px;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 12px 14px;
+      cursor: pointer;
+      background: rgba(255,255,255,0.25);
+      margin-bottom: 8px;
+      transition: all var(--transition);
     }
-
-    .back-btn {
-      display: inline-flex; align-items: center; gap: 4px;
-      color: var(--blue); font-size: 15px; font-weight: 500;
-      background: none; border: none; cursor: pointer; padding: 4px 0;
+        .gift-opt:hover:not(.selected) {
+      border-color: rgba(0, 113, 227, 0.3);
+      background: rgba(0, 113, 227, 0.02);
     }
-
-    .back-btn svg { width: 10px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
-
-    .topbar-title {
-      font-size: 17px; font-weight: 700; flex: 1;
+    .gift-opt.selected {
+      border-color: var(--blue);
+      background: var(--sel-bg);
+      box-shadow: 0 4px 12px rgba(0, 113, 227, 0.08);
     }
+    .gift-info { flex:1; }
+    .gift-name { font-size:13px; font-weight:700; }
+    .gift-tag  { font-size:11px; color:var(--green); font-weight:700; margin-top:2px; }
+    .gift-tag.paid    { color:var(--blue); }
+    .gift-tag.neutral { color:var(--text-sub); }
+    .gift-radio { width:20px; height:20px; border-radius:50%; border:2px solid var(--border); flex-shrink:0; display:flex; align-items:center; justify-content:center; transition:var(--transition); }
+    .gift-opt.selected .gift-radio { border-color:var(--blue); background:var(--blue); }
+    .gift-opt.selected .gift-radio::after { content:''; width:8px; height:8px; border-radius:50%; background:#fff; }
 
-    .topbar-product-switch {
-      display: flex; background: var(--border); border-radius: 8px; padding: 2px; gap: 2px;
+    /* Rebate */
+    .rebate-row { display:flex; align-items:center; gap:12px; margin-bottom:12px; }
+    .rebate-label { font-size:14px; font-weight:600; flex:1; }
+    .rebate-select { background:rgba(0,0,0,0.03); border:1.5px solid var(--border); border-radius:8px; padding:8px 12px; font-size:14px; font-family:inherit; color:var(--text); outline:none; cursor:pointer; min-width:90px; transition:all var(--transition); font-weight:600; }
+        .rebate-select:focus { border-color:var(--blue); box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.15); }
+    
+    .sell-gift-row { display:flex; align-items:center; gap:12px; margin-bottom:8px; }
+    .sell-gift-row label { font-size:14px; font-weight:600; flex:1; }
+    
+    .toggle-switch { position:relative; width:44px; height:26px; cursor:pointer; }
+    .toggle-switch input { opacity:0; width:0; height:0; }
+    .toggle-track { position:absolute; inset:0; background:var(--border); border-radius:13px; transition:background var(--transition); }
+    .toggle-thumb { position:absolute; top:3px; left:3px; width:20px; height:20px; background:#fff; border-radius:50%; box-shadow:0 1px 4px rgba(0,0,0,.2); transition:transform var(--transition); }
+    .toggle-switch input:checked + .toggle-track { background:var(--green); }
+    .toggle-switch input:checked ~ .toggle-thumb { transform:translateX(18px); }
+    
+    .gift-price-wrap { display:none; margin-top:8px; }
+    .gift-price-wrap.show { display:block; }
+    .gift-price-input { width:100%; padding:10px 14px; border:1.5px solid var(--border); border-radius:8px; font-size:14px; font-family:inherit; background:rgba(0,0,0,0.03); outline:none; transition:all var(--transition); font-weight:600; color:var(--text); }
+        .gift-price-input:focus { border-color:var(--blue); box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.15); }
+
+    /* ── 回饋數字輸入 ── */
+    .rebate-input-wrap {
+      display: flex; align-items: center; gap: 2px;
+      background: rgba(0,0,0,.03); border: 1.5px solid var(--border);
+      border-radius: 8px; padding: 0 10px; min-width: 80px;
+      transition: border-color var(--transition), box-shadow var(--transition);
     }
-
-    .product-switch-btn {
-      font-size: 12px; font-weight: 600; padding: 4px 12px; border-radius: 6px;
-      border: none; background: none; cursor: pointer; color: var(--text-sub); transition: var(--transition);
+        .rebate-input-wrap:focus-within { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(0,113,227,.15); }
+    .rebate-input {
+      width: 52px; padding: 8px 0; border: none; background: transparent;
+      font-size: 15px; font-weight: 600; font-family: inherit;
+      color: var(--text); outline: none; text-align: right;
+      -moz-appearance: textfield;
     }
+    .rebate-input::-webkit-outer-spin-button,
+    .rebate-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+    .rebate-unit { font-size: 14px; color: var(--text-sub); font-weight: 500; }
+    .rebate-note { font-size: 11.5px; color: var(--text-sub); line-height: 1.5; margin: -4px 0 12px; padding: 8px 10px; background: rgba(255,159,10,.08); border-left: 2.5px solid var(--orange); border-radius: 0 6px 6px 0; }
 
-    .product-switch-btn.active {
-      background: var(--card-bg); color: var(--text);
-      box-shadow: 0 1px 4px rgba(0,0,0,.12);
+    /* ── 贈品用途選擇 ── */
+    .sell-gift-section { margin-top: 4px; }
+    .sell-section-label { font-size: 13px; font-weight: 600; color: var(--text-sub); margin-bottom: 8px; text-transform: uppercase; letter-spacing: .4px; }
+    .sell-opts { display: flex; gap: 8px; margin-bottom: 0; }
+    .sell-opt {
+      flex: 1; padding: 11px 8px; border-radius: 12px; font-size: 13px; font-weight: 600;
+      border: 1.5px solid var(--border); background: transparent; color: var(--text-sub);
+      cursor: pointer; transition: var(--transition); text-align: center; line-height: 1.3;
     }
-
-    /* ────── Progress bar ────── */
-    .progress-wrap {
-      padding: 12px 20px 0;
-      max-width: 680px; margin: 0 auto; width: 100%;
+    .sell-opt:active { transform: scale(.97); }
+    .sell-opt.active { border-color: var(--blue); background: rgba(0,113,227,.08); color: var(--blue); }
+        .rebate-cta-btn {
+      margin-top: 20px; width: 100%; padding: 15px; border-radius: 14px;
+      background: var(--blue); color: #fff; border: none; cursor: pointer;
+      font-size: 15px; font-weight: 700; font-family: inherit;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      box-shadow: 0 4px 16px rgba(0,113,227,.3);
+      transition: all var(--transition);
     }
+    .rebate-cta-btn:hover  { background: var(--blue-dark); box-shadow: 0 6px 20px rgba(0,113,227,.4); }
+    .rebate-cta-btn:active { transform: scale(.97); }
 
-    .progress-bar-track {
-      height: 3px; background: var(--border); border-radius: 2px; overflow: hidden;
-    }
-
-    .progress-bar-fill {
-      height: 100%; background: var(--blue); border-radius: 2px;
-      transition: width .4s cubic-bezier(.4,0,.2,1);
-    }
-
-    .progress-label {
-      font-size: 11px; color: var(--text-sub); margin-top: 6px; text-align: right;
-    }
-
-    /* ────── Steps container ────── */
-    .steps-wrap {
-      flex: 1; padding: 20px 20px 0; max-width: 680px; margin: 0 auto; width: 100%;
-    }
-
-    /* ────── Step card ────── */
-    .step-card {
-      background: var(--card-bg); border-radius: var(--radius-lg);
-      box-shadow: var(--shadow-sm); margin-bottom: 12px;
-      overflow: hidden; transition: opacity var(--transition);
-    }
-
-    .step-card.locked {
-      opacity: .45; pointer-events: none;
-    }
-
-    .step-header {
-      display: flex; align-items: center; gap: 10px;
-      padding: 16px 18px; cursor: pointer;
-    }
-
-    .step-num {
-      width: 26px; height: 26px; border-radius: 50%; flex-shrink: 0;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 12px; font-weight: 700;
-      background: var(--bg); color: var(--text-sub); border: 1.5px solid var(--border);
-      transition: var(--transition);
-    }
-
-    .step-num.done {
-      background: var(--green); color: #fff; border-color: var(--green);
-    }
-
-    .step-num.active {
-      background: var(--blue); color: #fff; border-color: var(--blue);
-    }
-
-    .step-title { font-size: 15px; font-weight: 600; flex: 1; }
-
-    .step-value {
-      font-size: 13px; color: var(--text-sub); max-width: 140px;
-      overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-align: right;
-    }
-
-    .step-body {
-      padding: 0 18px 18px;
-      display: none;
-    }
-
-    .step-body.open { display: block; }
-
-    /* ────── 選項網格 ────── */
-    .option-grid {
-      display: grid; gap: 10px;
-      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-    }
-
-    .option-grid.cols-2 { grid-template-columns: 1fr 1fr; }
-    .option-grid.cols-1 { grid-template-columns: 1fr; }
-
-    @media (max-width: 360px) {
-      .option-grid { grid-template-columns: 1fr 1fr; }
-    }
-
-    /* ────── 選項卡片 ────── */
-    .opt {
-      border: 1.5px solid var(--border); border-radius: var(--radius-md);
-      padding: 12px; cursor: pointer; text-align: center;
-      transition: border-color var(--transition), background var(--transition), transform var(--transition);
-      background: var(--card-bg); position: relative; overflow: hidden;
-    }
-
-    .opt:active { transform: scale(.97); }
-
-    .opt.selected {
-      border-color: var(--blue); background: var(--selected-bg);
-    }
-
-    .opt.selected::after {
-      content: '✓';
-      position: absolute; top: 6px; right: 8px;
-      font-size: 11px; font-weight: 700; color: var(--blue);
-    }
-
-    .opt-img {
-      width: 100%; max-width: 80px; height: 64px;
-      object-fit: contain; display: block; margin: 0 auto 8px;
-    }
-
-    .opt-title { font-size: 13px; font-weight: 600; margin-bottom: 2px; }
-    .opt-sub   { font-size: 11px; color: var(--text-sub); line-height: 1.4; }
-    .opt-price { font-size: 12px; font-weight: 600; color: var(--blue); margin-top: 4px; }
-    .opt-badge { font-size: 10px; font-weight: 700; color: var(--green); margin-top: 2px; }
-    .opt-chip-spec { font-size: 10px; color: var(--text-sub); margin-top: 3px; line-height: 1.4; }
-
-    /* 顏色選項 */
-    .color-dot {
-      width: 28px; height: 28px; border-radius: 50%; margin: 0 auto 6px;
-      border: 2px solid var(--border); transition: border-color var(--transition);
-    }
-
-    .opt.selected .color-dot { border-color: var(--blue); }
-
-    /* ────── 尺寸選擇（特大卡片） ────── */
-    .size-opt {
-      display: flex; flex-direction: column; align-items: center;
-      border: 1.5px solid var(--border); border-radius: var(--radius-md);
-      padding: 20px 16px; cursor: pointer; background: var(--card-bg);
-      transition: border-color var(--transition), background var(--transition), transform var(--transition);
-      position: relative;
-    }
-
-    .size-opt:active { transform: scale(.97); }
-
-    .size-opt.selected {
-      border-color: var(--blue); background: var(--selected-bg);
-    }
-
-    .size-opt.selected::after {
-      content: '✓'; position: absolute; top: 10px; right: 12px;
-      font-size: 12px; font-weight: 700; color: var(--blue);
-    }
-
-    .size-opt img {
-      width: 100%; max-width: 120px; height: 90px; object-fit: contain; margin-bottom: 10px;
-    }
-
-    .size-opt .size-label { font-size: 16px; font-weight: 700; }
-    .size-opt .size-sub   { font-size: 12px; color: var(--text-sub); margin-top: 2px; }
-    .size-opt .size-price { font-size: 13px; font-weight: 600; color: var(--blue); margin-top: 6px; }
-
-    /* ────── Connectivity toggle ────── */
-    .connectivity-grid {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
-    }
-
-    /* ────── Nano notice ────── */
-    .nano-notice {
-      background: #fff8e7; border: 1px solid #ffd84a; border-radius: var(--radius-sm);
-      padding: 10px 12px; font-size: 12px; color: #7a5c00; margin-bottom: 10px; line-height: 1.5;
-    }
-
-    /* ────── 贈品選擇 ────── */
-    .gift-section { margin-bottom: 16px; }
-
-    .gift-section-title {
-      font-size: 13px; font-weight: 600; margin-bottom: 8px; color: var(--text-sub);
-      text-transform: uppercase; letter-spacing: .5px;
-    }
-
-    .gift-opt {
-      display: flex; align-items: center; gap: 12px;
-      border: 1.5px solid var(--border); border-radius: var(--radius-md);
-      padding: 12px 14px; cursor: pointer; background: var(--card-bg); margin-bottom: 8px;
-      transition: border-color var(--transition), background var(--transition);
-    }
-
-    .gift-opt.selected { border-color: var(--blue); background: var(--selected-bg); }
-
-    .gift-opt .gift-icon {
-      width: 36px; height: 36px; object-fit: contain; flex-shrink: 0;
-    }
-
-    .gift-opt .gift-info { flex: 1; }
-    .gift-opt .gift-name { font-size: 13px; font-weight: 600; }
-    .gift-opt .gift-tag  { font-size: 11px; color: var(--green); font-weight: 600; margin-top: 2px; }
-    .gift-opt .gift-tag.paid { color: var(--blue); }
-    .gift-opt .gift-tag.neutral { color: var(--text-sub); }
-
-    .gift-radio {
-      width: 20px; height: 20px; border-radius: 50%; border: 2px solid var(--border);
-      flex-shrink: 0; display: flex; align-items: center; justify-content: center;
-      transition: var(--transition);
-    }
-
-    .gift-opt.selected .gift-radio {
-      border-color: var(--blue); background: var(--blue);
-    }
-
-    .gift-opt.selected .gift-radio::after {
-      content: ''; width: 8px; height: 8px; border-radius: 50%; background: #fff;
-    }
-
-    /* ────── 回饋試算 ────── */
-    .rebate-row {
-      display: flex; align-items: center; gap: 12px; margin-bottom: 12px;
-    }
-
-    .rebate-label { font-size: 14px; font-weight: 500; flex: 1; }
-
-    .rebate-select {
-      background: var(--bg); border: 1.5px solid var(--border); border-radius: 8px;
-      padding: 8px 12px; font-size: 14px; font-family: inherit;
-      color: var(--text); outline: none; cursor: pointer; min-width: 90px;
-      transition: border-color var(--transition);
-    }
-
-    .rebate-select:focus { border-color: var(--blue); }
-
-    .sell-gift-row {
-      display: flex; align-items: center; gap: 12px; margin-bottom: 8px;
-    }
-
-    .sell-gift-row label { font-size: 14px; font-weight: 500; flex: 1; }
-
-    .toggle-switch {
-      position: relative; width: 44px; height: 26px; cursor: pointer;
-    }
-
-    .toggle-switch input { opacity: 0; width: 0; height: 0; }
-
-    .toggle-track {
-      position: absolute; inset: 0; background: var(--border); border-radius: 13px;
-      transition: background var(--transition);
-    }
-
-    .toggle-thumb {
-      position: absolute; top: 3px; left: 3px; width: 20px; height: 20px;
-      background: #fff; border-radius: 50%; box-shadow: 0 1px 4px rgba(0,0,0,.2);
-      transition: transform var(--transition);
-    }
-
-    .toggle-switch input:checked + .toggle-track { background: var(--green); }
-    .toggle-switch input:checked ~ .toggle-thumb { transform: translateX(18px); }
-
-    .gift-price-input-wrap { display: none; margin-top: 8px; }
-    .gift-price-input-wrap.show { display: block; }
-
-    .gift-price-input {
-      width: 100%; padding: 10px 14px; border: 1.5px solid var(--border); border-radius: 8px;
-      font-size: 14px; font-family: inherit; color: var(--text); background: var(--bg);
-      outline: none; transition: border-color var(--transition);
-    }
-
-    .gift-price-input:focus { border-color: var(--blue); }
-
-    /* ────── 價格總覽 (sticky bottom) ────── */
-    .price-summary-bar {
-      position: fixed; bottom: 0; left: 0; right: 0;
-      background: rgba(255,255,255,.92);
-      backdrop-filter: saturate(180%) blur(20px);
-      -webkit-backdrop-filter: saturate(180%) blur(20px);
-      border-top: 1px solid rgba(210,210,215,.6);
+    /* Price bar */
+    .price-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: var(--glass-bg);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
+      border-top: 1px solid var(--border);
       padding: 14px 20px calc(14px + var(--safe-bottom));
       z-index: 90;
+      box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.02);
+      transition: background var(--transition);
     }
-
-    .price-summary-inner {
-      max-width: 680px; margin: 0 auto;
-      display: flex; align-items: center; gap: 14px;
+    .price-bar-inner { max-width:680px; margin:0 auto; display:flex; align-items:center; gap:14px; }
+    .price-nums { flex:1; }
+    .price-final { font-family: 'Outfit', sans-serif; font-size:22px; font-weight:800; line-height:1.2; }
+    .price-breakdown { font-size:12px; color:var(--text-sub); margin-top:2px; line-height:1.5; font-weight:500; }
+    .price-saved { font-size:12px; font-weight:700; color:var(--green); }
+    
+    .gen-btn {
+      background:var(--blue);
+      color:#fff;
+      font-size:14px;
+      font-weight:700;
+      padding:12px 22px;
+      border-radius:22px;
+      border:none;
+      cursor:pointer;
+      white-space:nowrap;
+      transition:all var(--transition);
+      display:flex;
+      align-items:center;
+      gap:6px;
+      box-shadow: 0 4px 12px rgba(0, 113, 227, 0.2);
     }
+    .gen-btn:active { transform:scale(.97); }
+    .gen-btn:disabled { background:var(--border); color:var(--text-sub); cursor:not-allowed; box-shadow:none; }
+    .gen-btn.ready { background:var(--green); box-shadow: 0 4px 12px rgba(52, 199, 89, 0.2); }
+    .gen-btn svg { width:16px; height:16px; fill:none; stroke:currentColor; stroke-width:2.5; stroke-linecap:round; stroke-linejoin:round; }
 
-    .price-summary-nums { flex: 1; }
-
-    .price-final {
-      font-size: 22px; font-weight: 700; color: var(--text); line-height: 1.2;
-    }
-
-    .price-breakdown {
-      font-size: 12px; color: var(--text-sub); margin-top: 2px; line-height: 1.5;
-    }
-
-    .price-saved {
-      font-size: 12px; font-weight: 600; color: var(--green);
-    }
-
-    .generate-btn {
-      background: var(--blue); color: #fff; font-size: 14px; font-weight: 600;
-      padding: 12px 20px; border-radius: 22px; border: none; cursor: pointer;
-      white-space: nowrap; transition: background var(--transition), transform var(--transition);
-      display: flex; align-items: center; gap: 6px;
-    }
-
-    .generate-btn:active { transform: scale(.97); }
-    .generate-btn:disabled { background: var(--border); color: var(--text-sub); cursor: not-allowed; }
-    .generate-btn.ready { background: var(--green); }
-
-    .generate-btn svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-
-    /* ────── 購買清單 Modal ────── */
-    .modal-overlay {
-      position: fixed; inset: 0; background: rgba(0,0,0,.5);
-      z-index: 200; display: none; align-items: flex-end;
-      animation: fadeIn .2s ease;
-    }
-
-    .modal-overlay.open { display: flex; }
-
-    @keyframes fadeIn { from { opacity: 0; } }
-
+    /* Modal */
+    .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,.4); z-index:200; display:none; align-items:flex-end; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+    .modal-overlay.open { display:flex; animation:fadeIn .25s ease; }
+    @keyframes fadeIn { from{opacity:0} }
     .modal-sheet {
-      background: var(--card-bg); border-radius: 24px 24px 0 0;
-      width: 100%; max-height: 92vh; overflow-y: auto;
+      background: var(--card-bg);
+      border-radius: 24px 24px 0 0;
+      width: 100%;
+      max-height: 92vh;
+      overflow-y: auto;
       padding: 24px 20px calc(24px + var(--safe-bottom));
-      animation: slideUp .3s cubic-bezier(.4,0,.2,1);
+      animation: slideUp .4s cubic-bezier(0.16, 1, 0.3, 1);
+      border-top: 1px solid var(--border);
+      box-shadow: var(--shadow-md);
     }
+    @keyframes slideUp { from{transform:translateY(100%)} }
+    .modal-handle { width:40px; height:4px; background:var(--border); border-radius:2px; margin:0 auto 20px; }
+    .modal-title { font-family: 'Outfit', sans-serif; font-size:20px; font-weight:800; margin-bottom:20px; text-align:center; }
+    .receipt-item { display:flex; justify-content:space-between; align-items:center; padding:12px 0; border-bottom:1px solid var(--border); }
+    .receipt-item:last-child { border-bottom:none; }
+    .receipt-label { font-size:14px; color:var(--text-sub); font-weight:500; }
+    .receipt-value { font-size:14px; font-weight:600; }
+    .receipt-value.free   { color:var(--green); font-weight:700; }
+    .receipt-value.deduct { color:var(--blue); }
+    .receipt-divider { border:none; border-top:1.5px solid var(--border); margin:12px 0; }
+    .receipt-total { display:flex; justify-content:space-between; align-items:center; padding:14px 0; }
+    .receipt-total-label { font-size:17px; font-weight:800; }
+    .receipt-total-value { font-family: 'Outfit', sans-serif; font-size:22px; font-weight:800; color:var(--blue); }
+    
+    .receipt-saved-row { background:rgba(52, 199, 89, 0.1); border: 1px solid rgba(52, 199, 89, 0.2); border-radius:10px; padding:10px 14px; display:flex; align-items:center; gap:8px; margin:8px 0 20px; justify-content: center; }
+    .receipt-saved-row span { font-size:13px; font-weight:700; color:#1a7a3b; }
+        
+    .modal-actions { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:20px; }
+    .modal-btn { padding:13px; border-radius:14px; font-size:14px; font-weight:700; border:none; cursor:pointer; transition:all var(--transition); display:flex; align-items:center; justify-content:center; gap:6px; }
+    .modal-btn:active { transform: scale(0.97); }
+    .modal-btn.primary   { background:var(--blue); color:#fff; box-shadow:0 4px 12px rgba(0, 113, 227, 0.2); }
+    .modal-btn.primary:hover { background:var(--blue-dark); box-shadow:0 6px 16px rgba(0, 113, 227, 0.35); }
+    .modal-btn.secondary { background:rgba(0,0,0,0.03); color:var(--text); border:1.5px solid var(--border); }
+        
+    .purchase-links { margin-top:16px; }
+    .purchase-links-title { font-size:13px; font-weight:700; color:var(--text-sub); margin-bottom:10px; }
+    .purchase-link-btn { display:flex; align-items:center; gap:10px; padding:12px 14px; border-radius:12px; text-decoration:none; font-size:14px; font-weight:700; margin-bottom:8px; transition:all var(--transition); }
+    .purchase-link-btn:active { transform: scale(0.97); }
+    .purchase-link-btn.line    { background:#06c755; color:#fff; box-shadow:0 4px 12px rgba(6, 199, 85, 0.2); }
+    .purchase-link-btn.official { background:var(--text); color:var(--bg); }
 
-    @keyframes slideUp { from { transform: translateY(100%); } }
+    /* Toast */
+    .toast { position:fixed; bottom:calc(100px + var(--safe-bottom)); left:50%; transform:translateX(-50%) translateY(20px); background:rgba(0,0,0,.85); color:#fff; font-size:13px; font-weight:600; padding:10px 20px; border-radius:20px; z-index:300; opacity:0; transition:all var(--transition); white-space:nowrap; pointer-events:none; }
+    .toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
 
-    .modal-handle {
-      width: 40px; height: 4px; background: var(--border); border-radius: 2px;
-      margin: 0 auto 20px;
-    }
+    /* Price preview card */
+    .price-preview-inline { background:var(--sel-bg); border:1.5px solid rgba(0, 113, 227, 0.15); border-radius:var(--radius-sm); padding:10px 14px; margin-bottom:12px; display:flex; align-items:center; gap:8px; }
+    .price-preview-inline .ppi-label { font-size:12px; color:var(--text-sub); flex:1; font-weight:600; }
+    .price-preview-inline .ppi-val   { font-size:16px; font-weight:700; color:var(--blue); }
 
-    .modal-title {
-      font-size: 20px; font-weight: 700; margin-bottom: 20px; text-align: center;
-    }
-
-    .receipt-item {
-      display: flex; justify-content: space-between; align-items: center;
-      padding: 10px 0; border-bottom: 1px solid var(--bg);
-    }
-
-    .receipt-item:last-child { border-bottom: none; }
-
-    .receipt-label { font-size: 14px; color: var(--text-sub); }
-    .receipt-value { font-size: 14px; font-weight: 500; }
-    .receipt-value.free  { color: var(--green); font-weight: 600; }
-    .receipt-value.deduct { color: var(--blue); }
-
-    .receipt-divider { border: none; border-top: 1.5px solid var(--border); margin: 12px 0; }
-
-    .receipt-total {
-      display: flex; justify-content: space-between; align-items: center; padding: 12px 0;
-    }
-
-    .receipt-total-label { font-size: 17px; font-weight: 700; }
-    .receipt-total-value { font-size: 22px; font-weight: 700; color: var(--blue); }
-
-    .receipt-saved-row {
-      background: #f0fff4; border-radius: 10px; padding: 10px 14px;
-      display: flex; align-items: center; gap: 8px; margin: 8px 0 20px;
-    }
-
-    .receipt-saved-row span { font-size: 13px; font-weight: 600; color: var(--green); }
-
-    .modal-actions {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px;
-    }
-
-    .modal-btn {
-      padding: 13px; border-radius: 14px; font-size: 14px; font-weight: 600;
-      border: none; cursor: pointer; transition: opacity var(--transition);
-      display: flex; align-items: center; justify-content: center; gap: 6px;
-    }
-
-    .modal-btn:active { opacity: .8; }
-    .modal-btn.primary { background: var(--blue); color: #fff; }
-    .modal-btn.secondary { background: var(--bg); color: var(--text); border: 1.5px solid var(--border); }
-
-    .purchase-links { margin-top: 16px; }
-
-    .purchase-links-title { font-size: 13px; font-weight: 600; color: var(--text-sub); margin-bottom: 10px; }
-
-    .purchase-link-btn {
-      display: flex; align-items: center; gap: 10px;
-      padding: 12px 14px; border-radius: 12px; text-decoration: none;
-      font-size: 14px; font-weight: 600; margin-bottom: 8px;
-      transition: opacity var(--transition);
-    }
-
-    .purchase-link-btn:active { opacity: .8; }
-    .purchase-link-btn.line    { background: #06c755; color: #fff; }
-    .purchase-link-btn.official { background: var(--text); color: #fff; }
-
-    /* ────── Toast ────── */
-    .toast {
-      position: fixed; bottom: calc(100px + var(--safe-bottom));
-      left: 50%; transform: translateX(-50%) translateY(20px);
-      background: rgba(0,0,0,.8); color: #fff; font-size: 13px; font-weight: 500;
-      padding: 10px 20px; border-radius: 20px; z-index: 300;
-      opacity: 0; transition: opacity .25s, transform .25s; white-space: nowrap;
-      pointer-events: none;
-    }
-
-    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-
-    /* ────── RWD ────── */
-    @media (min-width: 540px) {
-      .option-grid { grid-template-columns: repeat(3, 1fr); }
-      .option-grid.cols-2 { grid-template-columns: 1fr 1fr; }
-    }
-
-    @media (min-width: 680px) {
-      .steps-wrap { padding: 24px 32px 0; }
-      .topbar     { padding-left: 32px; padding-right: 32px; }
-      .progress-wrap { padding-left: 32px; padding-right: 32px; }
-    }
+    @media(min-width:540px){ .opt-grid { grid-template-columns:repeat(3,1fr); } .opt-grid.cols-2 { grid-template-columns:1fr 1fr; } }
+    @media(min-width:680px){ .steps-wrap,.progress-wrap { padding-left:32px; padding-right:32px; } .topbar { padding-left:32px; padding-right:32px; } }
   </style>
 </head>
 <body>
+<div class="liquid-bg">
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+</div>
 <div class="app">
 
   <!-- ── Top bar ── -->
@@ -547,7 +486,7 @@
 <div class="modal-overlay" id="modal-overlay" onclick="closeModalOutside(event)">
   <div class="modal-sheet" id="modal-sheet">
     <div class="modal-handle"></div>
-    <div class="modal-title">🧾 BTS 購買清單</div>
+    <div class="modal-title">BTS 購買清單</div>
     <div id="modal-content"></div>
     <div class="modal-actions">
       <button class="modal-btn secondary" onclick="closeModal()">關閉</button>
@@ -590,9 +529,7 @@ const state = {
   storageId:    null,
   connectivity: 'wifi', // 'wifi' | 'cellular'
   nano:         false,
-  pencil:       null,
-  keyboard:     null,
-  airpods:      null,
+  gift:         null,
   creditCard:   0,
   referral:     0,
   sellGift:     false,
@@ -628,7 +565,7 @@ function updateProductConfig() {
   Object.assign(state, {
     size: null, color: null, storageId: null,
     connectivity: 'wifi', nano: false,
-    pencil: null, keyboard: null, airpods: null,
+    gift: null,
     creditCard: 0, referral: 0, sellGift: false, giftPrice: 0
   });
 }
@@ -662,13 +599,13 @@ function renderSteps() {
 
 function buildStepDefs(hasNano) {
   return [
-    { id: 'size',          title: '選擇尺寸',       icon: '📐' },
-    { id: 'color',         title: '選擇顏色',       icon: '🎨' },
-    { id: 'storage',       title: '選擇容量',       icon: '💾' },
-    { id: 'connectivity',  title: '選擇連線方式',   icon: '📶' },
-    ...(hasNano ? [{ id: 'nano', title: '顯示器玻璃', icon: '✨' }] : []),
-    { id: 'gifts',         title: 'BTS 配件選擇',   icon: '🎁' },
-    { id: 'rebate',        title: '回饋試算',       icon: '💰' }
+    { id: 'size',          title: '選擇尺寸',       icon: '' },
+    { id: 'color',         title: '選擇顏色',       icon: '' },
+    { id: 'storage',       title: '選擇容量',       icon: '' },
+    { id: 'connectivity',  title: '選擇連線方式',   icon: '' },
+    ...(hasNano ? [{ id: 'nano', title: '顯示器玻璃', icon: '' }] : []),
+    { id: 'gifts',         title: 'BTS 配件選擇',   icon: '' },
+    { id: 'rebate',        title: '回饋試算',       icon: '' }
   ];
 }
 
@@ -789,69 +726,75 @@ function renderNanoStep() {
 }
 
 // ── Gifts ──
-function renderGiftsStep() {
-  const gifts  = BTS_CONFIG.btsGifts;
-  const kbList = productType === 'air'
-    ? (gifts.ipadAirKeyboard[state.size] || gifts.ipadAirKeyboard['11'])
-    : (gifts.ipadProKeyboard[state.size] || gifts.ipadProKeyboard['11']);
-
-  return `
-  <div class="gift-section">
-    <p class="gift-section-title">Apple Pencil（生產力套組）</p>
-    ${gifts.ipadPencil.map(g => renderGiftOpt(g, 'pencil')).join('')}
-  </div>
-  <div class="gift-section">
-    <p class="gift-section-title">鍵盤（生產力套組）</p>
-    ${kbList.map(g => renderGiftOpt(g, 'keyboard')).join('')}
-  </div>
-  <div class="gift-section">
-    <p class="gift-section-title">AirPods 套組</p>
-    ${gifts.ipadAirpods.map(g => renderGiftOpt(g, 'airpods')).join('')}
-  </div>`;
+function buildGiftList() {
+  const gifts = BTS_CONFIG.btsGifts;
+  const sz = state.size || '11';
+  const list = [];
+  gifts.ipadPencil.filter(g => g.id !== 'none').forEach(g => {
+    list.push({ id: g.id, name: g.name, btsPrice: g.btsPrice ?? 0, originalPrice: g.originalPrice, tag: g.tag });
+  });
+  const kbSrc = productType === 'air' ? gifts.ipadAirKeyboard : gifts.ipadProKeyboard;
+  (kbSrc[sz] || kbSrc['11'] || []).filter(g => g.id !== 'none').forEach(g => {
+    list.push({ id: 'kb_' + sz + '_' + g.id, name: g.name, btsPrice: g.btsPrice ?? 0, originalPrice: g.originalPrice, tag: g.tag });
+  });
+  gifts.ipadAirpods.filter(g => g.id !== 'none').forEach(g => {
+    list.push({ id: g.id, name: g.name, btsPrice: g.btsPrice ?? 0, originalPrice: g.originalPrice, tag: g.tag });
+  });
+  list.push({ id: 'none', name: '不加購配件', btsPrice: 0, originalPrice: 0, tag: '略過此步驟' });
+  return list;
 }
 
-function renderGiftOpt(g, category) {
-  const btsP = g.btsPrice ?? g.btcPrice ?? 0;
-  const tagClass = btsP === 0 ? '' : btsP < g.originalPrice ? 'paid' : 'neutral';
-  return `<div class="gift-opt" id="gift-${category}-${g.id}" onclick="selectGift('${category}', '${g.id}', ${btsP})">
-    <div class="gift-info">
-      <div class="gift-name">${g.name}</div>
-      <div class="gift-tag ${tagClass}">${g.tag}</div>
-    </div>
-    <div class="gift-radio"></div>
-  </div>`;
+function renderGiftsStep() {
+  return buildGiftList().map(g => {
+    const isSelected = state.gift?.id === g.id;
+    const tagClass = g.id === 'none' ? 'neutral' : g.btsPrice > 0 ? 'paid' : '';
+    return `<div class="gift-opt${isSelected ? ' selected' : ''}" id="gift-item-${g.id}"
+      onclick='selectGift(${JSON.stringify(g.id)}, ${g.btsPrice}, ${g.originalPrice}, ${JSON.stringify(g.name)})'>
+      <div class="gift-info">
+        <div class="gift-name">${g.name}</div>
+        <div class="gift-tag ${tagClass}">${g.tag}</div>
+      </div>
+      <div class="gift-radio"></div>
+    </div>`;
+  }).join('');
 }
 
 // ── Rebate ──
 function renderRebateStep() {
-  const ccOpts = BTS_CONFIG.meta.creditCardRebateOptions;
-  const refOpts = BTS_CONFIG.meta.referralRebateOptions;
-
   return `
   <div class="rebate-row">
     <span class="rebate-label">💳 信用卡回饋</span>
-    <select class="rebate-select" onchange="setRebate('creditCard', this.value)">
-      ${ccOpts.map(v => `<option value="${v}">${v}%</option>`).join('')}
-    </select>
+    <div class="rebate-input-wrap">
+      <input type="number" inputmode="decimal" class="rebate-input" min="0" max="30" step="0.1"
+             placeholder="0" value="${state.creditCard || ''}"
+             oninput="setRebate('creditCard', this.value)">
+      <span class="rebate-unit">%</span>
+    </div>
   </div>
   <div class="rebate-row">
     <span class="rebate-label">🔗 導購回饋</span>
-    <select class="rebate-select" onchange="setRebate('referral', this.value)">
-      ${refOpts.map(v => `<option value="${v}">${v}%</option>`).join('')}
-    </select>
+    <div class="rebate-input-wrap">
+      <input type="number" inputmode="decimal" class="rebate-input" min="0" max="30" step="0.1"
+             placeholder="0" value="${state.referral || ''}"
+             oninput="setRebate('referral', this.value)">
+      <span class="rebate-unit">%</span>
+    </div>
   </div>
-  <div class="sell-gift-row">
-    <label>💵 打算賣掉贈品嗎？</label>
-    <label class="toggle-switch">
-      <input type="checkbox" id="sell-gift-toggle" onchange="toggleSellGift(this.checked)">
-      <div class="toggle-track"></div>
-      <div class="toggle-thumb"></div>
-    </label>
+  <p class="rebate-note">⚠️ 導購回饋以未稅價（÷1.05）粗估，數字僅供參考，實際金額依導購系統回饋為主</p>
+  <div class="sell-gift-section" style="margin-top:16px">
+    <p class="sell-section-label">贈品用途</p>
+    <div class="sell-opts">
+      <button class="sell-opt${!state.sellGift ? ' active' : ''}" onclick="setSellGift(false)">🤍 自己留著</button>
+      <button class="sell-opt${state.sellGift ? ' active' : ''}" onclick="setSellGift(true)">💰 轉售變現</button>
+    </div>
+    ${state.sellGift ? `<input class="gift-price-input" type="number" inputmode="numeric"
+      placeholder="預估轉售金額（NT$）" min="0" value="${state.giftPrice || ''}"
+      oninput="setGiftPrice(this.value)" style="margin-top:10px">` : ''}
   </div>
-  <div class="gift-price-input-wrap" id="gift-price-wrap">
-    <input class="gift-price-input" type="number" placeholder="預估贈品售價（NT$）" min="0"
-           oninput="setGiftPrice(this.value)">
-  </div>`;
+  <button class="rebate-cta-btn" onclick="openModal()">
+    查看計算結果
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+  </button>`;
 }
 
 // ═══════════════════════════════════════════
@@ -920,7 +863,7 @@ function getStepValue(stepId) {
     case 'storage':      return state.storageId;
     case 'connectivity': return state.connectivity;
     case 'nano':         return state.nano !== null ? String(state.nano) : null;
-    case 'gifts':        return state.pencil;
+    case 'gifts':        return state.gift;
     case 'rebate':       return 'done'; // always considered filled
     default: return null;
   }
@@ -984,19 +927,12 @@ function selectNano(val) {
   updatePrice();
 }
 
-function selectGift(category, id, price) {
-  state[category] = { id, price };
-
-  // 取消同類別舊選中
-  document.querySelectorAll(`[id^="gift-${category}-"]`).forEach(el => el.classList.remove('selected'));
-  document.getElementById(`gift-${category}-${id}`)?.classList.add('selected');
-
-  // 如果三個 category 都選了，前進到 rebate
-  if (state.pencil && state.keyboard && state.airpods) {
-    const pencilName = BTS_CONFIG.btsGifts.ipadPencil.find(g => g.id === state.pencil.id)?.name || '';
-    setStepValue('gifts', pencilName + ' 等');
-    advanceToStep('rebate');
-  }
+function selectGift(id, price, originalPrice, name) {
+  state.gift = { id, price, originalPrice, name };
+  document.querySelectorAll('[id^="gift-item-"]').forEach(el => el.classList.remove('selected'));
+  document.getElementById(`gift-item-${id}`)?.classList.add('selected');
+  setStepValue('gifts', id === 'none' ? '不加購' : name);
+  advanceToStep('rebate');
   updatePrice();
 }
 
@@ -1006,11 +942,11 @@ function setRebate(type, val) {
   checkComplete();
 }
 
-function toggleSellGift(checked) {
-  state.sellGift = checked;
-  const wrap = document.getElementById('gift-price-wrap');
-  if (wrap) wrap.classList.toggle('show', checked);
-  if (!checked) state.giftPrice = 0;
+function setSellGift(val) {
+  state.sellGift = val;
+  if (!val) state.giftPrice = 0;
+  const body = document.getElementById('step-body-rebate');
+  if (body && body.classList.contains('open')) body.innerHTML = renderRebateStep();
   updatePrice();
 }
 
@@ -1051,14 +987,12 @@ function calcPrice() {
   if (state.nano && productType === 'pro')
     base += cfg.nanoPrice;
 
-  const giftCost = (state.pencil?.price || 0)
-                 + (state.keyboard?.price || 0)
-                 + (state.airpods?.price || 0);
+  const giftCost = state.gift?.price || 0;
 
   const subtotal = base + giftCost;
 
-  const ccRebate  = Math.round(subtotal * (state.creditCard / 100));
-  const refRebate = Math.round(subtotal * (state.referral   / 100));
+  const ccRebate  = Math.round(subtotal              * (state.creditCard / 100));
+  const refRebate = Math.round((subtotal / 1.05)     * (state.referral   / 100)); // 導購以未稅價計算
   const giftSale  = state.sellGift ? state.giftPrice : 0;
   const final     = subtotal - ccRebate - refRebate - giftSale;
 
@@ -1070,13 +1004,7 @@ function calcPrice() {
 }
 
 function getBtsGiftOriginalTotal() {
-  const pencilOrig = BTS_CONFIG.btsGifts.ipadPencil.find(g => g.id === state.pencil?.id)?.originalPrice || 0;
-  const kbList     = productType === 'air'
-    ? BTS_CONFIG.btsGifts.ipadAirKeyboard[state.size] || []
-    : BTS_CONFIG.btsGifts.ipadProKeyboard[state.size] || [];
-  const kbOrig     = kbList.find(g => g.id === state.keyboard?.id)?.originalPrice || 0;
-  const apOrig     = BTS_CONFIG.btsGifts.ipadAirpods.find(g => g.id === state.airpods?.id)?.originalPrice || 0;
-  return pencilOrig + kbOrig + apOrig;
+  return state.gift?.originalPrice || 0;
 }
 
 function updatePrice() {
@@ -1102,7 +1030,7 @@ function updatePrice() {
 
   if (r.totalSaved > 0) {
     savedEl.style.display = '';
-    savedEl.textContent = `🎉 合計省下 NT$${r.totalSaved.toLocaleString()}`;
+    savedEl.textContent = `合計省下 NT$${r.totalSaved.toLocaleString()}`;
   } else {
     savedEl.style.display = 'none';
   }
@@ -1112,7 +1040,7 @@ function updatePrice() {
 
 function checkComplete() {
   const hasNano = productType === 'pro';
-  const required = ['size','color','storageId','connectivity','pencil','keyboard','airpods'];
+  const required = ['size','color','storageId','connectivity','gift'];
   if (hasNano) required.push('nano');
   const done = required.every(k => state[k] !== null && state[k] !== undefined);
   const btn  = document.getElementById('generate-btn');
@@ -1129,12 +1057,6 @@ function openModal() {
 
   const sizeCfg    = cfg.sizes[state.size];
   const storageCfg = sizeCfg.storage.find(s => s.id === state.storageId);
-  const pencilCfg  = BTS_CONFIG.btsGifts.ipadPencil.find(g => g.id === state.pencil?.id);
-  const kbList     = productType === 'air'
-    ? BTS_CONFIG.btsGifts.ipadAirKeyboard[state.size] || []
-    : BTS_CONFIG.btsGifts.ipadProKeyboard[state.size] || [];
-  const kbCfg      = kbList.find(g => g.id === state.keyboard?.id);
-  const apCfg      = BTS_CONFIG.btsGifts.ipadAirpods.find(g => g.id === state.airpods?.id);
 
   const productName = `iPad ${productType === 'air' ? 'Air' : 'Pro'} ${sizeCfg.label}`;
 
@@ -1165,15 +1087,9 @@ function openModal() {
 
   html += `<hr class="receipt-divider">`;
 
-  // Gifts
-  if (pencilCfg && pencilCfg.id !== 'none') {
-    html += receiptGiftRow(pencilCfg.name, pencilCfg.btsPrice ?? pencilCfg.btcPrice ?? 0, pencilCfg.originalPrice);
-  }
-  if (kbCfg && kbCfg.id !== 'none') {
-    html += receiptGiftRow(kbCfg.name, kbCfg.btsPrice ?? 0, kbCfg.originalPrice);
-  }
-  if (apCfg && apCfg.id !== 'none') {
-    html += receiptGiftRow(apCfg.name, apCfg.btsPrice ?? 0, apCfg.originalPrice);
+  // Gift
+  if (state.gift && state.gift.id !== 'none') {
+    html += receiptGiftRow(state.gift.name, state.gift.price, state.gift.originalPrice);
   }
 
   html += `<hr class="receipt-divider">
@@ -1183,16 +1099,16 @@ function openModal() {
   </div>`;
 
   if (r.ccRebate)  html += `<div class="receipt-item"><span class="receipt-label">信用卡回饋 (${state.creditCard}%)</span><span class="receipt-value deduct">-NT$${r.ccRebate.toLocaleString()}</span></div>`;
-  if (r.refRebate) html += `<div class="receipt-item"><span class="receipt-label">導購回饋 (${state.referral}%)</span><span class="receipt-value deduct">-NT$${r.refRebate.toLocaleString()}</span></div>`;
+  if (r.refRebate) html += `<div class="receipt-item"><span class="receipt-label">導購回饋 (${state.referral}%・未稅估算)</span><span class="receipt-value deduct">-NT$${r.refRebate.toLocaleString()}</span></div>`;
   if (r.giftSale)  html += `<div class="receipt-item"><span class="receipt-label">贈品售出</span><span class="receipt-value deduct">-NT$${r.giftSale.toLocaleString()}</span></div>`;
 
   html += `<div class="receipt-total">
-    <span class="receipt-total-label">💰 實際入手價</span>
+    <span class="receipt-total-label">實際入手價</span>
     <span class="receipt-total-value">NT$${r.final.toLocaleString()}</span>
   </div>`;
 
   if (r.totalSaved > 0) {
-    html += `<div class="receipt-saved-row"><span>🎉 合計省下 NT$${r.totalSaved.toLocaleString()}</span></div>`;
+    html += `<div class="receipt-saved-row"><span>合計省下 NT$${r.totalSaved.toLocaleString()}</span></div>`;
   }
 
   html += `<p style="font-size:11px;color:var(--text-sub);text-align:center;margin-top:4px">DESIGNED BY Neil尼歐</p>`;

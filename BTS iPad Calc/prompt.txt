@@ -1,0 +1,25 @@
+目前希望選擇完之後，有這些功能
+1.輸出一個收據樣式的"BTS購買清單"，裡面有他要的品項，照片，還有總額跟省下的金額，並加上，DESIGNED BY Neil尼歐
+2.希望有個重新計算的功能，清空剛剛他選的，回到最上面，"重頭計算"
+3.就算是免費的產品，選擇後也出現在購買清單上，只是顯示免費
+4.購買清單圖片生成，要加上產品圖片
+
+更換圖片，圖片來源google雲端硬碟
+
+我之前可行的google drive硬碟網址長這樣
+https://drive.google.com/thumbnail?id=1Z3qg720R4c1IjF128pELmOldD9Donbm6&sz=w800
+
+網址如下，根據上面進行調整
+
+  iPad Air圖 https://drive.google.com/file/d/1aY-VmqSUABu4b23zIYssb1vVyGctzP2J/view?usp=sharing iPad Air 藍色 https://drive.google.com/file/d/1GCxqI-B2OPrqaIdCLU_fgfbErAAgJeVU/view?usp=sharing
+iPad Air 紫色
+https://drive.google.com/file/d/1_DP-4P0pvYAJTvGeVadPceBea9V9G4k6/view?usp=sharing
+iPad Air 星光色
+https://drive.google.com/file/d/1X_u3wF2hK8HWcTEjaZ0P6NilkeGdtcaf/view?usp=sharing
+iPad Air 太空灰 https://meee.com.tw/79F9cVG
+ iPad Pro圖
+https://drive.google.com/file/d/1KMfy_wW3p-0YM1jcgCbBZUYSVIBHBCyn/view?usp=sharing
+iPad Pro 太空黑
+https://drive.google.com/file/d/1lb9tZkhv-UnsCIMuLs4AA360dsjM19bP/view?usp=sharing
+iPad Pro 銀色
+https://drive.google.com/file/d/1uj0Fq_yXUGqodCS1rMXsMQtUOHMn2XXF/view?usp=sharing

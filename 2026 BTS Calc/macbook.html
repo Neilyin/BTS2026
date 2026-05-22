@@ -4,7 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>MacBook BTS 優惠計算機</title>
-  <style>
+      <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap');
+
     :root {
       --blue:       #0071e3;
       --blue-dark:  #0062c3;
@@ -13,56 +15,127 @@
       --bg:         #f5f5f7;
       --card-bg:    #ffffff;
       --text:       #1d1d1f;
-      --text-sub:   #6e6e73;
-      --border:     #d2d2d7;
+      --text-sub:   #86868b;
+      --border:     rgba(0, 0, 0, 0.08);
       --sel-border: #0071e3;
-      --sel-bg:     #f0f6ff;
-      --radius-sm:  10px;
-      --radius-md:  16px;
-      --radius-lg:  24px;
-      --shadow-sm:  0 2px 10px rgba(0,0,0,.08);
-      --shadow-md:  0 6px 24px rgba(0,0,0,.10);
-      --transition: .25s cubic-bezier(.4,0,.2,1);
+      --sel-bg:     rgba(0, 113, 227, 0.05);
+      --radius-sm:  12px;
+      --radius-md:  18px;
+      --radius-lg:  26px;
+      --shadow-sm:  0 4px 20px rgba(0,0,0,.02);
+      --shadow-md:  0 12px 40px rgba(0,0,0,.05);
+      --transition: .5s cubic-bezier(0.16, 1, 0.3, 1);
       --safe-top:   env(safe-area-inset-top,0px);
       --safe-bottom:env(safe-area-inset-bottom,0px);
-    }
-    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-    html, body { height:100%; font-family:-apple-system,BlinkMacSystemFont,'Noto Sans TC',sans-serif; background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
 
-    .app { display:flex; flex-direction:column; min-height:100%; padding-bottom:calc(120px + var(--safe-bottom)); }
+      /* Liquid Glass effect tokens */
+      --glass-bg:       rgba(255, 255, 255, 0.65);
+      --glass-blur:     blur(20px) saturate(190%);
+      --glass-border:   rgba(255, 255, 255, 0.4);
+      --glass-shadow:
+        0 1px 0 rgba(255, 255, 255, 0.4) inset,
+        0 10px 40px rgba(0, 0, 0, 0.02),
+        0 1px 3px rgba(0, 0, 0, 0.01);
+      --glass-shadow-hover:
+        0 1px 0 rgba(255, 255, 255, 0.5) inset,
+        0 20px 50px rgba(0, 0, 0, 0.05),
+        0 4px 12px rgba(0, 0, 0, 0.02);
+    }
+
+    
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+    html, body { height:100%; font-family:'Inter', -apple-system, BlinkMacSystemFont, 'Noto Sans TC', sans-serif; background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+
+    /* ── Liquid Background Blobs ── */
+    .liquid-bg {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      overflow: hidden;
+      pointer-events: none;
+      background: var(--bg);
+      transition: background-color 0.5s ease;
+    }
+    .blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(100px);
+      opacity: 0.35;
+      animation: float 25s infinite alternate ease-in-out;
+    }
+    .blob-1 {
+      width: 50vw;
+      height: 50vw;
+      background: radial-gradient(circle, rgba(0, 113, 227, 0.12) 0%, rgba(0, 113, 227, 0) 70%);
+      top: -15%;
+      left: 10%;
+    }
+    .blob-2 {
+      width: 55vw;
+      height: 55vw;
+      background: radial-gradient(circle, rgba(94, 92, 230, 0.10) 0%, rgba(94, 92, 230, 0) 70%);
+      bottom: -15%;
+      right: 10%;
+      animation-duration: 30s;
+    }
+    @keyframes float {
+      0% { transform: translate(0, 0) scale(1); }
+      50% { transform: translate(30px, -50px) scale(1.05); }
+      100% { transform: translate(-15px, 15px) scale(0.95); }
+    }
+
+    .app { display:flex; flex-direction:column; min-height:100%; padding-bottom:calc(120px + var(--safe-bottom)); position:relative; z-index:1; }
 
     /* ── Topbar ── */
     .topbar {
       position:sticky; top:0; z-index:100;
-      background:rgba(245,245,247,.88); backdrop-filter:saturate(180%) blur(20px);
-      -webkit-backdrop-filter:saturate(180%) blur(20px);
-      border-bottom:1px solid rgba(210,210,215,.5);
+      background: var(--glass-bg);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
+      border-bottom: 1px solid var(--border);
       padding:calc(12px + var(--safe-top)) 20px 12px;
       display:flex; align-items:center; gap:12px;
+      transition: background var(--transition);
     }
-    .back-btn { display:inline-flex; align-items:center; gap:4px; color:var(--blue); font-size:15px; font-weight:500; background:none; border:none; cursor:pointer; padding:4px 0; }
+    .back-btn { display:inline-flex; align-items:center; gap:4px; color:var(--blue); font-size:15px; font-weight:600; background:none; border:none; cursor:pointer; padding:4px 0; transition: transform var(--transition); }
+    .back-btn:hover { transform: translateX(-2px); }
     .back-btn svg { width:10px; height:16px; fill:none; stroke:currentColor; stroke-width:2.5; stroke-linecap:round; stroke-linejoin:round; }
-    .topbar-title { font-size:17px; font-weight:700; flex:1; }
-    .product-switch { display:flex; background:var(--border); border-radius:8px; padding:2px; gap:2px; }
-    .sw-btn { font-size:12px; font-weight:600; padding:4px 12px; border-radius:6px; border:none; background:none; cursor:pointer; color:var(--text-sub); transition:var(--transition); }
-    .sw-btn.active { background:var(--card-bg); color:var(--text); box-shadow:0 1px 4px rgba(0,0,0,.12); }
+    .topbar-title { font-family: 'Outfit', sans-serif; font-size:17px; font-weight:700; flex:1; }
+    
+    .product-switch { display:flex; background:rgba(0,0,0,0.06); border-radius:8px; padding:2px; gap:2px; }
+        .sw-btn { font-size:12px; font-weight:700; padding:4px 14px; border-radius:6px; border:none; background:none; cursor:pointer; color:var(--text-sub); transition:all var(--transition); }
+    .sw-btn.active { background:var(--card-bg); color:var(--text); box-shadow:0 2px 6px rgba(0,0,0,.08); }
 
     /* ── Progress ── */
-    .progress-wrap { padding:12px 20px 0; max-width:680px; margin:0 auto; width:100%; }
-    .progress-track { height:3px; background:var(--border); border-radius:2px; overflow:hidden; }
+    .progress-wrap { padding:16px 20px 0; max-width:680px; margin:0 auto; width:100%; }
+    .progress-track { height:4px; background:var(--border); border-radius:2px; overflow:hidden; }
     .progress-fill  { height:100%; background:var(--blue); border-radius:2px; transition:width .4s cubic-bezier(.4,0,.2,1); }
-    .progress-label { font-size:11px; color:var(--text-sub); margin-top:6px; text-align:right; }
+    .progress-label { font-size:11px; color:var(--text-sub); margin-top:6px; text-align:right; font-weight:600; }
 
     /* ── Steps ── */
     .steps-wrap { flex:1; padding:20px 20px 0; max-width:680px; margin:0 auto; width:100%; }
-    .step-card { background:var(--card-bg); border-radius:var(--radius-lg); box-shadow:var(--shadow-sm); margin-bottom:12px; overflow:hidden; transition:opacity var(--transition); }
+    .step-card {
+      background: var(--glass-bg);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
+      border: 1px solid var(--glass-border);
+      box-shadow: var(--glass-shadow);
+      border-radius: var(--radius-lg);
+      margin-bottom: 12px;
+      overflow: hidden;
+      transition: all var(--transition);
+    }
+    .step-card:hover:not(.locked) {
+      border-color: rgba(0, 113, 227, 0.15);
+      box-shadow: var(--glass-shadow-hover);
+    }
     .step-card.locked { opacity:.45; pointer-events:none; }
-    .step-header { display:flex; align-items:center; gap:10px; padding:16px 18px; cursor:pointer; }
-    .step-num { width:26px; height:26px; border-radius:50%; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; background:var(--bg); color:var(--text-sub); border:1.5px solid var(--border); transition:var(--transition); }
-    .step-num.done   { background:var(--green); color:#fff; border-color:var(--green); }
+    .step-header { display:flex; align-items:center; gap:12px; padding:16px 18px; cursor:pointer; }
+    .step-num { width:26px; height:26px; border-radius:50%; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; background:rgba(0,0,0,0.03); color:var(--text-sub); border:1.5px solid var(--border); transition:all var(--transition); }
+        .step-num.done   { background:var(--green); color:#fff; border-color:var(--green); }
     .step-num.active { background:var(--blue);  color:#fff; border-color:var(--blue);  }
-    .step-title { font-size:15px; font-weight:600; flex:1; }
-    .step-value { font-size:13px; color:var(--text-sub); max-width:160px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; text-align:right; }
+    .step-title { font-size:15.5px; font-weight:700; flex:1; }
+    .step-value { font-size:13px; color:var(--text-sub); max-width:160px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; text-align:right; font-weight:600; }
     .step-body { padding:0 18px 18px; display:none; }
     .step-body.open { display:block; }
 
@@ -73,54 +146,125 @@
     @media(max-width:360px){ .opt-grid { grid-template-columns:1fr 1fr; } }
 
     /* ── Option card ── */
-    .opt { border:1.5px solid var(--border); border-radius:var(--radius-md); padding:12px; cursor:pointer; text-align:center; transition:border-color var(--transition),background var(--transition),transform var(--transition); background:var(--card-bg); position:relative; overflow:hidden; }
-    .opt:active { transform:scale(.97); }
-    .opt.selected { border-color:var(--sel-border); background:var(--sel-bg); }
+    .opt {
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 12px;
+      cursor: pointer;
+      text-align: center;
+      transition: all var(--transition);
+      background: rgba(255,255,255,0.25);
+      position: relative;
+      overflow: hidden;
+    }
+        .opt:hover:not(.disabled):not(.selected) {
+      border-color: rgba(0, 113, 227, 0.3);
+      background: rgba(0, 113, 227, 0.02);
+    }
+    .opt.selected {
+      border-color: var(--sel-border);
+      background: var(--sel-bg);
+      box-shadow: 0 4px 12px rgba(0, 113, 227, 0.08);
+    }
     .opt.selected::after { content:'✓'; position:absolute; top:6px; right:8px; font-size:11px; font-weight:700; color:var(--blue); }
     .opt.disabled { opacity:.4; pointer-events:none; }
-    .opt-img { width:100%; max-width:88px; height:64px; object-fit:contain; display:block; margin:0 auto 8px; }
-    .opt-title { font-size:13px; font-weight:600; margin-bottom:2px; }
-    .opt-sub   { font-size:11px; color:var(--text-sub); line-height:1.4; }
-    .opt-price { font-size:12px; font-weight:600; color:var(--blue); margin-top:4px; }
+    .opt-img { width:100%; max-width:88px; height:64px; object-fit:contain; display:block; margin:0 auto 8px; transition: transform var(--transition); }
+    .opt:hover:not(.disabled) .opt-img { transform: scale(1.05); }
+    .opt-title { font-size:13px; font-weight:700; margin-bottom:2px; }
+    .opt-sub   { font-size:11px; color:var(--text-sub); line-height:1.4; font-weight: 500; }
+    .opt-price { font-size:12px; font-weight:700; color:var(--blue); margin-top:4px; }
     .opt-badge { font-size:10px; font-weight:700; color:var(--green); margin-top:2px; }
-    .opt-tag   { font-size:10px; background:var(--bg); border:1px solid var(--border); border-radius:4px; padding:2px 6px; display:inline-block; margin-top:4px; color:var(--text-sub); }
-
+    .opt-tag   { font-size:10px; background:rgba(0,0,0,0.03); border:1px solid var(--border); border-radius:4px; padding:2px 6px; display:inline-block; margin-top:4px; color:var(--text-sub); font-weight:500; }
+    
     /* Color dot */
-    .color-dot { width:28px; height:28px; border-radius:50%; margin:0 auto 6px; border:2px solid var(--border); transition:border-color var(--transition); }
-    .opt.selected .color-dot { border-color:var(--blue); }
+    .color-dot { width:28px; height:28px; border-radius:50%; margin:0 auto 6px; border:2px solid var(--border); transition:all var(--transition); }
+    .opt.selected .color-dot { border-color:var(--blue); transform: scale(1.08); }
 
     /* Size big card */
-    .size-opt { display:flex; flex-direction:column; align-items:center; border:1.5px solid var(--border); border-radius:var(--radius-md); padding:20px 16px; cursor:pointer; background:var(--card-bg); transition:border-color var(--transition),background var(--transition),transform var(--transition); position:relative; }
-    .size-opt:active { transform:scale(.97); }
-    .size-opt.selected { border-color:var(--sel-border); background:var(--sel-bg); }
+    .size-opt {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 20px 16px;
+      cursor: pointer;
+      background: rgba(255,255,255,0.25);
+      transition: all var(--transition);
+      position: relative;
+    }
+        .size-opt:hover:not(.selected) {
+      border-color: rgba(0, 113, 227, 0.3);
+      background: rgba(0, 113, 227, 0.02);
+    }
+    .size-opt.selected {
+      border-color: var(--sel-border);
+      background: var(--sel-bg);
+      box-shadow: 0 4px 12px rgba(0, 113, 227, 0.08);
+    }
     .size-opt.selected::after { content:'✓'; position:absolute; top:10px; right:12px; font-size:12px; font-weight:700; color:var(--blue); }
-    .size-opt img { width:100%; max-width:120px; height:90px; object-fit:contain; margin-bottom:10px; }
+    .size-opt img { width:100%; max-width:120px; height:90px; object-fit:contain; margin-bottom:10px; transition: transform var(--transition); }
+    .size-opt:hover img { transform: scale(1.05); }
     .size-opt .sz-label { font-size:16px; font-weight:700; }
-    .size-opt .sz-sub   { font-size:12px; color:var(--text-sub); margin-top:2px; }
-    .size-opt .sz-price { font-size:13px; font-weight:600; color:var(--blue); margin-top:6px; }
+    .size-opt .sz-sub   { font-size:12px; color:var(--text-sub); margin-top:2px; font-weight:500; }
+    .size-opt .sz-price { font-size:13.5px; font-weight:700; color:var(--blue); margin-top:6px; }
 
-    /* Chip card (Pro, more info) */
-    .chip-opt { border:1.5px solid var(--border); border-radius:var(--radius-md); padding:14px; cursor:pointer; background:var(--card-bg); transition:border-color var(--transition),background var(--transition),transform var(--transition); position:relative; }
-    .chip-opt:active { transform:scale(.97); }
-    .chip-opt.selected { border-color:var(--sel-border); background:var(--sel-bg); }
+    /* Chip card */
+    .chip-opt {
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 14px;
+      cursor: pointer;
+      background: rgba(255,255,255,0.25);
+      transition: all var(--transition);
+      position: relative;
+    }
+        .chip-opt:hover:not(.selected) {
+      border-color: rgba(0, 113, 227, 0.3);
+      background: rgba(0, 113, 227, 0.02);
+    }
+    .chip-opt.selected {
+      border-color: var(--sel-border);
+      background: var(--sel-bg);
+      box-shadow: 0 4px 12px rgba(0, 113, 227, 0.08);
+    }
     .chip-opt.selected::after { content:'✓'; position:absolute; top:10px; right:12px; font-size:11px; font-weight:700; color:var(--blue); }
     .chip-name   { font-size:15px; font-weight:700; }
-    .chip-detail { font-size:12px; color:var(--text-sub); margin-bottom:4px; }
-    .chip-price  { font-size:13px; font-weight:700; color:var(--blue); margin:6px 0 2px; }
-    .chip-includes { font-size:11px; color:var(--text-sub); line-height:1.5; }
-    .chip-desc   { font-size:11px; color:var(--text-sub); margin-top:4px; padding-top:4px; border-top:1px solid var(--border); }
+    .chip-detail { font-size:12px; color:var(--text-sub); margin-bottom:4px; font-weight:500; }
+    .chip-price  { font-size:13.5px; font-weight:700; color:var(--blue); margin:6px 0 2px; }
+    .chip-includes { font-size:11px; color:var(--text-sub); line-height:1.5; font-weight:500; }
+    .chip-desc   { font-size:11px; color:var(--text-sub); margin-top:4px; padding-top:4px; border-top:1px solid var(--border); font-weight:500; }
 
     /* Warning banner */
-    .warn-banner { background:#fff8e7; border:1px solid #ffd84a; border-radius:var(--radius-sm); padding:10px 12px; font-size:12px; color:#7a5c00; margin-bottom:10px; line-height:1.5; }
+    .warn-banner { background:rgba(255, 159, 10, 0.1); border:1px solid rgba(255, 159, 10, 0.3); border-radius:var(--radius-sm); padding:10px 12px; font-size:12px; color:var(--orange); margin-bottom:10px; line-height:1.5; font-weight:500; }
 
     /* Gift rows */
     .gift-section { margin-bottom:16px; }
     .gift-section-title { font-size:12px; font-weight:700; color:var(--text-sub); text-transform:uppercase; letter-spacing:.5px; margin-bottom:8px; }
-    .gift-opt { display:flex; align-items:center; gap:12px; border:1.5px solid var(--border); border-radius:var(--radius-md); padding:12px 14px; cursor:pointer; background:var(--card-bg); margin-bottom:8px; transition:border-color var(--transition),background var(--transition); }
-    .gift-opt.selected { border-color:var(--blue); background:var(--sel-bg); }
+    .gift-opt {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 12px 14px;
+      cursor: pointer;
+      background: rgba(255,255,255,0.25);
+      margin-bottom: 8px;
+      transition: all var(--transition);
+    }
+        .gift-opt:hover:not(.selected) {
+      border-color: rgba(0, 113, 227, 0.3);
+      background: rgba(0, 113, 227, 0.02);
+    }
+    .gift-opt.selected {
+      border-color: var(--blue);
+      background: var(--sel-bg);
+      box-shadow: 0 4px 12px rgba(0, 113, 227, 0.08);
+    }
     .gift-info { flex:1; }
-    .gift-name { font-size:13px; font-weight:600; }
-    .gift-tag  { font-size:11px; color:var(--green); font-weight:600; margin-top:2px; }
+    .gift-name { font-size:13px; font-weight:700; }
+    .gift-tag  { font-size:11px; color:var(--green); font-weight:700; margin-top:2px; }
     .gift-tag.paid    { color:var(--blue); }
     .gift-tag.neutral { color:var(--text-sub); }
     .gift-radio { width:20px; height:20px; border-radius:50%; border:2px solid var(--border); flex-shrink:0; display:flex; align-items:center; justify-content:center; transition:var(--transition); }
@@ -129,74 +273,146 @@
 
     /* Rebate */
     .rebate-row { display:flex; align-items:center; gap:12px; margin-bottom:12px; }
-    .rebate-label { font-size:14px; font-weight:500; flex:1; }
-    .rebate-select { background:var(--bg); border:1.5px solid var(--border); border-radius:8px; padding:8px 12px; font-size:14px; font-family:inherit; color:var(--text); outline:none; cursor:pointer; min-width:90px; transition:border-color var(--transition); }
-    .rebate-select:focus { border-color:var(--blue); }
+    .rebate-label { font-size:14px; font-weight:600; flex:1; }
+    .rebate-select { background:rgba(0,0,0,0.03); border:1.5px solid var(--border); border-radius:8px; padding:8px 12px; font-size:14px; font-family:inherit; color:var(--text); outline:none; cursor:pointer; min-width:90px; transition:all var(--transition); font-weight:600; }
+        .rebate-select:focus { border-color:var(--blue); box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.15); }
+    
     .sell-gift-row { display:flex; align-items:center; gap:12px; margin-bottom:8px; }
-    .sell-gift-row label { font-size:14px; font-weight:500; flex:1; }
+    .sell-gift-row label { font-size:14px; font-weight:600; flex:1; }
+    
     .toggle-switch { position:relative; width:44px; height:26px; cursor:pointer; }
     .toggle-switch input { opacity:0; width:0; height:0; }
     .toggle-track { position:absolute; inset:0; background:var(--border); border-radius:13px; transition:background var(--transition); }
     .toggle-thumb { position:absolute; top:3px; left:3px; width:20px; height:20px; background:#fff; border-radius:50%; box-shadow:0 1px 4px rgba(0,0,0,.2); transition:transform var(--transition); }
     .toggle-switch input:checked + .toggle-track { background:var(--green); }
     .toggle-switch input:checked ~ .toggle-thumb { transform:translateX(18px); }
+    
     .gift-price-wrap { display:none; margin-top:8px; }
     .gift-price-wrap.show { display:block; }
-    .gift-price-input { width:100%; padding:10px 14px; border:1.5px solid var(--border); border-radius:8px; font-size:14px; font-family:inherit; background:var(--bg); outline:none; transition:border-color var(--transition); }
-    .gift-price-input:focus { border-color:var(--blue); }
+    .gift-price-input { width:100%; padding:10px 14px; border:1.5px solid var(--border); border-radius:8px; font-size:14px; font-family:inherit; background:rgba(0,0,0,0.03); outline:none; transition:all var(--transition); font-weight:600; color:var(--text); }
+        .gift-price-input:focus { border-color:var(--blue); box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.15); }
+
+    /* ── 回饋數字輸入 ── */
+    .rebate-input-wrap { display:flex; align-items:center; gap:2px; background:rgba(0,0,0,.03); border:1.5px solid var(--border); border-radius:8px; padding:0 10px; min-width:80px; transition:border-color var(--transition),box-shadow var(--transition); }
+        .rebate-input-wrap:focus-within { border-color:var(--blue); box-shadow:0 0 0 3px rgba(0,113,227,.15); }
+    .rebate-input { width:52px; padding:8px 0; border:none; background:transparent; font-size:15px; font-weight:600; font-family:inherit; color:var(--text); outline:none; text-align:right; -moz-appearance:textfield; }
+    .rebate-input::-webkit-outer-spin-button,.rebate-input::-webkit-inner-spin-button { -webkit-appearance:none; margin:0; }
+    .rebate-unit { font-size:14px; color:var(--text-sub); font-weight:500; }
+    .rebate-note { font-size:11.5px; color:var(--text-sub); line-height:1.5; margin:-4px 0 12px; padding:8px 10px; background:rgba(255,159,10,.08); border-left:2.5px solid var(--orange); border-radius:0 6px 6px 0; }
+
+    /* ── 贈品用途選擇 ── */
+    .sell-gift-section { margin-top:4px; }
+    .sell-section-label { font-size:13px; font-weight:600; color:var(--text-sub); margin-bottom:8px; text-transform:uppercase; letter-spacing:.4px; }
+    .sell-opts { display:flex; gap:8px; }
+    .sell-opt { flex:1; padding:11px 8px; border-radius:12px; font-size:13px; font-weight:600; border:1.5px solid var(--border); background:transparent; color:var(--text-sub); cursor:pointer; transition:var(--transition); text-align:center; }
+    .sell-opt:active { transform:scale(.97); }
+    .sell-opt.active { border-color:var(--blue); background:rgba(0,113,227,.08); color:var(--blue); }
+        .rebate-cta-btn {
+      margin-top:20px; width:100%; padding:15px; border-radius:14px;
+      background:var(--blue); color:#fff; border:none; cursor:pointer;
+      font-size:15px; font-weight:700; font-family:inherit;
+      display:flex; align-items:center; justify-content:center; gap:8px;
+      box-shadow:0 4px 16px rgba(0,113,227,.3);
+      transition:all var(--transition);
+    }
+    .rebate-cta-btn:hover  { background:var(--blue-dark); box-shadow:0 6px 20px rgba(0,113,227,.4); }
+    .rebate-cta-btn:active { transform:scale(.97); }
 
     /* Price bar */
-    .price-bar { position:fixed; bottom:0; left:0; right:0; background:rgba(255,255,255,.92); backdrop-filter:saturate(180%) blur(20px); -webkit-backdrop-filter:saturate(180%) blur(20px); border-top:1px solid rgba(210,210,215,.6); padding:14px 20px calc(14px + var(--safe-bottom)); z-index:90; }
+    .price-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: var(--glass-bg);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
+      border-top: 1px solid var(--border);
+      padding: 14px 20px calc(14px + var(--safe-bottom));
+      z-index: 90;
+      box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.02);
+      transition: background var(--transition);
+    }
     .price-bar-inner { max-width:680px; margin:0 auto; display:flex; align-items:center; gap:14px; }
     .price-nums { flex:1; }
-    .price-final { font-size:22px; font-weight:700; line-height:1.2; }
-    .price-breakdown { font-size:12px; color:var(--text-sub); margin-top:2px; line-height:1.5; }
-    .price-saved { font-size:12px; font-weight:600; color:var(--green); }
-    .gen-btn { background:var(--blue); color:#fff; font-size:14px; font-weight:600; padding:12px 20px; border-radius:22px; border:none; cursor:pointer; white-space:nowrap; transition:background var(--transition),transform var(--transition); display:flex; align-items:center; gap:6px; }
+    .price-final { font-family: 'Outfit', sans-serif; font-size:22px; font-weight:800; line-height:1.2; }
+    .price-breakdown { font-size:12px; color:var(--text-sub); margin-top:2px; line-height:1.5; font-weight:500; }
+    .price-saved { font-size:12px; font-weight:700; color:var(--green); }
+    
+    .gen-btn {
+      background:var(--blue);
+      color:#fff;
+      font-size:14px;
+      font-weight:700;
+      padding:12px 22px;
+      border-radius:22px;
+      border:none;
+      cursor:pointer;
+      white-space:nowrap;
+      transition:all var(--transition);
+      display:flex;
+      align-items:center;
+      gap:6px;
+      box-shadow: 0 4px 12px rgba(0, 113, 227, 0.2);
+    }
     .gen-btn:active { transform:scale(.97); }
-    .gen-btn:disabled { background:var(--border); color:var(--text-sub); cursor:not-allowed; }
-    .gen-btn.ready { background:var(--green); }
-    .gen-btn svg { width:16px; height:16px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+    .gen-btn:disabled { background:var(--border); color:var(--text-sub); cursor:not-allowed; box-shadow:none; }
+    .gen-btn.ready { background:var(--green); box-shadow: 0 4px 12px rgba(52, 199, 89, 0.2); }
+    .gen-btn svg { width:16px; height:16px; fill:none; stroke:currentColor; stroke-width:2.5; stroke-linecap:round; stroke-linejoin:round; }
 
     /* Modal */
-    .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,.5); z-index:200; display:none; align-items:flex-end; }
-    .modal-overlay.open { display:flex; animation:fadeIn .2s ease; }
+    .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,.4); z-index:200; display:none; align-items:flex-end; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+    .modal-overlay.open { display:flex; animation:fadeIn .25s ease; }
     @keyframes fadeIn { from{opacity:0} }
-    .modal-sheet { background:var(--card-bg); border-radius:24px 24px 0 0; width:100%; max-height:92vh; overflow-y:auto; padding:24px 20px calc(24px + var(--safe-bottom)); animation:slideUp .3s cubic-bezier(.4,0,.2,1); }
+    .modal-sheet {
+      background: var(--card-bg);
+      border-radius: 24px 24px 0 0;
+      width: 100%;
+      max-height: 92vh;
+      overflow-y: auto;
+      padding: 24px 20px calc(24px + var(--safe-bottom));
+      animation: slideUp .4s cubic-bezier(0.16, 1, 0.3, 1);
+      border-top: 1px solid var(--border);
+      box-shadow: var(--shadow-md);
+    }
     @keyframes slideUp { from{transform:translateY(100%)} }
     .modal-handle { width:40px; height:4px; background:var(--border); border-radius:2px; margin:0 auto 20px; }
-    .modal-title { font-size:20px; font-weight:700; margin-bottom:20px; text-align:center; }
-    .receipt-item { display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid var(--bg); }
+    .modal-title { font-family: 'Outfit', sans-serif; font-size:20px; font-weight:800; margin-bottom:20px; text-align:center; }
+    .receipt-item { display:flex; justify-content:space-between; align-items:center; padding:12px 0; border-bottom:1px solid var(--border); }
     .receipt-item:last-child { border-bottom:none; }
-    .receipt-label { font-size:14px; color:var(--text-sub); }
-    .receipt-value { font-size:14px; font-weight:500; }
-    .receipt-value.free   { color:var(--green); font-weight:600; }
+    .receipt-label { font-size:14px; color:var(--text-sub); font-weight:500; }
+    .receipt-value { font-size:14px; font-weight:600; }
+    .receipt-value.free   { color:var(--green); font-weight:700; }
     .receipt-value.deduct { color:var(--blue); }
     .receipt-divider { border:none; border-top:1.5px solid var(--border); margin:12px 0; }
-    .receipt-total { display:flex; justify-content:space-between; align-items:center; padding:12px 0; }
-    .receipt-total-label { font-size:17px; font-weight:700; }
-    .receipt-total-value { font-size:22px; font-weight:700; color:var(--blue); }
-    .receipt-saved-row { background:#f0fff4; border-radius:10px; padding:10px 14px; display:flex; align-items:center; gap:8px; margin:8px 0 20px; }
-    .receipt-saved-row span { font-size:13px; font-weight:600; color:var(--green); }
+    .receipt-total { display:flex; justify-content:space-between; align-items:center; padding:14px 0; }
+    .receipt-total-label { font-size:17px; font-weight:800; }
+    .receipt-total-value { font-family: 'Outfit', sans-serif; font-size:22px; font-weight:800; color:var(--blue); }
+    
+    .receipt-saved-row { background:rgba(52, 199, 89, 0.1); border: 1px solid rgba(52, 199, 89, 0.2); border-radius:10px; padding:10px 14px; display:flex; align-items:center; gap:8px; margin:8px 0 20px; justify-content: center; }
+    .receipt-saved-row span { font-size:13px; font-weight:700; color:#1a7a3b; }
+        
     .modal-actions { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:20px; }
-    .modal-btn { padding:13px; border-radius:14px; font-size:14px; font-weight:600; border:none; cursor:pointer; transition:opacity var(--transition); display:flex; align-items:center; justify-content:center; gap:6px; }
-    .modal-btn:active { opacity:.8; }
-    .modal-btn.primary   { background:var(--blue); color:#fff; }
-    .modal-btn.secondary { background:var(--bg); color:var(--text); border:1.5px solid var(--border); }
+    .modal-btn { padding:13px; border-radius:14px; font-size:14px; font-weight:700; border:none; cursor:pointer; transition:all var(--transition); display:flex; align-items:center; justify-content:center; gap:6px; }
+    .modal-btn:active { transform: scale(0.97); }
+    .modal-btn.primary   { background:var(--blue); color:#fff; box-shadow:0 4px 12px rgba(0, 113, 227, 0.2); }
+    .modal-btn.primary:hover { background:var(--blue-dark); box-shadow:0 6px 16px rgba(0, 113, 227, 0.35); }
+    .modal-btn.secondary { background:rgba(0,0,0,0.03); color:var(--text); border:1.5px solid var(--border); }
+        
     .purchase-links { margin-top:16px; }
-    .purchase-links-title { font-size:13px; font-weight:600; color:var(--text-sub); margin-bottom:10px; }
-    .purchase-link-btn { display:flex; align-items:center; gap:10px; padding:12px 14px; border-radius:12px; text-decoration:none; font-size:14px; font-weight:600; margin-bottom:8px; transition:opacity var(--transition); }
-    .purchase-link-btn:active { opacity:.8; }
-    .purchase-link-btn.line    { background:#06c755; color:#fff; }
-    .purchase-link-btn.official { background:var(--text); color:#fff; }
+    .purchase-links-title { font-size:13px; font-weight:700; color:var(--text-sub); margin-bottom:10px; }
+    .purchase-link-btn { display:flex; align-items:center; gap:10px; padding:12px 14px; border-radius:12px; text-decoration:none; font-size:14px; font-weight:700; margin-bottom:8px; transition:all var(--transition); }
+    .purchase-link-btn:active { transform: scale(0.97); }
+    .purchase-link-btn.line    { background:#06c755; color:#fff; box-shadow:0 4px 12px rgba(6, 199, 85, 0.2); }
+    .purchase-link-btn.official { background:var(--text); color:var(--bg); }
 
     /* Toast */
-    .toast { position:fixed; bottom:calc(100px + var(--safe-bottom)); left:50%; transform:translateX(-50%) translateY(20px); background:rgba(0,0,0,.8); color:#fff; font-size:13px; font-weight:500; padding:10px 20px; border-radius:20px; z-index:300; opacity:0; transition:opacity .25s,transform .25s; white-space:nowrap; pointer-events:none; }
+    .toast { position:fixed; bottom:calc(100px + var(--safe-bottom)); left:50%; transform:translateX(-50%) translateY(20px); background:rgba(0,0,0,.85); color:#fff; font-size:13px; font-weight:600; padding:10px 20px; border-radius:20px; z-index:300; opacity:0; transition:all var(--transition); white-space:nowrap; pointer-events:none; }
     .toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
 
-    /* Price preview card (Air: live price shown while selecting chip/ram/storage) */
-    .price-preview-inline { background:var(--sel-bg); border:1.5px solid #c4d9f8; border-radius:var(--radius-sm); padding:10px 14px; margin-bottom:12px; display:flex; align-items:center; gap:8px; }
-    .price-preview-inline .ppi-label { font-size:12px; color:var(--text-sub); flex:1; }
+    /* Price preview card */
+    .price-preview-inline { background:var(--sel-bg); border:1.5px solid rgba(0, 113, 227, 0.15); border-radius:var(--radius-sm); padding:10px 14px; margin-bottom:12px; display:flex; align-items:center; gap:8px; }
+    .price-preview-inline .ppi-label { font-size:12px; color:var(--text-sub); flex:1; font-weight:600; }
     .price-preview-inline .ppi-val   { font-size:16px; font-weight:700; color:var(--blue); }
 
     @media(min-width:540px){ .opt-grid { grid-template-columns:repeat(3,1fr); } .opt-grid.cols-2 { grid-template-columns:1fr 1fr; } }
@@ -204,6 +420,10 @@
   </style>
 </head>
 <body>
+<div class="liquid-bg">
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+</div>
 <div class="app">
 
   <div class="topbar">
@@ -245,7 +465,7 @@
 <div class="modal-overlay" id="modal-overlay" onclick="closeModalOutside(event)">
   <div class="modal-sheet">
     <div class="modal-handle"></div>
-    <div class="modal-title">🧾 BTS 購買清單</div>
+    <div class="modal-title">BTS 購買清單</div>
     <div id="modal-content"></div>
     <div class="modal-actions">
       <button class="modal-btn secondary" onclick="closeModal()">關閉</button>
@@ -294,8 +514,7 @@ const state = {
   proStorId:  null,
   nano:       false,
   // Shared
-  productivity: null,  // { id, price }
-  airpods:      null,
+  gift:         null,  // { id, price, originalPrice, name }
   creditCard:   0,
   referral:     0,
   sellGift:     false,
@@ -317,7 +536,7 @@ function reset() {
     size:null, color:null,
     chipId:null, memId:null, storageId:null, powerId:null,
     chipObj:null, proMemAdj:0, proMemId:null, proStorAdj:0, proStorId:null,
-    nano:false, productivity:null, airpods:null,
+    nano:false, gift:null,
     creditCard:0, referral:0, sellGift:false, giftPrice:0
   });
 }
@@ -343,24 +562,24 @@ function renderAll() {
 // ═══════════════════════════════════════
 function getStepDefs() {
   if (productType === 'air') return [
-    { id:'size',         title:'選擇尺寸',     icon:'📐' },
-    { id:'color',        title:'選擇顏色',     icon:'🎨' },
-    { id:'chip',         title:'選擇晶片',     icon:'⚡' },
-    { id:'memory',       title:'統一記憶體',   icon:'🧠' },
-    { id:'storage',      title:'儲存裝置',     icon:'💾' },
-    { id:'power',        title:'電源轉接器',   icon:'🔌' },
-    { id:'gifts',        title:'BTS 配件',     icon:'🎁' },
-    { id:'rebate',       title:'回饋試算',     icon:'💰' }
+    { id:'size',         title:'選擇尺寸',     icon:'' },
+    { id:'color',        title:'選擇顏色',     icon:'' },
+    { id:'chip',         title:'選擇晶片',     icon:'' },
+    { id:'memory',       title:'統一記憶體',   icon:'' },
+    { id:'storage',      title:'儲存裝置',     icon:'' },
+    { id:'power',        title:'電源轉接器',   icon:'' },
+    { id:'gifts',        title:'BTS 配件',     icon:'' },
+    { id:'rebate',       title:'回饋試算',     icon:'' }
   ];
   return [
-    { id:'size',    title:'選擇尺寸',   icon:'📐' },
-    { id:'chip',    title:'選擇晶片',   icon:'⚡' },
-    { id:'memory',  title:'統一記憶體', icon:'🧠' },
-    { id:'storage', title:'儲存裝置',   icon:'💾' },
-    { id:'display', title:'顯示器玻璃', icon:'✨' },
-    { id:'color',   title:'選擇顏色',   icon:'🎨' },
-    { id:'gifts',   title:'BTS 配件',   icon:'🎁' },
-    { id:'rebate',  title:'回饋試算',   icon:'💰' }
+    { id:'size',    title:'選擇尺寸',   icon:'' },
+    { id:'chip',    title:'選擇晶片',   icon:'' },
+    { id:'memory',  title:'統一記憶體', icon:'' },
+    { id:'storage', title:'儲存裝置',   icon:'' },
+    { id:'display', title:'顯示器玻璃', icon:'' },
+    { id:'color',   title:'選擇顏色',   icon:'' },
+    { id:'gifts',   title:'BTS 配件',   icon:'' },
+    { id:'rebate',  title:'回饋試算',   icon:'' }
   ];
 }
 
@@ -445,7 +664,7 @@ function stepDone(id) {
     case 'storage': return productType==='air' ? !!state.storageId : state.proStorId !== null;
     case 'power':   return !!state.powerId;
     case 'display': return state.nano !== null;
-    case 'gifts':   return !!(state.productivity && state.airpods);
+    case 'gifts':   return !!state.gift;
     case 'rebate':  return true;
     default: return false;
   }
@@ -659,59 +878,69 @@ function proPreview() {
 }
 
 /* ── Shared: Gifts + Rebate ── */
-function buildGiftsStep() {
+function buildMacGiftList() {
   const g = BTS_CONFIG.btsGifts;
-  return `
-  <div class="gift-section">
-    <p class="gift-section-title">生產力套組（三選一，免費）</p>
-    ${g.macbookProductivity.map(x=>giftRow(x,'productivity')).join('')}
-  </div>
-  <div class="gift-section">
-    <p class="gift-section-title">AirPods 套組</p>
-    ${g.macbookAirpods.map(x=>giftRow(x,'airpods')).join('')}
-  </div>`;
+  const list = [];
+  g.macbookProductivity.forEach(x => {
+    list.push({ id: 'prod_' + x.id, name: x.name, btsPrice: x.btsPrice ?? 0, originalPrice: x.originalPrice, tag: x.tag });
+  });
+  g.macbookAirpods.filter(x => x.id !== 'none').forEach(x => {
+    list.push({ id: 'ap_' + x.id, name: x.name, btsPrice: x.btsPrice ?? 0, originalPrice: x.originalPrice, tag: x.tag });
+  });
+  list.push({ id: 'none', name: '不加購配件', btsPrice: 0, originalPrice: 0, tag: '略過此步驟' });
+  return list;
 }
 
-function giftRow(g, cat) {
-  const p = g.btsPrice ?? 0;
-  const tagClass = p === 0 ? '' : 'paid';
-  return `<div class="gift-opt" id="gift-${cat}-${g.id}" onclick="selectGift('${cat}','${g.id}',${p})">
-    <div class="gift-info">
-      <div class="gift-name">${g.name}</div>
-      <div class="gift-tag ${tagClass}">${g.tag}</div>
-    </div>
-    <div class="gift-radio"></div>
-  </div>`;
+function buildGiftsStep() {
+  return buildMacGiftList().map(g => {
+    const isSelected = state.gift?.id === g.id;
+    const tagClass = g.id === 'none' ? 'neutral' : g.btsPrice > 0 ? 'paid' : '';
+    return `<div class="gift-opt${isSelected ? ' selected' : ''}" id="gift-item-${g.id}"
+      onclick='selectGift(${JSON.stringify(g.id)}, ${g.btsPrice}, ${g.originalPrice}, ${JSON.stringify(g.name)})'>
+      <div class="gift-info">
+        <div class="gift-name">${g.name}</div>
+        <div class="gift-tag ${tagClass}">${g.tag}</div>
+      </div>
+      <div class="gift-radio"></div>
+    </div>`;
+  }).join('');
 }
 
 function buildRebateStep() {
-  const cc  = BTS_CONFIG.meta.creditCardRebateOptions;
-  const ref = BTS_CONFIG.meta.referralRebateOptions;
   return `
   <div class="rebate-row">
     <span class="rebate-label">💳 信用卡回饋</span>
-    <select class="rebate-select" onchange="setRebate('creditCard',this.value)">
-      ${cc.map(v=>`<option value="${v}"${state.creditCard===v?' selected':''}>${v}%</option>`).join('')}
-    </select>
+    <div class="rebate-input-wrap">
+      <input type="number" inputmode="decimal" class="rebate-input" min="0" max="30" step="0.1"
+             placeholder="0" value="${state.creditCard || ''}"
+             oninput="setRebate('creditCard', this.value)">
+      <span class="rebate-unit">%</span>
+    </div>
   </div>
   <div class="rebate-row">
     <span class="rebate-label">🔗 導購回饋</span>
-    <select class="rebate-select" onchange="setRebate('referral',this.value)">
-      ${ref.map(v=>`<option value="${v}"${state.referral===v?' selected':''}>${v}%</option>`).join('')}
-    </select>
+    <div class="rebate-input-wrap">
+      <input type="number" inputmode="decimal" class="rebate-input" min="0" max="30" step="0.1"
+             placeholder="0" value="${state.referral || ''}"
+             oninput="setRebate('referral', this.value)">
+      <span class="rebate-unit">%</span>
+    </div>
   </div>
-  <div class="sell-gift-row">
-    <label>💵 打算賣掉贈品嗎？</label>
-    <label class="toggle-switch">
-      <input type="checkbox" id="sell-toggle" ${state.sellGift?'checked':''} onchange="toggleSell(this.checked)">
-      <div class="toggle-track"></div>
-      <div class="toggle-thumb"></div>
-    </label>
+  <p class="rebate-note">⚠️ 導購回饋以未稅價（÷1.05）粗估，數字僅供參考，實際金額依導購系統回饋為主</p>
+  <div class="sell-gift-section" style="margin-top:16px">
+    <p class="sell-section-label">贈品用途</p>
+    <div class="sell-opts">
+      <button class="sell-opt${!state.sellGift ? ' active' : ''}" onclick="setSellGift(false)">🤍 自己留著</button>
+      <button class="sell-opt${state.sellGift ? ' active' : ''}" onclick="setSellGift(true)">💰 轉售變現</button>
+    </div>
+    ${state.sellGift ? `<input class="gift-price-input" type="number" inputmode="numeric"
+      placeholder="預估轉售金額（NT$）" min="0" value="${state.giftPrice || ''}"
+      oninput="setGiftPrice(this.value)" style="margin-top:10px">` : ''}
   </div>
-  <div class="gift-price-wrap ${state.sellGift?'show':''}" id="gift-price-wrap">
-    <input class="gift-price-input" type="number" placeholder="預估贈品售價（NT$）" min="0"
-           value="${state.giftPrice||''}" oninput="setGiftPrice(this.value)">
-  </div>`;
+  <button class="rebate-cta-btn" onclick="openModal()">
+    查看計算結果
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+  </button>`;
 }
 
 // ═══════════════════════════════════════
@@ -735,8 +964,7 @@ function restoreSelections(id) {
   if (id === 'power'   && state.powerId) hlOpt(`power-${state.powerId}`);
   if (id === 'display') hlOpt(`disp-${state.nano?'yes':'no'}`);
   if (id === 'gifts') {
-    if (state.productivity) hlOpt(`gift-productivity-${state.productivity.id}`);
-    if (state.airpods)      hlOpt(`gift-airpods-${state.airpods.id}`);
+    if (state.gift) hlOpt(`gift-item-${state.gift.id}`);
   }
 }
 
@@ -844,25 +1072,22 @@ function proSelectColor(c) {
 // ═══════════════════════════════════════
 //  Shared selectors
 // ═══════════════════════════════════════
-function selectGift(cat, id, price) {
-  state[cat] = { id, price };
-  document.querySelectorAll(`[id^="gift-${cat}-"]`).forEach(el => el.classList.remove('selected'));
-  hlOpt(`gift-${cat}-${id}`);
-  if (state.productivity && state.airpods) {
-    const pName = BTS_CONFIG.btsGifts.macbookProductivity.find(g=>g.id===state.productivity.id)?.name || '';
-    setSV('gifts', pName + ' 等');
-    advanceTo('rebate');
-  }
+function selectGift(id, price, originalPrice, name) {
+  state.gift = { id, price, originalPrice, name };
+  document.querySelectorAll('[id^="gift-item-"]').forEach(el => el.classList.remove('selected'));
+  document.getElementById(`gift-item-${id}`)?.classList.add('selected');
+  setSV('gifts', id === 'none' ? '不加購' : name);
+  advanceTo('rebate');
   updatePrice();
 }
 
 function setRebate(type, val) { state[type] = parseFloat(val)||0; updatePrice(); checkComplete(); }
 
-function toggleSell(checked) {
-  state.sellGift = checked;
-  const wrap = document.getElementById('gift-price-wrap');
-  if (wrap) wrap.classList.toggle('show', checked);
-  if (!checked) state.giftPrice = 0;
+function setSellGift(val) {
+  state.sellGift = val;
+  if (!val) state.giftPrice = 0;
+  const body = document.getElementById('sb-rebate');
+  if (body && body.classList.contains('open')) body.innerHTML = buildRebateStep();
   updatePrice();
 }
 
@@ -888,19 +1113,16 @@ function getMacBasePrice() {
 function calcPrice() {
   const base = getMacBasePrice();
   if (!base) return null;
-  const prodCost = state.productivity?.price || 0;
-  const apCost   = state.airpods?.price || 0;
-  const giftCost = prodCost + apCost;
+  const giftCost = state.gift?.price || 0;
   const subtotal = base + giftCost;
-  const ccR   = Math.round(subtotal * (state.creditCard/100));
-  const refR  = Math.round(subtotal * (state.referral/100));
+  const ccR   = Math.round(subtotal           * (state.creditCard/100));
+  const refR  = Math.round((subtotal / 1.05) * (state.referral/100)); // 導購以未稅價計算
   const giftS = state.sellGift ? state.giftPrice : 0;
   const final = subtotal - ccR - refR - giftS;
 
   // Savings
-  const prodOrig = BTS_CONFIG.btsGifts.macbookProductivity.find(g=>g.id===state.productivity?.id)?.originalPrice || 0;
-  const apOrig   = BTS_CONFIG.btsGifts.macbookAirpods.find(g=>g.id===state.airpods?.id)?.originalPrice || 0;
-  const giftSaved = (prodOrig + apOrig) - giftCost;
+  const giftOriginal = state.gift?.originalPrice || 0;
+  const giftSaved = giftOriginal - giftCost;
   const totalSaved = ccR + refR + giftS + giftSaved;
 
   return { base, giftCost, subtotal, ccR, refR, giftS, final, totalSaved };
@@ -918,15 +1140,15 @@ function updatePrice() {
   if (r.refR) parts.push(`導購 -NT$${r.refR.toLocaleString()}`);
   if (r.giftS) parts.push(`贈品售 -NT$${r.giftS.toLocaleString()}`);
   br.textContent = parts.length ? parts.join(' · ') : `定價 NT$${r.subtotal.toLocaleString()}`;
-  if (r.totalSaved > 0) { sv.style.display=''; sv.textContent=`🎉 合計省下 NT$${r.totalSaved.toLocaleString()}`; }
+  if (r.totalSaved > 0) { sv.style.display=''; sv.textContent=`合計省下 NT$${r.totalSaved.toLocaleString()}`; }
   else sv.style.display='none';
   checkComplete();
 }
 
 function checkComplete() {
   const required = productType === 'air'
-    ? ['size','color','chipId','memId','storageId','powerId','productivity','airpods']
-    : ['size','chipObj','proMemId','proStorId','color','productivity','airpods'];
+    ? ['size','color','chipId','memId','storageId','powerId','gift']
+    : ['size','chipObj','proMemId','proStorId','color','gift'];
   // nano for pro: always has a value (false is OK)
   const done = required.every(k => state[k] !== null && state[k] !== undefined);
   const btn  = document.getElementById('gen-btn');
@@ -940,8 +1162,7 @@ function checkComplete() {
 function openModal() {
   const r = calcPrice();
   if (!r) return;
-  const prodCfg = BTS_CONFIG.btsGifts.macbookProductivity.find(g=>g.id===state.productivity?.id);
-  const apCfg   = BTS_CONFIG.btsGifts.macbookAirpods.find(g=>g.id===state.airpods?.id);
+  const giftCfg = state.gift && state.gift.id !== 'none' ? state.gift : null;
   let name, specs;
   if (productType === 'air') {
     const sz = BTS_CONFIG.products.macbookAir.sizes[state.size];
@@ -974,20 +1195,19 @@ function openModal() {
 
   html += `<hr class="receipt-divider">`;
 
-  if (prodCfg) html += rcRow(prodCfg.name, prodCfg.btsPrice||0, prodCfg.originalPrice);
-  if (apCfg && apCfg.id !== 'none') html += rcRow(apCfg.name, apCfg.btsPrice||0, apCfg.originalPrice);
+  if (giftCfg) html += rcRow(giftCfg.name, giftCfg.price||0, giftCfg.originalPrice||0);
 
   html += `<hr class="receipt-divider">
   <div class="receipt-item"><span class="receipt-label">教育商店定價</span><span class="receipt-value">NT$${r.subtotal.toLocaleString()}</span></div>`;
   if (r.ccR)  html += `<div class="receipt-item"><span class="receipt-label">信用卡回饋 (${state.creditCard}%)</span><span class="receipt-value deduct">-NT$${r.ccR.toLocaleString()}</span></div>`;
-  if (r.refR) html += `<div class="receipt-item"><span class="receipt-label">導購回饋 (${state.referral}%)</span><span class="receipt-value deduct">-NT$${r.refR.toLocaleString()}</span></div>`;
+  if (r.refR) html += `<div class="receipt-item"><span class="receipt-label">導購回饋 (${state.referral}%・未稅估算)</span><span class="receipt-value deduct">-NT$${r.refR.toLocaleString()}</span></div>`;
   if (r.giftS) html += `<div class="receipt-item"><span class="receipt-label">贈品售出</span><span class="receipt-value deduct">-NT$${r.giftS.toLocaleString()}</span></div>`;
 
   html += `<div class="receipt-total">
-    <span class="receipt-total-label">💰 實際入手價</span>
+    <span class="receipt-total-label">實際入手價</span>
     <span class="receipt-total-value">NT$${r.final.toLocaleString()}</span>
   </div>`;
-  if (r.totalSaved > 0) html += `<div class="receipt-saved-row"><span>🎉 合計省下 NT$${r.totalSaved.toLocaleString()}</span></div>`;
+  if (r.totalSaved > 0) html += `<div class="receipt-saved-row"><span>合計省下 NT$${r.totalSaved.toLocaleString()}</span></div>`;
   html += `<p style="font-size:11px;color:var(--text-sub);text-align:center;margin-top:4px">DESIGNED BY Neil尼歐</p>`;
 
   document.getElementById('modal-content').innerHTML = html;
@@ -1005,7 +1225,187 @@ function rcRow(name, btsP, origP) {
 
 function closeModal() { document.getElementById('modal-overlay').classList.remove('open'); }
 function closeModalOutside(e) { if (e.target===document.getElementById('modal-overlay')) closeModal(); }
-function generateImage() { showToast('圖片生成功能即將推出！'); }
+function generateImage() {
+  showToast('⏳ 正在載入產品圖片...');
+
+  const r = calcPrice();
+  if (!r) { showToast('請先完成所有選擇'); return; }
+
+  const imgUrl = productType === 'air'
+    ? BTS_CONFIG.products.macbookAir.colorImages?.[state.size]?.[state.color]
+    : BTS_CONFIG.products.macbookPro.colorImages?.[state.size]?.[state.color];
+
+  if (!imgUrl) { _drawMacReceipt(null, r); return; }
+
+  const img = new Image();
+  img.crossOrigin = 'anonymous';
+  let drawn = false;
+  const doDraw = (el) => { if (!drawn) { drawn = true; _drawMacReceipt(el, r); } };
+  img.onload  = () => doDraw(img);
+  img.onerror = () => doDraw(null);
+  setTimeout(() => doDraw(null), 4000);
+  img.src = imgUrl;
+}
+
+function _drawMacReceipt(productImg, r) {
+  // ── Build strings ──
+  let name, specs, giftCfg;
+  if (productType === 'air') {
+    const sz = BTS_CONFIG.products.macbookAir.sizes[state.size];
+    const ch = sz.chips.find(c => c.id === state.chipId);
+    const me = sz.memory.find(m => m.id === state.memId);
+    const st = sz.storage.find(s => s.id === state.storageId);
+    name  = `MacBook Air ${sz.label}`;
+    specs = `${ch.detail} · ${me.name} · ${st.name}`;
+  } else {
+    const ch = state.chipObj;
+    const me = ch.memory.find(m => m.id === state.proMemId);
+    const st = ch.storage.find(s => s.id === state.proStorId);
+    name  = `MacBook Pro ${BTS_CONFIG.products.macbookPro.sizes[state.size].label}`;
+    specs = `${ch.name} ${ch.detail} · ${me?.name||''} · ${st?.name||''}`;
+  }
+  giftCfg = state.gift && state.gift.id !== 'none' ? state.gift : null;
+
+  // ── Dynamic canvas height ──
+  const IMG_H      = productImg ? 220 : 0;
+  const ROWS       = 1 + (giftCfg?1:0) + (r.ccR?1:0) + (r.refR?1:0) + (r.giftS?1:0);
+  const FIXED_H    = 390;
+  const canvas     = document.createElement('canvas');
+  canvas.width     = 800;
+  canvas.height    = IMG_H + ROWS * 28 + FIXED_H;
+
+  const ctx = canvas.getContext('2d');
+
+  // Background
+  const bg = ctx.createLinearGradient(0, 0, 0, canvas.height);
+  bg.addColorStop(0, '#f0f4ff'); bg.addColorStop(1, '#e8f0fe');
+  ctx.fillStyle = bg;
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  let y = 60;
+
+  // Title
+  ctx.fillStyle = '#1d1d1f';
+  ctx.font = 'bold 30px -apple-system, BlinkMacSystemFont, sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('BTS 購買清單', canvas.width/2, y);  y += 44;
+  ctx.font = '15px -apple-system, BlinkMacSystemFont, sans-serif';
+  ctx.fillStyle = '#86868b';
+  ctx.fillText(new Date().toLocaleDateString('zh-TW'), canvas.width/2, y);  y += 52;
+
+  // Card
+  const cH = canvas.height - y + 10;
+  ctx.fillStyle = 'white';
+  ctx.shadowColor = 'rgba(0,0,0,0.12)'; ctx.shadowBlur = 24; ctx.shadowOffsetY = 8;
+  const [cX, cY, cW, cR] = [40, y-24, canvas.width-80, 20];
+  ctx.beginPath();
+  ctx.moveTo(cX+cR, cY); ctx.lineTo(cX+cW-cR, cY);
+  ctx.quadraticCurveTo(cX+cW, cY, cX+cW, cY+cR);
+  ctx.lineTo(cX+cW, cY+cH-cR);
+  ctx.quadraticCurveTo(cX+cW, cY+cH, cX+cW-cR, cY+cH);
+  ctx.lineTo(cX+cR, cY+cH);
+  ctx.quadraticCurveTo(cX, cY+cH, cX, cY+cH-cR);
+  ctx.lineTo(cX, cY+cR);
+  ctx.quadraticCurveTo(cX, cY, cX+cR, cY);
+  ctx.closePath(); ctx.fill();
+  ctx.shadowColor = 'transparent'; ctx.shadowBlur = 0; ctx.shadowOffsetY = 0;
+
+  let cy = y + 28;
+
+  // Product image
+  if (productImg) {
+    try { ctx.drawImage(productImg, canvas.width/2 - 100, cy, 200, 200); cy += 220; }
+    catch(e) { cy += 10; }
+  }
+
+  // Product name + specs
+  ctx.fillStyle = '#0071e3';
+  ctx.font = 'bold 20px -apple-system, BlinkMacSystemFont, sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText(name, canvas.width/2, cy);  cy += 30;
+
+  ctx.fillStyle = '#86868b';
+  ctx.font = '13px -apple-system, BlinkMacSystemFont, sans-serif';
+  ctx.fillText(specs, canvas.width/2, cy);  cy += 22;
+
+  const colorLine = (state.color || '–') + (productType === 'pro' && state.nano ? ' · 奈米紋理玻璃' : '');
+  ctx.fillText(colorLine, canvas.width/2, cy);  cy += 36;
+
+  // Helpers
+  const drawDiv = (col = '#e5e5e5', lw = 1) => {
+    ctx.strokeStyle = col; ctx.lineWidth = lw;
+    ctx.beginPath(); ctx.moveTo(80, cy); ctx.lineTo(canvas.width-80, cy); ctx.stroke();
+    cy += 28;
+  };
+  const drawRow = (label, value, col = '#1d1d1f', bold = false) => {
+    ctx.font = (bold?'bold ':'') + '16px -apple-system, BlinkMacSystemFont, sans-serif';
+    ctx.fillStyle = col;
+    ctx.textAlign = 'left';  ctx.fillText(label, 80, cy);
+    ctx.textAlign = 'right'; ctx.fillText(value, canvas.width-80, cy);
+    cy += 28;
+  };
+
+  // Gift row
+  if (giftCfg) {
+    const saving = (giftCfg.originalPrice||0) - (giftCfg.price||0);
+    const valStr = giftCfg.price === 0 ? '免費' : `NT$${giftCfg.price.toLocaleString()}`;
+    drawRow(giftCfg.name,
+      saving > 0 ? `${valStr} (省NT$${saving.toLocaleString()})` : valStr,
+      giftCfg.price === 0 ? '#34c759' : '#1d1d1f');
+  }
+
+  drawDiv();
+  drawRow('教育商店定價', `NT$${r.subtotal.toLocaleString()}`);
+  if (r.ccR)  drawRow(`信用卡回饋 (${state.creditCard}%)`,          `-NT$${r.ccR.toLocaleString()}`,  '#0071e3');
+  if (r.refR) drawRow(`導購回饋 (${state.referral}%・未稅估算)`,    `-NT$${r.refR.toLocaleString()}`,  '#0071e3');
+  if (r.giftS) drawRow('贈品售出',                                   `-NT$${r.giftS.toLocaleString()}`, '#0071e3');
+
+  cy += 6;
+  drawDiv('#0071e3', 2);
+
+  // Final price block
+  const fpBg = ctx.createLinearGradient(cX, cy-10, cX+cW, cy+70);
+  fpBg.addColorStop(0, 'rgba(0,113,227,0.06)'); fpBg.addColorStop(1, 'rgba(90,200,250,0.04)');
+  ctx.fillStyle = fpBg;
+  ctx.fillRect(cX+1, cy-14, cW-2, 72);
+
+  ctx.fillStyle = '#0071e3';
+  ctx.font = 'bold 20px -apple-system, BlinkMacSystemFont, sans-serif';
+  ctx.textAlign = 'left';  ctx.fillText('實際入手價', 80, cy+26);
+  ctx.font = 'bold 24px -apple-system, BlinkMacSystemFont, sans-serif';
+  ctx.textAlign = 'right'; ctx.fillText(`NT$${r.final.toLocaleString()}`, canvas.width-80, cy+28);
+  cy += 72;
+
+  if (r.totalSaved > 0) {
+    ctx.fillStyle = '#34c759';
+    ctx.font = 'bold 14px -apple-system, BlinkMacSystemFont, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(`合計省下 NT$${r.totalSaved.toLocaleString()}`, canvas.width/2, cy+10);
+    cy += 30;
+  }
+
+  // Footer
+  cy += 10;
+  ctx.fillStyle = '#86868b';
+  ctx.font = 'bold 14px -apple-system, BlinkMacSystemFont, sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('DESIGNED BY Neil尼歐', canvas.width/2, cy);
+  cy += 20;
+  ctx.font = '12px -apple-system, BlinkMacSystemFont, sans-serif';
+  ctx.fillText('MacBook BTS優惠計算機', canvas.width/2, cy);
+
+  // Download
+  try {
+    const link = document.createElement('a');
+    link.download = `MacBook_BTS購買清單_${new Date().toLocaleDateString('zh-TW').replace(/\//g,'')}.png`;
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+    showToast('📄 BTS購買清單已下載！');
+  } catch(e) {
+    console.error(e);
+    showToast('❌ 圖片生成失敗，請稍後再試');
+  }
+}
 
 // ═══════════════════════════════════════
 //  Utilities

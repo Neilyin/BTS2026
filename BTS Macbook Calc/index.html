@@ -1,0 +1,4450 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>MacBook BTS優惠計算機BETA v2.1</title>
+    <style>
+        :root {
+          /* Apple風格配色 */
+          --primary-color: #0071e3;
+          --secondary-color: #34c759;
+          --accent-color: #ac39ff;
+          --danger-color: #ff3b30;
+          --warning-color: #ff9800;
+          --background-color: #f5f5f7;
+          --card-background: #ffffff;
+          --text-color: #1d1d1f;
+          --text-secondary: #86868b;
+          --border-color: #d2d2d7;
+          --hover-color: #f2f2f7;
+          --shadow-sm: 0 2px 10px rgba(0, 0, 0, 0.1);
+          --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.1);
+          --shadow-lg: 0 8px 30px rgba(0, 0, 0, 0.12);
+          --radius-sm: 8px;
+          --radius-md: 12px;
+          --radius-lg: 20px;
+          --transition: all 0.3s ease;
+          --transition-fast: all 0.15s ease;
+          --safe-area-top: env(safe-area-inset-top, 0px);
+          --safe-area-bottom: env(safe-area-inset-bottom, 0px);
+        }
+        
+        * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+          -webkit-tap-highlight-color: transparent;
+        }
+        
+        html, body {
+          height: 100%;
+          width: 100%;
+          overflow-x: hidden;
+          font-family: -apple-system, BlinkMacSystemFont, 'Noto Sans TC', sans-serif;
+        }
+        
+        body {
+          font-size: 16px;
+          line-height: 1.6;
+          color: var(--text-color);
+          background-color: var(--background-color);
+          -webkit-font-smoothing: antialiased;
+          -moz-osx-font-smoothing: grayscale;
+          padding-bottom: calc(16px + var(--safe-area-bottom));
+        }
+        
+        /* Beta 徽章樣式 */
+        .beta-badge {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          background: white;
+          color: var(--primary-color);
+          font-size: 10px;
+          font-weight: 700;
+          letter-spacing: 0.5px;
+          padding: 3px 8px;
+          border-radius: 6px;
+          margin-left: 8px;
+          vertical-align: middle;
+          text-transform: uppercase;
+          border: 1px solid var(--primary-color);
+          box-shadow: 0 2px 8px rgba(0, 113, 227, 0.2);
+          animation: betaPulse 2s ease-in-out infinite;
+          position: relative;
+          overflow: hidden;
+        }
+        
+        .beta-badge::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: -100%;
+          width: 100%;
+          height: 100%;
+          background: linear-gradient(90deg, transparent, rgba(0, 113, 227, 0.1), transparent);
+          animation: betaShine 3s ease-in-out infinite;
+        }
+        
+        @keyframes betaPulse {
+          0%, 100% { 
+            transform: scale(1);
+            box-shadow: 0 2px 8px rgba(0, 113, 227, 0.2);
+            border-color: var(--primary-color);
+          }
+          50% { 
+            transform: scale(1.05);
+            box-shadow: 0 3px 12px rgba(0, 113, 227, 0.3);
+            border-color: #0062c3;
+          }
+        }
+        
+        @keyframes betaShine {
+          0% { left: -100%; }
+          50% { left: 100%; }
+          100% { left: 100%; }
+        }
+        
+        .container {
+          max-width: 1200px;
+          margin: 0 auto;
+          padding: 20px;
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+          font-weight: 600;
+          line-height: 1.3;
+        }
+        
+        .header {
+          text-align: center;
+          margin-bottom: 2.5rem;
+          padding: 1.5rem 0;
+          background: linear-gradient(135deg, var(--primary-color), #5ac8fa);
+          border-radius: var(--radius-lg);
+          color: white;
+          box-shadow: var(--shadow-md);
+          position: relative;
+          overflow: hidden;
+        }
+        
+        .header::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: -100%;
+          width: 100%;
+          height: 100%;
+          background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+          animation: headerShine 4s ease-in-out infinite;
+        }
+        
+        @keyframes headerShine {
+          0% { left: -100%; }
+          50% { left: 100%; }
+          100% { left: 100%; }
+        }
+        
+        .header h1 {
+          font-size: 2.2rem;
+          font-weight: 700;
+          margin-bottom: 0.8rem;
+          position: relative;
+          z-index: 1;
+        }
+        
+        .header p {
+          font-size: 1.1rem;
+          opacity: 0.9;
+          margin-bottom: 0.5rem;
+          position: relative;
+          z-index: 1;
+        }
+        
+        .step {
+          background-color: var(--card-background);
+          border-radius: var(--radius-lg);
+          padding: 2rem;
+          margin-bottom: 1.5rem;
+          box-shadow: var(--shadow-md);
+          border: 1px solid rgba(0, 0, 0, 0.04);
+          transition: var(--transition);
+          position: relative;
+          overflow: hidden;
+        }
+        
+        .step::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: -100%;
+          width: 100%;
+          height: 100%;
+          background: linear-gradient(90deg, transparent, rgba(0, 113, 227, 0.03), transparent);
+          transition: left 0.6s;
+        }
+        
+        .step:hover::before {
+          left: 100%;
+        }
+        
+        .step:hover {
+          transform: translateY(-3px);
+          box-shadow: var(--shadow-lg);
+        }
+        
+        .step h2 {
+          font-size: 1.6rem;
+          font-weight: 600;
+          margin-bottom: 1.5rem;
+          color: var(--text-color);
+          text-align: center;
+          position: relative;
+          z-index: 1;
+        }
+        
+        .options {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+          gap: 1.2rem;
+        }
+        
+        .option {
+          border: 2px solid var(--border-color);
+          border-radius: var(--radius-md);
+          padding: 1.5rem;
+          cursor: pointer;
+          transition: var(--transition);
+          text-align: center;
+          background-color: var(--card-background);
+          position: relative;
+          overflow: hidden;
+          box-shadow: var(--shadow-sm);
+        }
+        
+        .option::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: -100%;
+          width: 100%;
+          height: 100%;
+          background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+          transition: left 0.5s;
+        }
+        
+        .option:hover::before {
+          left: 100%;
+        }
+        
+        .option:hover {
+          border-color: var(--primary-color);
+          transform: translateY(-5px);
+          box-shadow: var(--shadow-md);
+        }
+        
+        .option.selected {
+          border-color: var(--primary-color);
+          background: linear-gradient(135deg, rgba(0, 113, 227, 0.08), rgba(90, 200, 250, 0.05));
+          transform: translateY(-3px);
+          box-shadow: 0 8px 30px rgba(0, 113, 227, 0.2);
+        }
+        
+        .option.selected::after {
+          content: '✓';
+          position: absolute;
+          top: 10px;
+          right: 15px;
+          background: var(--primary-color);
+          color: white;
+          width: 24px;
+          height: 24px;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 14px;
+          font-weight: bold;
+          animation: checkmark 0.3s ease-out;
+        }
+        
+        @keyframes checkmark {
+          0% { transform: scale(0); }
+          50% { transform: scale(1.2); }
+          100% { transform: scale(1); }
+        }
+        
+        .option img {
+          width: 200px;
+          height: 200px;
+          object-fit: cover;
+          margin-bottom: 1rem;
+          border-radius: var(--radius-sm);
+          transition: var(--transition);
+        }
+        
+        .option:hover img {
+          transform: scale(1.02);
+        }
+        
+        .option-title {
+          font-size: 1.2rem;
+          font-weight: 600;
+          margin-bottom: 0.5rem;
+          color: var(--text-color);
+        }
+        
+        .option-price {
+          font-size: 1rem;
+          color: var(--text-secondary);
+          font-weight: 500;
+        }
+        
+        .option-desc {
+          font-size: 0.9rem;
+          color: var(--text-secondary);
+          margin-top: 0.5rem;
+          line-height: 1.4;
+        }
+        
+        .option.selected .option-title {
+          color: var(--primary-color);
+          font-weight: 700;
+        }
+        
+        .option.selected .option-price {
+          color: var(--primary-color);
+          font-weight: 600;
+        }
+        
+        /* 客製化選項樣式 */
+        .customize-section {
+          background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+          border-radius: var(--radius-lg);
+          padding: 2rem;
+          margin: 1.5rem 0;
+          border: 1px solid rgba(0, 0, 0, 0.08);
+        }
+        
+        .customize-header {
+          text-align: center;
+          margin-bottom: 2rem;
+        }
+        
+        .customize-title {
+          font-size: 1.8rem;
+          font-weight: 600;
+          color: var(--text-color);
+          margin-bottom: 0.5rem;
+        }
+        
+        .customize-desc {
+          font-size: 1rem;
+          color: var(--text-secondary);
+        }
+
+        /* 動態價格預覽區域 */
+    .price-preview {
+    background: linear-gradient(135deg, #ffffff, #f8f9fa);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: var(--shadow-md);
+    border: 2px solid var(--primary-color);
+    position: relative;
+    z-index: 10;
+    transition: var(--transition);
+}
+
+        .price-preview.pulse {
+          animation: pricePulse 0.6s ease-out;
+        }
+
+        @keyframes pricePulse {
+          0% { transform: scale(1); }
+          50% { transform: scale(1.02); }
+          100% { transform: scale(1); }
+        }
+
+        .price-preview-header {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          margin-bottom: 1rem;
+        }
+
+        .price-preview-title {
+          font-size: 1.2rem;
+          font-weight: 600;
+          color: var(--primary-color);
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+        }
+
+        .price-preview-toggle {
+          background: none;
+          border: none;
+          color: var(--primary-color);
+          font-size: 1.2rem;
+          cursor: pointer;
+          padding: 0.5rem;
+          border-radius: 50%;
+          transition: var(--transition);
+        }
+
+        .price-preview-toggle:hover {
+          background: rgba(0, 113, 227, 0.1);
+        }
+
+        .price-preview-main {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          margin-bottom: 1rem;
+        }
+
+        .price-preview-base {
+          font-size: 0.9rem;
+          color: var(--text-secondary);
+        }
+
+        .price-preview-current {
+          font-size: 1.5rem;
+          font-weight: 700;
+          color: var(--primary-color);
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+        }
+
+        .price-change {
+          font-size: 0.9rem;
+          font-weight: 500;
+          padding: 0.2rem 0.5rem;
+          border-radius: var(--radius-sm);
+          transition: var(--transition);
+        }
+
+        .price-change.positive {
+          color: var(--danger-color);
+          background: rgba(255, 59, 48, 0.1);
+        }
+
+        .price-change.negative {
+          color: var(--secondary-color);
+          background: rgba(52, 199, 89, 0.1);
+        }
+
+        .price-preview-details {
+          display: none;
+          animation: slideDown 0.3s ease-out;
+        }
+
+        .price-preview-details.show {
+          display: block;
+        }
+
+        @keyframes slideDown {
+          from { opacity: 0; transform: translateY(-10px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+
+        .price-detail-item {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 0.5rem 0;
+          border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+          font-size: 0.9rem;
+        }
+
+        .price-detail-item:last-child {
+          border-bottom: none;
+        }
+
+        .price-detail-label {
+          color: var(--text-secondary);
+          flex: 1;
+        }
+
+        .price-detail-value {
+          font-weight: 600;
+          color: var(--text-color);
+        }
+
+        .price-detail-value.upgrade {
+          color: var(--primary-color);
+        }
+
+        .price-detail-value.free {
+          color: var(--secondary-color);
+        }
+
+        /* 進度指示器 */
+        .customize-progress {
+          display: flex;
+          align-items: center;
+          gap: 1rem;
+          margin-bottom: 1.5rem;
+          padding: 1rem;
+          background: white;
+          border-radius: var(--radius-md);
+          box-shadow: var(--shadow-sm);
+        }
+
+        .progress-label {
+          font-size: 0.9rem;
+          color: var(--text-secondary);
+          font-weight: 500;
+        }
+
+        .progress-bar {
+          flex: 1;
+          height: 6px;
+          background: var(--border-color);
+          border-radius: 3px;
+          overflow: hidden;
+        }
+
+        .progress-fill {
+          height: 100%;
+          background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+          transition: width 0.8s ease;
+          border-radius: 3px;
+        }
+
+        .progress-percent {
+          font-size: 0.9rem;
+          font-weight: 600;
+          color: var(--primary-color);
+        }
+        
+        .upgrade-category {
+          background: white;
+          border-radius: var(--radius-md);
+          padding: 1.5rem;
+          margin-bottom: 1.5rem;
+          box-shadow: var(--shadow-sm);
+          border: 1px solid var(--border-color);
+          transition: var(--transition);
+        }
+
+        .upgrade-category.has-selection {
+          border-color: var(--primary-color);
+          box-shadow: 0 4px 20px rgba(0, 113, 227, 0.1);
+          animation: categorySelected 0.5s ease-out;
+        }
+
+        @keyframes categorySelected {
+          0% { transform: scale(1); }
+          50% { transform: scale(1.02); }
+          100% { transform: scale(1); }
+        }
+        
+        .upgrade-category h3 {
+          font-size: 1.3rem;
+          font-weight: 600;
+          margin-bottom: 1rem;
+          color: var(--text-color);
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+        }
+
+        .category-badge {
+          display: inline-flex;
+          align-items: center;
+          padding: 0.2rem 0.5rem;
+          background: rgba(0, 113, 227, 0.1);
+          color: var(--primary-color);
+          border-radius: var(--radius-sm);
+          font-size: 0.8rem;
+          font-weight: 500;
+          margin-left: auto;
+          animation: badgeAppear 0.3s ease-out;
+        }
+
+        @keyframes badgeAppear {
+          0% { opacity: 0; transform: scale(0); }
+          100% { opacity: 1; transform: scale(1); }
+        }
+        
+        .upgrade-options {
+          display: grid;
+          gap: 0.8rem;
+        }
+        
+        .upgrade-option {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 1rem;
+          border: 2px solid var(--border-color);
+          border-radius: var(--radius-sm);
+          cursor: pointer;
+          transition: var(--transition);
+          background: white;
+          position: relative;
+          overflow: hidden;
+        }
+
+        .upgrade-option::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: -100%;
+          width: 100%;
+          height: 100%;
+          background: linear-gradient(90deg, transparent, rgba(0, 113, 227, 0.05), transparent);
+          transition: left 0.5s;
+        }
+
+        .upgrade-option:hover::before {
+          left: 100%;
+        }
+        
+        .upgrade-option:hover {
+          border-color: var(--primary-color);
+          background: rgba(0, 113, 227, 0.02);
+          transform: translateY(-2px);
+          box-shadow: var(--shadow-sm);
+        }
+        
+        .upgrade-option.selected {
+          border-color: var(--primary-color);
+          background: rgba(0, 113, 227, 0.08);
+          transform: translateY(-2px);
+          box-shadow: 0 4px 15px rgba(0, 113, 227, 0.2);
+          animation: upgradeSelected 0.4s ease-out;
+        }
+
+        .upgrade-option.default {
+          border-color: var(--primary-color);
+          background: rgba(0, 113, 227, 0.08);
+        }
+
+        @keyframes upgradeSelected {
+          0% { transform: translateY(0) scale(1); }
+          50% { transform: translateY(-4px) scale(1.02); }
+          100% { transform: translateY(-2px) scale(1); }
+        }
+
+        .upgrade-option.selected::after {
+          content: '✓';
+          position: absolute;
+          top: 8px;
+          right: 8px;
+          background: var(--primary-color);
+          color: white;
+          width: 20px;
+          height: 20px;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 12px;
+          font-weight: bold;
+          animation: checkmarkSmall 0.3s ease-out;
+        }
+
+        @keyframes checkmarkSmall {
+          0% { transform: scale(0); }
+          50% { transform: scale(1.2); }
+          100% { transform: scale(1); }
+        }
+
+        .upgrade-option.disabled {
+          opacity: 0.5;
+          cursor: not-allowed;
+          background: #f8f9fa;
+          color: #999;
+        }
+
+        .upgrade-option.disabled:hover {
+          border-color: var(--border-color);
+          background: #f8f9fa;
+          transform: none;
+          box-shadow: none;
+        }
+
+        .upgrade-option.disabled .upgrade-name {
+          color: #999;
+        }
+
+        .upgrade-option.disabled .upgrade-desc {
+          color: #ccc;
+        }
+
+        .upgrade-price.disabled {
+          color: #999;
+        }
+
+        .upgrade-price.forced {
+          color: var(--warning-color);
+          font-weight: 700;
+        }
+
+        .upgrade-option.recommended {
+          border-color: var(--secondary-color);
+          background: rgba(52, 199, 89, 0.05);
+        }
+
+        .upgrade-option.recommended::before {
+          background: linear-gradient(90deg, transparent, rgba(52, 199, 89, 0.1), transparent);
+        }
+
+        .upgrade-option.recommended:hover {
+          border-color: var(--secondary-color);
+          background: rgba(52, 199, 89, 0.08);
+        }
+
+        .recommended-badge {
+          position: absolute;
+          top: -8px;
+          left: 50%;
+          transform: translateX(-50%);
+          background: var(--secondary-color);
+          color: white;
+          font-size: 0.7rem;
+          padding: 0.2rem 0.6rem;
+          border-radius: 10px;
+          font-weight: 600;
+          animation: recommendedPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes recommendedPulse {
+          0%, 100% { transform: translateX(-50%) scale(1); }
+          50% { transform: translateX(-50%) scale(1.05); }
+        }
+        
+        .upgrade-info {
+          flex: 1;
+          position: relative;
+          z-index: 1;
+        }
+        
+        .upgrade-name {
+          font-size: 1rem;
+          font-weight: 600;
+          color: var(--text-color);
+          margin-bottom: 0.2rem;
+        }
+        
+        .upgrade-desc {
+          font-size: 0.9rem;
+          color: var(--text-secondary);
+        }
+        
+        .upgrade-price {
+          font-size: 1rem;
+          font-weight: 600;
+          color: var(--primary-color);
+          position: relative;
+          z-index: 1;
+        }
+        
+        .upgrade-price.free {
+          color: var(--secondary-color);
+        }
+
+        .upgrade-price.default {
+          color: var(--text-secondary);
+        }
+
+        .upgrade-price.animated {
+          animation: priceChange 0.6s ease-out;
+        }
+
+        @keyframes priceChange {
+          0% { transform: scale(1); }
+          50% { transform: scale(1.1); }
+          100% { transform: scale(1); }
+        }
+
+        /* 移除升級按鈕 */
+        .remove-upgrade {
+          position: absolute;
+          top: 5px;
+          right: 5px;
+          background: var(--danger-color);
+          color: white;
+          border: none;
+          width: 20px;
+          height: 20px;
+          border-radius: 50%;
+          font-size: 12px;
+          cursor: pointer;
+          display: none;
+          align-items: center;
+          justify-content: center;
+          transition: var(--transition);
+          z-index: 2;
+        }
+
+        .upgrade-option.selected .remove-upgrade {
+          display: flex;
+        }
+
+        .remove-upgrade:hover {
+          background: #d32f2f;
+          transform: scale(1.1);
+        }
+
+        /* 衝突警告 */
+        .conflict-warning {
+          background: rgba(255, 152, 0, 0.1);
+          border: 1px solid var(--warning-color);
+          border-radius: var(--radius-sm);
+          padding: 0.8rem;
+          margin-top: 1rem;
+          display: none;
+          animation: warningSlide 0.3s ease-out;
+        }
+
+        .conflict-warning.show {
+          display: block;
+        }
+
+        @keyframes warningSlide {
+          from { opacity: 0; transform: translateY(-10px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+
+        .conflict-warning-title {
+          font-size: 0.9rem;
+          font-weight: 600;
+          color: var(--warning-color);
+          margin-bottom: 0.3rem;
+          display: flex;
+          align-items: center;
+          gap: 0.3rem;
+        }
+
+        .conflict-warning-text {
+          font-size: 0.8rem;
+          color: var(--text-secondary);
+        }
+        
+        .input-group {
+          margin: 1.5rem 0;
+        }
+        
+        .input-group label {
+          display: block;
+          font-weight: 600;
+          margin-bottom: 0.6rem;
+          color: var(--text-color);
+          font-size: 1rem;
+        }
+        
+        .input-group input {
+          width: 100%;
+          padding: 1rem;
+          border: 2px solid var(--border-color);
+          border-radius: var(--radius-md);
+          font-size: 1rem;
+          background-color: var(--card-background);
+          transition: var(--transition);
+          outline: none;
+        }
+        
+        .input-group input:focus {
+          border-color: var(--primary-color);
+          box-shadow: 0 0 0 4px rgba(0, 113, 227, 0.1);
+          transform: translateY(-1px);
+        }
+        
+        .checkbox-group {
+          margin: 1.5rem 0;
+        }
+        
+        .checkbox-group label {
+          display: flex;
+          align-items: center;
+          font-size: 1rem;
+          cursor: pointer;
+          font-weight: 500;
+          color: var(--text-color);
+          transition: var(--transition);
+          padding: 0.5rem;
+          border-radius: var(--radius-sm);
+        }
+        
+        .checkbox-group label:hover {
+          color: var(--primary-color);
+          background-color: rgba(0, 113, 227, 0.05);
+        }
+        
+        .checkbox-group input {
+          margin-right: 0.6rem;
+          transform: scale(1.3);
+          accent-color: var(--primary-color);
+        }
+        
+        .price-summary {
+          background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+          border-radius: var(--radius-lg);
+          padding: 2rem;
+          margin: 2rem 0;
+          border: 1px solid rgba(0, 0, 0, 0.08);
+          box-shadow: var(--shadow-md);
+          position: relative;
+          overflow: hidden;
+        }
+        
+        .price-summary::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: -100%;
+          width: 100%;
+          height: 100%;
+          background: linear-gradient(90deg, transparent, rgba(0, 113, 227, 0.05), transparent);
+          animation: priceShine 3s ease-in-out infinite;
+        }
+        
+        @keyframes priceShine {
+          0% { left: -100%; }
+          50% { left: 100%; }
+          100% { left: 100%; }
+        }
+        
+        .price-row {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 0.8rem;
+          padding: 0.5rem 0;
+          font-size: 1rem;
+          position: relative;
+          z-index: 1;
+        }
+        
+        .price-row:last-child {
+          margin-bottom: 0;
+        }
+        
+        .final-price {
+          font-size: 2rem;
+          font-weight: 700;
+          color: var(--primary-color);
+          border-top: 3px solid var(--primary-color);
+          padding: 1.5rem;
+          margin-top: 1.5rem;
+          background: linear-gradient(135deg, rgba(0, 113, 227, 0.08), rgba(90, 200, 250, 0.05));
+          border-radius: var(--radius-md);
+          text-align: center;
+          box-shadow: 0 4px 20px rgba(0, 113, 227, 0.1);
+          animation: finalPricePulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes finalPricePulse {
+          0%, 100% { transform: scale(1); }
+          50% { transform: scale(1.02); }
+        }
+        
+        .action-buttons {
+          display: flex;
+          gap: 1rem;
+          justify-content: center;
+          margin: 2rem 0;
+          flex-wrap: wrap;
+        }
+        🎨 第四步：優化價格預覽和按鈕的布局（最後一步）
+最後一步是美化價格預覽的樣式，讓它與「完成客製化」按鈕形成更好的布局。
+找到位置：
+在CSS中找到 .action-buttons 樣式（在客製化配置區域的按鈕樣式）：
+css.action-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin: 2rem 0;
+    flex-wrap: wrap;
+}
+在這個樣式後面新增一個新的樣式：
+css.customize-footer {
+    display: flex;
+    gap: 1.5rem;
+    align-items: stretch;
+    margin-top: 2rem;
+    flex-wrap: wrap;
+}
+
+.customize-footer .price-preview {
+    flex: 1;
+    min-width: 300px;
+    margin-bottom: 0;
+    border: 2px solid var(--primary-color);
+    background: linear-gradient(135deg, rgba(0, 113, 227, 0.05), rgba(90, 200, 250, 0.02));
+}
+
+.customize-footer .action-buttons {
+    flex: 0 0 auto;
+    margin: 0;
+    align-self: center;
+}
+
+@media (max-width: 768px) {
+    .customize-footer {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .customize-footer .price-preview {
+        min-width: auto;
+        order: 2;
+    }
+    
+    .customize-footer .action-buttons {
+        order: 1;
+    }
+}
+        
+        .generate-image-btn, .reset-btn, .continue-btn {
+          padding: 1.2rem 2.5rem;
+          border-radius: var(--radius-md);
+          font-size: 1rem;
+          font-weight: 600;
+          cursor: pointer;
+          border: none;
+          box-shadow: var(--shadow-md);
+          transition: var(--transition);
+          display: flex;
+          align-items: center;
+          gap: 0.8rem;
+          position: relative;
+          overflow: hidden;
+          min-width: 200px;
+          justify-content: center;
+        }
+        
+        .generate-image-btn {
+          background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+          color: white;
+        }
+        
+        .generate-image-btn::before,
+        .reset-btn::before,
+        .continue-btn::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: -100%;
+          width: 100%;
+          height: 100%;
+          background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+          transition: left 0.5s;
+        }
+        
+        .generate-image-btn:hover::before,
+        .reset-btn:hover::before,
+        .continue-btn:hover::before {
+          left: 100%;
+        }
+        
+        .generate-image-btn:hover {
+          transform: translateY(-3px);
+          box-shadow: 0 8px 30px rgba(255,107,107,0.4);
+          background: linear-gradient(135deg, #ff5252, #d32f2f);
+        }
+        
+        .reset-btn {
+          background: linear-gradient(135deg, var(--secondary-color), #30d158);
+          color: white;
+        }
+        
+        .reset-btn:hover {
+          transform: translateY(-3px);
+          box-shadow: 0 8px 30px rgba(52,199,89,0.4);
+          background: linear-gradient(135deg, #28a745, #20c251);
+        }
+        
+        .continue-btn {
+          background: linear-gradient(135deg, var(--primary-color), #5ac8fa);
+          color: white;
+        }
+        
+        .continue-btn:hover {
+          transform: translateY(-3px);
+          box-shadow: 0 8px 30px rgba(0,113,227,0.4);
+          background: linear-gradient(135deg, #0056b3, #4fb3e1);
+        }
+        
+        .generate-image-btn:active,
+        .reset-btn:active,
+        .continue-btn:active {
+          transform: translateY(-1px);
+          box-shadow: var(--shadow-sm);
+        }
+        
+        .purchase-section {
+          margin: 3rem 0;
+        }
+        
+        .purchase-section h2 {
+          font-size: 1.8rem;
+          font-weight: 600;
+          margin-bottom: 2rem;
+          text-align: center;
+          color: var(--text-color);
+        }
+        
+        .purchase-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+          gap: 1.5rem;
+          margin-bottom: 2rem;
+        }
+        
+        .purchase-category {
+          background-color: var(--card-background);
+          border-radius: var(--radius-lg);
+          padding: 2rem;
+          box-shadow: var(--shadow-md);
+          border: 1px solid rgba(0, 0, 0, 0.04);
+          transition: var(--transition);
+          position: relative;
+          overflow: hidden;
+        }
+        
+        .purchase-category::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: -100%;
+          width: 100%;
+          height: 100%;
+          background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+          transition: left 0.6s;
+        }
+        
+        .purchase-category:hover::before {
+          left: 100%;
+        }
+        
+        .purchase-category:hover {
+          transform: translateY(-5px);
+          box-shadow: var(--shadow-lg);
+        }
+        
+        .purchase-category h3 {
+          font-size: 1.3rem;
+          font-weight: 600;
+          margin-bottom: 1.5rem;
+          color: var(--text-color);
+          text-align: center;
+          position: relative;
+          z-index: 1;
+        }
+        
+        .purchase-items {
+          display: flex;
+          flex-direction: column;
+          gap: 1rem;
+        }
+        
+        .purchase-btn {
+          display: flex;
+          align-items: center;
+          gap: 0.8rem;
+          padding: 1.2rem 1.5rem;
+          border-radius: var(--radius-md);
+          text-decoration: none;
+          font-weight: 600;
+          font-size: 1rem;
+          transition: var(--transition);
+          box-shadow: var(--shadow-sm);
+          justify-content: center;
+          position: relative;
+          overflow: hidden;
+        }
+        
+        .purchase-btn::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: -100%;
+          width: 100%;
+          height: 100%;
+          background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+          transition: left 0.5s;
+        }
+        
+        .purchase-btn:hover::before {
+          left: 100%;
+        }
+        
+        .purchase-btn.primary {
+          background: linear-gradient(135deg, var(--primary-color), #5ac8fa);
+          color: white;
+        }
+        
+        .purchase-btn.primary:hover {
+          transform: translateY(-3px);
+          box-shadow: 0 6px 25px rgba(0,113,227,0.4);
+          background: linear-gradient(135deg, #0056b3, #4fb3e1);
+        }
+        
+        .purchase-btn.secondary {
+          background: linear-gradient(135deg, var(--hover-color), #e5e5ea);
+          color: var(--text-color);
+          border: 2px solid var(--border-color);
+        }
+        
+        .purchase-btn.secondary:hover {
+          border-color: var(--primary-color);
+          background: linear-gradient(135deg, #f0f8ff, #e8f4ff);
+          transform: translateY(-3px);
+          box-shadow: var(--shadow-md);
+        }
+        
+        .purchase-btn:active {
+          transform: translateY(-1px);
+          box-shadow: var(--shadow-sm);
+        }
+        
+        .btn-icon {
+          font-size: 1.2rem;
+        }
+        
+        .social-section {
+          margin: 3rem 0 2rem 0;
+        }
+        
+        .social-section h2 {
+          font-size: 1.8rem;
+          font-weight: 600;
+          margin-bottom: 2rem;
+          text-align: center;
+          color: var(--text-color);
+        }
+        
+        .highlight-social {
+          margin-bottom: 2rem;
+        }
+        
+        .line-highlight {
+          background: linear-gradient(135deg, #06C755, #00A300);
+          color: white;
+          text-decoration: none;
+          padding: 2rem;
+          border-radius: var(--radius-lg);
+          display: flex;
+          align-items: center;
+          gap: 1.2rem;
+          box-shadow: 0 6px 25px rgba(6,199,85,0.3);
+          transition: var(--transition);
+          position: relative;
+          overflow: hidden;
+        }
+        
+        .line-highlight::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: -100%;
+          width: 100%;
+          height: 100%;
+          background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+          transition: left 0.5s;
+        }
+        
+        .line-highlight:hover::before {
+          left: 100%;
+        }
+        
+        .line-highlight:hover {
+          transform: translateY(-5px);
+          box-shadow: 0 10px 40px rgba(6,199,85,0.4);
+          background: linear-gradient(135deg, #05b34a, #009a00);
+        }
+        
+        .social-content {
+          flex: 1;
+        }
+        
+        .social-title {
+          font-size: 1.3rem;
+          font-weight: 700;
+          margin-bottom: 0.5rem;
+        }
+        
+        .social-desc {
+          font-size: 1rem;
+          opacity: 0.9;
+        }
+        
+        .social-icon {
+          font-size: 1.8rem;
+          min-width: 2.5rem;
+          text-align: center;
+        }
+        
+        .social-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+          gap: 1rem;
+        }
+        
+        .social-card {
+          background-color: var(--card-background);
+          color: var(--text-color);
+          text-decoration: none;
+          padding: 1.5rem;
+          border-radius: var(--radius-md);
+          text-align: center;
+          font-weight: 500;
+          border: 2px solid var(--border-color);
+          transition: var(--transition);
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 0.8rem;
+          font-size: 0.9rem;
+          box-shadow: var(--shadow-sm);
+          position: relative;
+          overflow: hidden;
+        }
+        
+        .social-card::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: -100%;
+          width: 100%;
+          height: 100%;
+          background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+          transition: left 0.5s;
+        }
+        
+        .social-card:hover::before {
+          left: 100%;
+        }
+        
+        .social-card:hover {
+          border-color: var(--primary-color);
+          transform: translateY(-3px);
+          box-shadow: var(--shadow-md);
+        }
+        
+        .social-card.youtube:hover {
+          border-color: #ff0000;
+          background: linear-gradient(135deg, #fff5f5, rgba(255, 0, 0, 0.05));
+        }
+        
+        .social-card.instagram:hover {
+          border-color: #e4405f;
+          background: linear-gradient(135deg, #fef7f8, rgba(228, 64, 95, 0.05));
+        }
+        
+        .social-card.threads:hover {
+          border-color: #000;
+          background: linear-gradient(135deg, #f8f8f8, rgba(0, 0, 0, 0.05));
+        }
+        
+        /* Toast 提示 */
+        .toast {
+          position: fixed;
+          bottom: calc(30px + var(--safe-area-bottom));
+          left: 50%;
+          transform: translateX(-50%) translateY(20px);
+          background: linear-gradient(135deg, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.8));
+          color: white;
+          padding: 12px 24px;
+          border-radius: var(--radius-md);
+          font-size: 14px;
+          font-weight: 500;
+          opacity: 0;
+          transition: opacity 0.3s ease, transform 0.3s ease;
+          z-index: 1000;
+          pointer-events: none;
+          box-shadow: var(--shadow-lg);
+          backdrop-filter: blur(10px);
+        }
+        
+        .toast.visible {
+          opacity: 1;
+          transform: translateX(-50%) translateY(0);
+        }
+        
+        /* 漣漪效果 */
+        .ripple {
+          position: absolute;
+          border-radius: 50%;
+          background-color: rgba(0, 113, 227, 0.3);
+          transform: scale(0);
+          animation: ripple 0.6s linear;
+          pointer-events: none;
+        }
+        
+        @keyframes ripple {
+          to {
+            transform: scale(2.5);
+            opacity: 0;
+          }
+        }
+        
+        /* 觸控反饋 */
+        .pressed {
+          background-color: var(--hover-color) !important;
+          transform: scale(0.98) !important;
+        }
+        
+        #imageCanvas {
+          display: none;
+        }
+
+        /* 數字變化動畫 */
+        .countup {
+          animation: countUp 0.8s ease-out;
+        }
+
+        @keyframes countUp {
+          from { opacity: 0; transform: translateY(10px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* 響應式設計優化 */
+        @media (max-width: 768px) {
+          .container {
+            padding: 15px;
+          }
+          
+          .header {
+            margin-bottom: 2rem;
+            padding: 1.2rem;
+          }
+          
+          .header h1 {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+          }
+          
+          .header p {
+            font-size: 1rem;
+          }
+          
+          .step {
+            padding: 1.5rem;
+            margin-bottom: 1.2rem;
+            border-radius: var(--radius-md);
+          }
+          
+          .step h2 {
+            font-size: 1.4rem;
+            margin-bottom: 1.2rem;
+          }
+          
+          .options {
+            grid-template-columns: 1fr;
+            gap: 1rem;
+          }
+          
+          .option {
+            padding: 1.2rem;
+            border-radius: var(--radius-md);
+          }
+          
+          .option img {
+            width: 160px;
+            height: 160px;
+          }
+          
+          .option-title {
+            font-size: 1.1rem;
+          }
+          
+          .option-price {
+            font-size: 0.95rem;
+          }
+          
+          .customize-section {
+            padding: 1.5rem;
+          }
+          
+          .upgrade-category {
+            padding: 1.2rem;
+          }
+          
+          .upgrade-option {
+            padding: 0.8rem;
+          }
+
+.price-preview {
+    position: relative;
+    margin-bottom: 1.5rem;
+    border-radius: var(--radius-md);
+    padding: 1rem;
+}
+
+          .price-preview-current {
+            font-size: 1.3rem;
+          }
+
+          .customize-progress {
+            padding: 0.8rem;
+          }
+          
+          .input-group {
+            margin: 1.2rem 0;
+          }
+          
+          .input-group input {
+            padding: 0.9rem;
+            font-size: 16px;
+          }
+          
+          .price-summary {
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+          }
+          
+          .price-row {
+            font-size: 0.95rem;
+          }
+          
+          .final-price {
+            font-size: 1.6rem;
+            padding: 1.2rem;
+          }
+          
+          .action-buttons {
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+            margin: 1.5rem 0;
+          }
+          
+          .generate-image-btn,
+          .reset-btn,
+          .continue-btn {
+            width: 100%;
+            max-width: 300px;
+            padding: 1rem 2rem;
+            font-size: 0.95rem;
+          }
+        }
+
+        /* 極小螢幕優化 */
+        @media (max-width: 375px) {
+          .container {
+            padding: 12px;
+          }
+          
+          .header h1 {
+            font-size: 1.6rem;
+          }
+          
+          .header p {
+            font-size: 0.9rem;
+          }
+          
+          .step {
+            padding: 1.2rem;
+          }
+          
+          .step h2 {
+            font-size: 1.3rem;
+          }
+          
+          .option {
+            padding: 1rem;
+          }
+          
+          .option img {
+            width: 140px;
+            height: 140px;
+          }
+          
+          .option-title {
+            font-size: 1rem;
+          }
+          
+          .option-price {
+            font-size: 0.9rem;
+          }
+
+     .price-preview {
+    border-radius: var(--radius-sm);
+    padding: 0.8rem;
+    margin-bottom: 1rem;
+}
+
+        .price-preview-current {
+    font-size: 1.1rem;
+}
+          
+          .final-price {
+            font-size: 1.4rem;
+          }
+        }
+
+        /* 動畫效果 */
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(10px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideInUp {
+          from { opacity: 0; transform: translateY(30px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+          0% { transform: scale(1); }
+          50% { transform: scale(1.05); }
+          100% { transform: scale(1); }
+        }
+
+        .step {
+          animation: fadeIn 0.6s ease-out;
+        }
+
+        .option:hover {
+          animation: pulse 0.4s ease-out;
+        }
+
+        .purchase-category:hover {
+          animation: pulse 0.3s ease-out;
+        }
+
+        .option:active,
+        .purchase-btn:active,
+        .action-buttons button:active {
+          transform: scale(0.98);
+        }
+
+        /* ── Admin Image Panel ── */
+        .admin-trigger {
+          position: fixed;
+          bottom: calc(24px + var(--safe-area-bottom));
+          right: 20px;
+          width: 44px; height: 44px;
+          border-radius: 50%;
+          background: rgba(29,29,31,0.72);
+          backdrop-filter: blur(12px);
+          -webkit-backdrop-filter: blur(12px);
+          color: white; border: none; font-size: 18px; cursor: pointer;
+          z-index: 100; display: flex; align-items: center; justify-content: center;
+          box-shadow: 0 4px 20px rgba(0,0,0,0.25); transition: all 0.25s ease;
+        }
+        .admin-trigger:hover { background: rgba(29,29,31,0.9); transform: scale(1.08); }
+
+        .admin-overlay {
+          position: fixed; inset: 0; background: rgba(0,0,0,0.45);
+          backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+          z-index: 200; display: none;
+          align-items: flex-start; justify-content: center;
+          overflow-y: auto; padding: 20px;
+        }
+        .admin-overlay.open { display: flex; }
+
+        .admin-panel {
+          background: white; border-radius: 20px;
+          width: 100%; max-width: 620px; margin: auto;
+          box-shadow: 0 24px 80px rgba(0,0,0,0.3); overflow: hidden;
+        }
+        .admin-panel-header {
+          display: flex; align-items: center; justify-content: space-between;
+          padding: 18px 24px;
+          background: linear-gradient(135deg, #1d1d1f, #3a3a3c); color: white;
+        }
+        .admin-panel-header h3 { font-size: 16px; font-weight: 700; margin: 0; }
+        .admin-panel-close {
+          background: rgba(255,255,255,0.15); border: none; color: white;
+          width: 30px; height: 30px; border-radius: 50%; font-size: 14px;
+          cursor: pointer; display: flex; align-items: center; justify-content: center;
+          transition: background 0.2s;
+        }
+        .admin-panel-close:hover { background: rgba(255,255,255,0.28); }
+
+        .admin-panel-body { padding: 20px 24px; max-height: 68vh; overflow-y: auto; }
+
+        .admin-section-title {
+          font-size: 11px; font-weight: 700; color: var(--text-secondary);
+          text-transform: uppercase; letter-spacing: 0.6px;
+          margin: 20px 0 10px; padding-bottom: 8px;
+          border-bottom: 1px solid var(--border-color);
+        }
+        .admin-section-title:first-child { margin-top: 0; }
+
+        .admin-img-row {
+          display: flex; align-items: center; gap: 10px;
+          margin-bottom: 8px; background: #f8f8f8;
+          border-radius: 10px; padding: 10px 12px;
+        }
+        .admin-img-preview {
+          width: 52px; height: 52px; object-fit: contain;
+          border-radius: 8px; border: 1px solid #e5e5e5;
+          background: white; flex-shrink: 0;
+        }
+        .admin-img-info { flex: 1; min-width: 0; }
+        .admin-img-label { font-size: 12px; font-weight: 700; color: #1d1d1f; margin-bottom: 4px; }
+        .admin-img-input {
+          width: 100%; padding: 7px 10px;
+          border: 1.5px solid #d2d2d7; border-radius: 8px;
+          font-size: 11px; font-family: monospace; color: #1d1d1f;
+          background: white; outline: none; transition: border-color 0.2s;
+        }
+        .admin-img-input:focus { border-color: var(--primary-color); box-shadow: 0 0 0 3px rgba(0,113,227,0.1); }
+
+        .admin-panel-footer {
+          display: flex; gap: 10px;
+          padding: 16px 24px; border-top: 1px solid #e5e5e5; background: #fafafa;
+        }
+        .admin-btn {
+          flex: 1; padding: 12px; border-radius: 10px;
+          font-size: 14px; font-weight: 600; cursor: pointer; border: none;
+          transition: all 0.2s; font-family: inherit;
+        }
+        .admin-btn.primary { background: var(--primary-color); color: white; }
+        .admin-btn.primary:hover { background: #0062c3; }
+        .admin-btn.secondary { background: #e5e5ea; color: #1d1d1f; }
+        .admin-btn.secondary:hover { background: #d2d2d7; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>MacBook BTS優惠計算機<span class="beta-badge">BETA v2.1</span></h1>
+            <p>精準計算您的最佳購買方案 - 全新客製化體驗</p>
+            <p style="font-size: 14px; opacity: 0.8; margin-top: 8px;">Designed By Neil</p>
+        </div>
+
+        <!-- 步驟1: 選擇系列 -->
+        <div class="step">
+            <h2>選擇您的 MacBook 系列</h2>
+            <div class="options">
+                <div class="option" data-series="air" onclick="selectSeries('air')">
+                    <img src="https://i.imgur.com/flZ0QDT.png" alt="MacBook Air">
+                    <div class="option-title">MacBook Air</div>
+                    <div class="option-price">NT$31,400 起</div>
+                    <div class="option-desc">超薄輕巧，日常使用首選</div>
+                </div>
+                <div class="option" data-series="pro" onclick="selectSeries('pro')">
+                    <img src="https://imgur.com/JojwwD1.png" alt="MacBook Pro">
+                    <div class="option-title">MacBook Pro</div>
+                    <div class="option-price">NT$51,400 起</div>
+                    <div class="option-desc">專業效能，創作者必備</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 步驟2: 選擇尺寸 -->
+        <div class="step" id="sizeStep" style="display: none;">
+            <h2>選擇尺寸</h2>
+            <div class="options" id="sizeOptions"></div>
+        </div>
+
+        <!-- 步驟3: 選擇款式 -->
+        <div class="step" id="modelStep" style="display: none;">
+            <h2>選擇款式</h2>
+            <div class="options" id="modelOptions"></div>
+        </div>
+
+        <!-- 步驟4: 客製化詢問 -->
+        <div class="step" id="customizeStep" style="display: none;">
+            <h2>是否要進一步客製化？</h2>
+            <div class="options">
+                <div class="option" onclick="selectCustomize(false)">
+                    <div class="option-title">🚀 快速選購</div>
+                    <div class="option-price">使用標準配置</div>
+                    <div class="option-desc">直接選擇顏色和配件，快速完成配置</div>
+                </div>
+                <div class="option" onclick="selectCustomize(true)">
+                    <div class="option-title">⚙️ 客製化配置</div>
+                    <div class="option-price">深度自訂規格</div>
+                    <div class="option-desc">升級晶片、記憶體、儲存等，打造專屬配置</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 步驟5: 客製化配置 -->
+        <div class="step" id="customConfigStep" style="display: none;">
+            <div class="customize-section">
+                <div class="customize-header">
+                    <div class="customize-title">🛠️ 客製化您的 MacBook</div>
+                    <div class="customize-desc">升級配置以滿足您的專業需求</div>
+                </div>
+
+                <!-- 動態價格預覽 -->
+               
+
+                <!-- 客製化進度 -->
+                <div class="customize-progress">
+                    <div class="progress-label">客製化進度</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+                    </div>
+                    <div class="progress-percent" id="progressPercent">0%</div>
+                </div>
+
+                <div id="customConfigOptions"></div>
+<div class="customize-footer">
+    <div class="price-preview" id="pricePreview">
+        <div class="price-preview-header">
+            <div class="price-preview-title">
+                💰 即時價格預覽
+            </div>
+            <button class="price-preview-toggle" onclick="togglePriceDetails()">
+                <span id="toggleIcon">▼</span>
+            </button>
+        </div>
+        <div class="price-preview-main">
+            <div class="price-preview-base">
+                基礎配置: <span id="basePrice">NT$0</span>
+            </div>
+            <div class="price-preview-current">
+                <span id="currentPrice">NT$0</span>
+                <span class="price-change" id="priceChange" style="display: none;">+NT$0</span>
+            </div>
+        </div>
+        <div class="price-preview-details" id="priceDetails">
+            <div id="upgradeDetails"></div>
+        </div>
+    </div>
+    <div class="action-buttons">
+        <button class="continue-btn" onclick="finishCustomization()">
+            ✅ 完成客製化
+        </button>
+    </div>
+</div>
+            </div>
+        </div>
+
+        <!-- 步驟6: 選擇顏色 -->
+        <div class="step" id="colorStep" style="display: none;">
+            <h2>選擇顏色</h2>
+            <div class="options" id="colorOptions"></div>
+        </div>
+
+        <!-- 步驟7: Nano-texture (僅Pro系列) -->
+        <div class="step" id="nanoStep" style="display: none;">
+            <h2>Nano-texture 奈米玻璃</h2>
+            <div class="options" id="nanoOptions"></div>
+        </div>
+
+        <!-- 步驟8: 配件優惠 -->
+        <div class="step" id="accessoryStep" style="display: none;">
+            <h2>選擇配件優惠</h2>
+            <div class="options" id="accessoryOptions"></div>
+        </div>
+
+        <!-- 回饋計算 -->
+        <div class="step" id="rebateStep" style="display: none;">
+            <h2>回饋計算</h2>
+            <div class="input-group">
+                <label for="creditCard">信用卡回饋 (%)</label>
+                <input type="number" id="creditCard" step="0.1" min="0" max="100" placeholder="例如: 1.5">
+            </div>
+            <div class="input-group">
+                <label for="referral">導購回饋 (%)</label>
+                <input type="number" id="referral" step="0.1" min="0" max="100" placeholder="例如: 2.0">
+            </div>
+            <div class="checkbox-group">
+                <label>
+                    <input type="checkbox" id="sellGift">
+                    是否將贈品賣掉？
+                </label>
+            </div>
+            <div class="input-group" id="giftPriceGroup" style="display: none;">
+                <label for="giftPrice">贈品售價 (NT$)</label>
+                <input type="number" id="giftPrice" min="0" placeholder="例如: 3000">
+            </div>
+        </div>
+
+        <!-- 價格總覽 -->
+        <div class="step" id="summaryStep" style="display: none;">
+            <h2>價格總覽</h2>
+            <div class="price-summary" id="priceSummary"></div>
+            
+            <!-- 操作按鈕 -->
+            <div class="action-buttons">
+                <button class="generate-image-btn" onclick="generateShoppingImage()">
+                    🧾 生成BTS購買清單
+                </button>
+                <button class="reset-btn" onclick="resetCalculator()">
+                    🔄 重頭計算
+                </button>
+            </div>
+            
+            <div class="purchase-section">
+                <h2>🛒 購買管道</h2>
+                <div class="purchase-grid">
+                    <div class="purchase-category">
+                        <h3>💰 導購優惠</h3>
+                        <div class="purchase-items">
+                            <a href="https://buy.line.me/u/partner/880044448765" target="_blank" class="purchase-btn primary" onclick="recordPurchaseClick('LINE導購購買')">
+                                <span class="btn-icon">📱</span>
+                                <span>LINE導購購買</span>
+                            </a>
+                            <a href="https://www.shopback.com.tw/apple-online-store" target="_blank" class="purchase-btn primary" onclick="recordPurchaseClick('SHOPBACK導購')">
+                                <span class="btn-icon">💸</span>
+                                <span>SHOPBACK導購</span>
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <div class="purchase-category">
+                        <h3>🎓 官方管道</h3>
+                        <div class="purchase-items">
+                            <a href="https://www.apple.com/tw-edu/store?afid=p240%7Cgo~cmp-245083142~adg-45431763499~ad-714867929676_kwd-344917936483~dev-c~ext-~prd-~mca-~nt-search&cid=aos-tw-kwgo-edu--" target="_blank" class="purchase-btn primary" onclick="recordPurchaseClick('蘋果教育商店')">
+                                <span class="btn-icon">🍎</span>
+                                <span>蘋果教育商店</span>
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <div class="purchase-category">
+                        <h3>🤝 Neil 服務</h3>
+                        <div class="purchase-items">
+                            <a href="https://script.google.com/macros/s/AKfycbw9LGd5m5lzdr-G-G13cgc4YXunTcqQUsS8_KlPoW52nT4chjKRGNX9_iFxBeVizmy-/exec" target="_blank" class="purchase-btn secondary" onclick="recordPurchaseClick('Neil的Apple交易平台')">
+                                <span class="btn-icon">🔄</span>
+                                <span>Neil的Apple交易平台</span>
+                            </a>
+                            <a href="https://script.google.com/macros/s/AKfycbz1wAnl3eSL5XPMHR7phlSp0-4BbFdb0znWZ-0N5dyycfwoKLXHqohRK-b_5h4UoO5X/exec" target="_blank" class="purchase-btn secondary" onclick="recordPurchaseClick('BTS代購')">
+                                <span class="btn-icon">📦</span>
+                                <span>BTS代購</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="social-section">
+                <h2>📱 追蹤 Neil 獲得最新資訊</h2>
+                <div class="highlight-social">
+                    <a href="https://line.me/ti/g2/MOo9NqsHqjfW421BLRl3EbGg0DE6DTzY7vq8xA?utm_source=invitation&utm_medium=link_copy&utm_campaign=default" target="_blank" class="line-highlight" onclick="recordSocialClick('LINE社群')">
+                        <span class="social-icon">💬</span>
+                        <div class="social-content">
+                            <div class="social-title">LINE社群</div>
+                            <div class="social-desc">最新即時消息都在這裡！</div>
+                        </div>
+                    </a>
+                </div>
+                
+                <div class="social-grid">
+                    <a href="https://www.dcard.tw/f/apple" target="_blank" class="social-card" onclick="recordSocialClick('Dcard Apple版')">
+                        <span class="social-icon">🃏</span>
+                        <span>Dcard Apple版</span>
+                    </a>
+                    <a href="https://www.dcard.tw/@neilyinnnnnnn" target="_blank" class="social-card" onclick="recordSocialClick('Dcard個人看板')">
+                        <span class="social-icon">👤</span>
+                        <span>Dcard個人看板</span>
+                    </a>
+                    <a href="https://www.youtube.com/channel/UCUn8VlPDRSq_7K3N4zbmHsQ" target="_blank" class="social-card youtube" onclick="recordSocialClick('YouTube')">
+                        <span class="social-icon">📺</span>
+                        <span>YouTube</span>
+                    </a>
+                    <a href="https://www.instagram.com/neil.tw_/" target="_blank" class="social-card instagram" onclick="recordSocialClick('Instagram')">
+                        <span class="social-icon">📷</span>
+                        <span>Instagram</span>
+                    </a>
+                    <a href="https://www.threads.net/@neil.tw_?hl=zh-tw" target="_blank" class="social-card threads" onclick="recordSocialClick('Threads')">
+                        <span class="social-icon">🧵</span>
+                        <span>Threads</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 隱藏的Canvas用於生成圖片 -->
+    <canvas id="imageCanvas" width="800" height="1400" style="display:none;"></canvas>
+
+    <!-- Toast 提示 -->
+    <div class="toast" id="toast">操作成功！</div>
+
+    <!-- ⚙️ 圖片管理 Admin 按鈕 -->
+    <button class="admin-trigger" onclick="openAdmin()" title="管理圖片連結">⚙️</button>
+
+    <!-- 圖片管理 Admin 面板 -->
+    <div class="admin-overlay" id="adminOverlay" onclick="handleOverlayClick(event)">
+        <div class="admin-panel">
+            <div class="admin-panel-header">
+                <h3>🖼 圖片連結管理</h3>
+                <button class="admin-panel-close" onclick="closeAdmin()">✕</button>
+            </div>
+            <div class="admin-panel-body" id="adminPanelBody"></div>
+            <div class="admin-panel-footer">
+                <button class="admin-btn secondary" onclick="resetAdminImages()">恢復預設</button>
+                <button class="admin-btn primary"   onclick="saveAdminImages()">儲存</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 調試開關
+        const DEBUG_MODE = false; // 設為 true 可啟用調試日誌，測試完成後設為 false
+        
+        function debugLog(...args) {
+            if (DEBUG_MODE) {
+                console.log(...args);
+            }
+        }
+        let config = {
+            series: '',
+            size: '',
+            model: '',
+            isCustomized: false,
+            customizations: {},
+            color: '',
+            nano: false,
+            accessory: '',
+            creditCard: 0,
+            referral: 0,
+            sellGift: false,
+            giftPrice: 0,
+            clickedPurchase: '',
+            clickedSocial: ''
+        };
+
+        // MacBook基本價格數據
+      const basePrices = {
+    air: {
+        13: { A: 31400, B: 38400, C: 45400 },
+        15: { A: 38400, B: 45400, C: 52400 }
+    },
+    pro: {
+        14: { A: 51400, B: 58400, C: 65400, D: 62650, E: 74900, F: 99400 },
+        16: { A: 77900, B: 91900, C: 109400, D: 124400 }  // ← 更新這一行
+    }
+};
+        // 基本配置信息
+       const baseConfigs = {
+    air: {
+        13: {
+            A: { chip: 'M4 (10核CPU/8核GPU)', memory: '16GB', storage: '256GB', power: '30W USB-C', desc: '入門基本組' },
+            B: { chip: 'M4 (10核CPU/10核GPU)', memory: '16GB', storage: '512GB', power: '35W 雙小型', desc: '進階組' },
+            C: { chip: 'M4 (10核CPU/10核GPU)', memory: '24GB', storage: '512GB', power: '35W 雙小型', desc: '頂規組' }
+        },
+        15: {
+            A: { chip: 'M4 (10核CPU/10核GPU)', memory: '16GB', storage: '256GB', power: '35W 雙小型', desc: '入門基本組' },
+            B: { chip: 'M4 (10核CPU/10核GPU)', memory: '16GB', storage: '512GB', power: '35W 雙小型', desc: '進階組' },
+            C: { chip: 'M4 (10核CPU/10核GPU)', memory: '24GB', storage: '512GB', power: '35W 雙小型', desc: '頂規組' }
+        }
+    },
+    pro: {
+        14: {
+            A: { chip: 'M4 (10核CPU/10核GPU)', memory: '16GB', storage: '512GB', power: '70W USB-C', desc: '入門M4' },
+            B: { chip: 'M4 (10核CPU/10核GPU)', memory: '16GB', storage: '1TB', power: '70W USB-C', desc: '進階M4' },
+            C: { chip: 'M4 (10核CPU/10核GPU)', memory: '24GB', storage: '1TB', power: '70W USB-C', desc: '頂規M4' },
+            D: { chip: 'M4 Pro (12核CPU/16核GPU)', memory: '24GB', storage: '512GB', power: '70W USB-C', desc: 'Pro入門' },
+            E: { chip: 'M4 Pro (14核CPU/20核GPU)', memory: '24GB', storage: '1TB', power: '96W USB-C', desc: 'Pro進階' },
+            F: { chip: 'M4 Max (14核CPU/32核GPU)', memory: '36GB', storage: '1TB', power: '96W USB-C', desc: 'Max頂規' }
+        },
+        16: {  // ← 完全替換這個物件
+            A: { 
+                chip: 'M4 Pro (14核CPU/20核GPU)', 
+                memory: '24GB', 
+                storage: '512GB', 
+                power: '140W USB-C', 
+                desc: 'Pro入門組' 
+            },
+            B: { 
+                chip: 'M4 Pro (14核CPU/20核GPU)', 
+                memory: '48GB', 
+                storage: '512GB', 
+                power: '140W USB-C', 
+                desc: 'Pro進階組' 
+            },
+            C: { 
+                chip: 'M4 Max (14核CPU/32核GPU)', 
+                memory: '36GB', 
+                storage: '1TB', 
+                power: '140W USB-C', 
+                desc: 'Max入門組' 
+            },
+            D: { 
+                chip: 'M4 Max (16核CPU/40核GPU)', 
+                memory: '48GB', 
+                storage: '1TB', 
+                power: '140W USB-C', 
+                desc: 'Max頂規組' 
+            }
+        }
+    }
+};
+
+        // ── 預設圖片（可被 localStorage 覆蓋）──
+        const DEFAULT_IMAGES = {
+            main: {
+                air: 'https://i.imgur.com/flZ0QDT.png',
+                pro: 'https://imgur.com/JojwwD1.png'
+            },
+            color: {
+                air: {
+                    'midnight':   'https://i.imgur.com/vfIIn8m.png',
+                    'starlight':  'https://i.imgur.com/tele6V7.png',
+                    'space-blue': 'https://i.imgur.com/XpWQhnW.png',
+                    'silver':     'https://i.imgur.com/4779MfS.png'
+                },
+                pro: {
+                    'silver':      'https://i.imgur.com/vofFina.png',
+                    'space-black': 'https://i.imgur.com/RmSGBKw.png'
+                }
+            }
+        };
+
+        const ADMIN_COLOR_CONFIG = {
+            air: [
+                { key: 'midnight',   label: '午夜色' },
+                { key: 'starlight',  label: '星光色' },
+                { key: 'space-blue', label: '天空藍色' },
+                { key: 'silver',     label: '銀色' }
+            ],
+            pro: [
+                { key: 'silver',      label: '銀色' },
+                { key: 'space-black', label: '太空黑色' }
+            ]
+        };
+
+        function getImages() {
+            try {
+                const saved = localStorage.getItem('bts_mac_images');
+                if (saved) {
+                    const p = JSON.parse(saved);
+                    return {
+                        main:  { ...DEFAULT_IMAGES.main,  ...(p.main  || {}) },
+                        color: {
+                            air: { ...DEFAULT_IMAGES.color.air, ...(p.color?.air || {}) },
+                            pro: { ...DEFAULT_IMAGES.color.pro, ...(p.color?.pro || {}) }
+                        }
+                    };
+                }
+            } catch(e) {}
+            return DEFAULT_IMAGES;
+        }
+
+        // 向後相容
+        let colorImages = getImages().color;
+
+        // BTS配件
+        const accessories = {
+            magic_mouse: { name: '巧控滑鼠', price: 0, originalPrice: 2290, category: '生產力套組' },
+            magic_trackpad: { name: '巧控板', price: 0, originalPrice: 4990, category: '生產力套組' },
+            magic_keyboard: { name: '巧控鍵盤（含Touch ID）', price: 0, originalPrice: 5990, category: '生產力套組' },
+            airpods4_anc: { name: 'AirPods 4 主動降噪版', price: 0, originalPrice: 5990, category: '娛樂套組' },
+            airpods_pro2: { name: 'AirPods Pro 2', price: 1500, originalPrice: 7490, category: '娛樂套組' }
+        };
+
+        // MacBook 客製化升級選項 - 修正版
+        const upgradeOptions = {
+            air: {
+                13: {
+                    A: {
+                        gpu: [
+                            { name: '8核GPU', price: 0, desc: '預設配置', isDefault: true },
+                            { name: '10核GPU', price: 3150, desc: '從8核GPU升級到10核GPU' }
+                        ],
+                        memory: [
+                            { name: '16GB 統一記憶體', price: 0, desc: '預設配置', isDefault: true },
+                            { name: '24GB 統一記憶體', price: 7000, desc: '從16GB升級到24GB（GPU自動升級10核心免加價）', autoUpgradeGPU: true },
+                            { name: '32GB 統一記憶體', price: 13300, desc: '從16GB升級到32GB（GPU自動升級10核心免加價）', autoUpgradeGPU: true }
+                        ],
+                        storage: [
+                            { name: '256GB SSD', price: 0, desc: '預設配置', isDefault: true },
+                            { name: '512GB SSD', price: 7000, desc: '從256GB升級到512GB（GPU自動升級10核心免加價）', autoUpgradeGPU: true, enablesPowerUpgrade: true },
+                            { name: '1TB SSD', price: 13300, desc: '從256GB升級到1TB（GPU自動升級10核心免加價）', autoUpgradeGPU: true, enablesPowerUpgrade: true },
+                            { name: '2TB SSD', price: 25900, desc: '從256GB升級到2TB（GPU自動升級10核心免加價）', autoUpgradeGPU: true, enablesPowerUpgrade: true }
+                        ],
+                        power: [
+                            { name: '30W USB-C 電源轉接器', price: 0, desc: '預設配置', isDefault: true }
+                        ]
+                    },
+                    B: {
+                        memory: [
+                            { name: '16GB 統一記憶體', price: 0, desc: '預設配置', isDefault: true },
+                            { name: '24GB 統一記憶體', price: 7000, desc: '從16GB升級到24GB' },
+                            { name: '32GB 統一記憶體', price: 13300, desc: '從16GB升級到32GB' }
+                        ],
+                        storage: [
+                            { name: '512GB SSD', price: 0, desc: '預設配置', isDefault: true },
+                            { name: '1TB SSD', price: 6300, desc: '從512GB升級到1TB' },
+                            { name: '2TB SSD', price: 18900, desc: '從512GB升級到2TB' }
+                        ],
+                        power: [
+                            { name: '35W 雙 USB-C 電源轉接器', price: 0, desc: '預設配置', isDefault: true },
+                            { name: '70W USB-C 電源轉接器', price: 0, desc: '免費升級選項' }
+                        ]
+                    },
+                    C: {
+                        memory: [
+                            { name: '24GB 統一記憶體', price: 0, desc: '預設配置', isDefault: true },
+                            { name: '32GB 統一記憶體', price: 6300, desc: '從24GB升級到32GB' }
+                        ],
+                        storage: [
+                            { name: '512GB SSD', price: 0, desc: '預設配置', isDefault: true },
+                            { name: '1TB SSD', price: 6300, desc: '從512GB升級到1TB' },
+                            { name: '2TB SSD', price: 18900, desc: '從512GB升級到2TB' }
+                        ],
+                        power: [
+                            { name: '35W 雙 USB-C 電源轉接器', price: 0, desc: '預設配置', isDefault: true },
+                            { name: '70W USB-C 電源轉接器', price: 0, desc: '免費升級選項' }
+                        ]
+                    }
+                },
+                15: {
+                    A: {
+                        memory: [
+                            { name: '16GB 統一記憶體', price: 0, desc: '預設配置', isDefault: true },
+                            { name: '24GB 統一記憶體', price: 7000, desc: '從16GB升級到24GB' },
+                            { name: '32GB 統一記憶體', price: 13300, desc: '從16GB升級到32GB' }
+                        ],
+                        storage: [
+                            { name: '256GB SSD', price: 0, desc: '預設配置', isDefault: true },
+                            { name: '512GB SSD', price: 7000, desc: '從256GB升級到512GB' },
+                            { name: '1TB SSD', price: 13300, desc: '從256GB升級到1TB' },
+                            { name: '2TB SSD', price: 25900, desc: '從256GB升級到2TB' }
+                        ],
+                        power: [
+                            { name: '35W 雙 USB-C 電源轉接器', price: 0, desc: '預設配置', isDefault: true },
+                            { name: '70W USB-C 電源轉接器', price: 0, desc: '免費升級選項' }
+                        ]
+                    },
+                    B: {
+                        memory: [
+                            { name: '16GB 統一記憶體', price: 0, desc: '預設配置', isDefault: true },
+                            { name: '24GB 統一記憶體', price: 7000, desc: '從16GB升級到24GB' },
+                            { name: '32GB 統一記憶體', price: 13300, desc: '從16GB升級到32GB' }
+                        ],
+                        storage: [
+                            { name: '512GB SSD', price: 0, desc: '預設配置', isDefault: true },
+                            { name: '1TB SSD', price: 6300, desc: '從512GB升級到1TB' },
+                            { name: '2TB SSD', price: 18900, desc: '從512GB升級到2TB' }
+                        ],
+                        power: [
+                            { name: '35W 雙 USB-C 電源轉接器', price: 0, desc: '預設配置', isDefault: true },
+                            { name: '70W USB-C 電源轉接器', price: 0, desc: '免費升級選項' }
+                        ]
+                    },
+                    C: {
+                        memory: [
+                            { name: '24GB 統一記憶體', price: 0, desc: '預設配置', isDefault: true },
+                            { name: '32GB 統一記憶體', price: 6300, desc: '從24GB升級到32GB' }
+                        ],
+                        storage: [
+                            { name: '512GB SSD', price: 0, desc: '預設配置', isDefault: true },
+                            { name: '1TB SSD', price: 6300, desc: '從512GB升級到1TB' },
+                            { name: '2TB SSD', price: 18900, desc: '從512GB升級到2TB' }
+                        ],
+                        power: [
+                            { name: '35W 雙 USB-C 電源轉接器', price: 0, desc: '預設配置', isDefault: true },
+                            { name: '70W USB-C 電源轉接器', price: 0, desc: '免費升級選項' }
+                        ]
+                    }
+                }
+            },
+            pro: {
+                14: {
+                    A: {
+                        memory: [
+                            { name: '16GB 統一記憶體', price: 0, desc: '預設配置', isDefault: true },
+                            { name: '24GB 統一記憶體', price: 7000, desc: '從16GB升級到24GB' },
+                            { name: '32GB 統一記憶體', price: 13300, desc: '從16GB升級到32GB' }
+                        ],
+                        storage: [
+                            { name: '512GB SSD', price: 0, desc: '預設配置', isDefault: true },
+                            { name: '1TB SSD', price: 7000, desc: '從512GB升級到1TB' },
+                            { name: '2TB SSD', price: 19600, desc: '從512GB升級到2TB' }
+                        ],
+                        display: [
+                            { name: '標準顯示器', price: 0, desc: '預設配置', isDefault: true },
+                            { name: 'Nano-texture 奈米玻璃', price: 4500, desc: '減少眩光的奈米紋理玻璃' }
+                        ],
+                        power: [
+                            { name: '70W USB-C 電源轉接器', price: 0, desc: '預設配置', isDefault: true },
+                            { name: '96W USB-C 電源轉接器', price: 500, desc: '從70W升級到96W' }
+                        ]
+                    },
+                    B: {
+                        memory: [
+                            { name: '16GB 統一記憶體', price: 0, desc: '預設配置', isDefault: true },
+                            { name: '24GB 統一記憶體', price: 7000, desc: '從16GB升級到24GB' },
+                            { name: '32GB 統一記憶體', price: 13300, desc: '從16GB升級到32GB' }
+                        ],
+                        storage: [
+                            { name: '1TB SSD', price: 0, desc: '預設配置', isDefault: true },
+                            { name: '2TB SSD', price: 12600, desc: '從1TB升級到2TB' }
+                        ],
+                        display: [
+                            { name: '標準顯示器', price: 0, desc: '預設配置', isDefault: true },
+                            { name: 'Nano-texture 奈米玻璃', price: 4500, desc: '減少眩光的奈米紋理玻璃' }
+                        ],
+                        power: [
+                            { name: '70W USB-C 電源轉接器', price: 0, desc: '預設配置', isDefault: true },
+                            { name: '96W USB-C 電源轉接器', price: 500, desc: '從70W升級到96W' }
+                        ]
+                    },
+                    C: {
+                        memory: [
+                            { name: '24GB 統一記憶體', price: 0, desc: '預設配置', isDefault: true },
+                            { name: '32GB 統一記憶體', price: 6300, desc: '從24GB升級到32GB' }
+                        ],
+                        storage: [
+                            { name: '1TB SSD', price: 0, desc: '預設配置', isDefault: true },
+                            { name: '2TB SSD', price: 12600, desc: '從1TB升級到2TB' }
+                        ],
+                        display: [
+                            { name: '標準顯示器', price: 0, desc: '預設配置', isDefault: true },
+                            { name: 'Nano-texture 奈米玻璃', price: 4500, desc: '減少眩光的奈米紋理玻璃' }
+                        ],
+                        power: [
+                            { name: '70W USB-C 電源轉接器', price: 0, desc: '預設配置', isDefault: true },
+                            { name: '96W USB-C 電源轉接器', price: 500, desc: '從70W升級到96W' }
+                        ]
+                    },
+                    D: {
+                        chip: [
+                            { name: 'M4 Pro (12核CPU/16核GPU)', price: 0, desc: '預設配置', isDefault: true },
+                            { name: 'M4 Pro (14核CPU/20核GPU)', price: 5950, desc: '升級到Pro 14C CPU / 20C GPU' },
+                            { name: 'M4 Max (14核CPU/32核GPU)', price: 24150, desc: '升級到Max 14C CPU / 32C GPU' },
+                            { name: 'M4 Max (16核CPU/40核GPU)', price: 33600, desc: '升級到Max 16C CPU / 40C GPU' }
+                        ],
+                        memory: [
+                            { name: '24GB 統一記憶體', price: 0, desc: '預設配置', isDefault: true, allowedChips: ['M4 Pro (12核CPU/16核GPU)', 'M4 Pro (14核CPU/20核GPU)'] },
+                            { name: '36GB 統一記憶體', price: 6300, desc: '從24GB升級到36GB（M4 Max 14C/32C 強制）', requiredChip: 'M4 Max (14核CPU/32核GPU)', isForced: true },
+                            { name: '48GB 統一記憶體', price: 12600, desc: '從24GB升級到48GB', allowedChips: ['M4 Pro (12核CPU/16核GPU)', 'M4 Pro (14核CPU/20核GPU)', 'M4 Max (16核CPU/40核GPU)'], forcedForChip: 'M4 Max (16核CPU/40核GPU)' },
+                            { name: '64GB 統一記憶體', price: 18900, desc: '從48GB升級到64GB（僅限M4 Max 16C/40C）', allowedChips: ['M4 Max (16核CPU/40核GPU)'] },
+                            { name: '128GB 統一記憶體', price: 44100, desc: '從48GB升級到128GB（僅限M4 Max 16C/40C）', allowedChips: ['M4 Max (16核CPU/40核GPU)'] }
+                        ],
+                        storage: [
+                            { name: '512GB SSD', price: 0, desc: '預設配置', isDefault: true, disallowedChips: ['M4 Max (14核CPU/32核GPU)', 'M4 Max (16核CPU/40核GPU)'] },
+                            { name: '1TB SSD', price: 6300, desc: '從512GB升級到1TB', forcedForChips: ['M4 Max (14核CPU/32核GPU)', 'M4 Max (16核CPU/40核GPU)'] },
+                            { name: '2TB SSD', price: 18900, desc: '從512GB升級到2TB' },
+                            { name: '4TB SSD', price: 37800, desc: '從512GB升級到4TB' },
+                            { name: '8TB SSD', price: 75600, desc: '從512GB升級到8TB（僅限M4 Max晶片）', allowedChips: ['M4 Max (14核CPU/32核GPU)', 'M4 Max (16核CPU/40核GPU)'] }
+                        ],
+                        display: [
+                            { name: '標準顯示器', price: 0, desc: '預設配置', isDefault: true },
+                            { name: 'Nano-texture 奈米玻璃', price: 4500, desc: '減少眩光的奈米紋理玻璃' }
+                        ],
+                        power: [
+                            { name: '70W USB-C 電源轉接器', price: 0, desc: '預設配置', isDefault: true },
+                            { name: '96W USB-C 電源轉接器', price: 0, desc: '升級晶片後自動免費升級', autoUpgradeChip: true }
+                        ]
+                    },
+                    E: {
+                        chip: [
+                            { name: 'M4 Pro (14核CPU/20核GPU)', price: 0, desc: '預設配置', isDefault: true },
+                            { name: 'M4 Max (14核CPU/32核GPU)', price: 18200, desc: '升級到Max 14C CPU / 32C GPU' },
+                            { name: 'M4 Max (16核CPU/40核GPU)', price: 27650, desc: '升級到Max 16C CPU / 40C GPU' }
+                        ],
+                        memory: [
+                            { name: '24GB 統一記憶體', price: 0, desc: '預設配置', isDefault: true, allowedChips: ['M4 Pro (14核CPU/20核GPU)'] },
+                            { name: '36GB 統一記憶體', price: 6300, desc: '從24GB升級到36GB（M4 Max 14C/32C 強制）', requiredChip: 'M4 Max (14核CPU/32核GPU)', isForced: true },
+                            { name: '48GB 統一記憶體', price: 12600, desc: '從24GB升級到48GB', allowedChips: ['M4 Pro (14核CPU/20核GPU)', 'M4 Max (16核CPU/40核GPU)'], forcedForChip: 'M4 Max (16核CPU/40核GPU)' },
+                            { name: '64GB 統一記憶體', price: 18900, desc: '從48GB升級到64GB（僅限M4 Max 16C/40C）', allowedChips: ['M4 Max (16核CPU/40核GPU)'] },
+                            { name: '128GB 統一記憶體', price: 44100, desc: '從48GB升級到128GB（僅限M4 Max 16C/40C）', allowedChips: ['M4 Max (16核CPU/40核GPU)'] }
+                        ],
+                        storage: [
+                            { name: '1TB SSD', price: 0, desc: '預設配置', isDefault: true },
+                            { name: '2TB SSD', price: 12600, desc: '從1TB升級到2TB' },
+                            { name: '4TB SSD', price: 31500, desc: '從1TB升級到4TB' },
+                            { name: '8TB SSD', price: 69300, desc: '從1TB升級到8TB（僅限M4 Max晶片）', allowedChips: ['M4 Max (14核CPU/32核GPU)', 'M4 Max (16核CPU/40核GPU)'] }
+                        ],
+                        display: [
+                            { name: '標準顯示器', price: 0, desc: '預設配置', isDefault: true },
+                            { name: 'Nano-texture 奈米玻璃', price: 4500, desc: '減少眩光的奈米紋理玻璃' }
+                        ],
+                        power: [
+                            { name: '96W USB-C 電源轉接器', price: 0, desc: '預設配置（不可降級）', isDefault: true }
+                        ]
+                    },
+                    F: {
+                        chip: [
+                            { name: 'M4 Max (14核CPU/32核GPU)', price: 0, desc: '預設配置', isDefault: true },
+                            { name: 'M4 Max (16核CPU/40核GPU)', price: 9450, desc: '升級到Max 16C CPU / 40C GPU' }
+                        ],
+                        memory: [
+                            { name: '36GB 統一記憶體', price: 0, desc: '預設配置', isDefault: true, allowedChips: ['M4 Max (14核CPU/32核GPU)'] },
+                            { name: '48GB 統一記憶體', price: 6300, desc: '從36GB升級到48GB（M4 Max 16C/40C 強制）', requiredChip: 'M4 Max (16核CPU/40核GPU)', forcedForChip: 'M4 Max (16核CPU/40核GPU)' },
+                            { name: '64GB 統一記憶體', price: 12600, desc: '從48GB升級到64GB（僅限M4 Max 16C/40C）', allowedChips: ['M4 Max (16核CPU/40核GPU)'] },
+                            { name: '128GB 統一記憶體', price: 37800, desc: '從48GB升級到128GB（僅限M4 Max 16C/40C）', allowedChips: ['M4 Max (16核CPU/40核GPU)'] }
+                        ],
+                        storage: [
+                            { name: '1TB SSD', price: 0, desc: '預設配置', isDefault: true },
+                            { name: '2TB SSD', price: 12600, desc: '從1TB升級到2TB' },
+                            { name: '4TB SSD', price: 31500, desc: '從1TB升級到4TB' },
+                            { name: '8TB SSD', price: 69300, desc: '從1TB升級到8TB' }
+                        ],
+                        display: [
+                            { name: '標準顯示器', price: 0, desc: '預設配置', isDefault: true },
+                            { name: 'Nano-texture 奈米玻璃', price: 4500, desc: '減少眩光的奈米紋理玻璃' }
+                        ],
+                        power: [
+                            { name: '96W USB-C 電源轉接器', price: 0, desc: '預設配置（不可降級）', isDefault: true }
+                        ]
+                    }
+                },
+                 16: {  // ← 完全替換這整個 16 物件
+            A: {
+                chip: [
+                    { name: 'M4 Pro (14核CPU/20核GPU)', price: 0, desc: '預設配置', isDefault: true },
+                    { name: 'M4 Max (14核CPU/32核GPU)', price: 18900, desc: '升級到Max 14C CPU / 32C GPU（記憶體強制36GB，儲存強制1TB）' },
+                    { name: 'M4 Max (16核CPU/40核GPU)', price: 26200, desc: '升級到Max 16C CPU / 40C GPU（記憶體強制48GB，儲存強制1TB）' }
+                ],
+                memory: [
+                    { name: '24GB 統一記憶體', price: 0, desc: '預設配置', isDefault: true, allowedChips: ['M4 Pro (14核CPU/20核GPU)'] },
+                    { name: '48GB 統一記憶體', price: 14000, desc: '從24GB升級到48GB', allowedChips: ['M4 Pro (14核CPU/20核GPU)', 'M4 Max (16核CPU/40核GPU)'], forcedForChip: 'M4 Max (16核CPU/40核GPU)', forcedPrice: 12600 },
+                    { name: '36GB 統一記憶體', price: 6300, desc: '從24GB升級到36GB（M4 Max 14C強制）', requiredChip: 'M4 Max (14核CPU/32核GPU)', isForced: true },
+                    { name: '64GB 統一記憶體', price: 20300, desc: '從48GB升級到64GB（僅限M4 Max 16C）', allowedChips: ['M4 Max (16核CPU/40核GPU)'], basePrice: 14000 },
+                    { name: '128GB 統一記憶體', price: 45500, desc: '從48GB升級到128GB（僅限M4 Max 16C）', allowedChips: ['M4 Max (16核CPU/40核GPU)'], basePrice: 14000 }
+                ],
+                storage: [
+                    { name: '512GB SSD', price: 0, desc: '預設配置', isDefault: true, disallowedChips: ['M4 Max (14核CPU/32核GPU)', 'M4 Max (16核CPU/40核GPU)'] },
+                    { name: '1TB SSD', price: 6300, desc: '從512GB升級到1TB', forcedForChips: ['M4 Max (14核CPU/32核GPU)', 'M4 Max (16核CPU/40核GPU)'] },
+                    { name: '2TB SSD', price: 18900, desc: '從512GB升級到2TB' },
+                    { name: '4TB SSD', price: 37800, desc: '從512GB升級到4TB' },
+                    { name: '8TB SSD', price: 75600, desc: '從512GB升級到8TB（僅限M4 Max晶片）', allowedChips: ['M4 Max (14核CPU/32核GPU)', 'M4 Max (16核CPU/40核GPU)'] }
+                ],
+                display: [
+                    { name: '標準顯示器', price: 0, desc: '預設配置', isDefault: true },
+                    { name: 'Nano-texture 奈米玻璃', price: 4500, desc: '減少眩光的奈米紋理玻璃' }
+                ],
+                power: [
+                    { name: '140W USB-C 電源轉接器', price: 0, desc: '預設配置（不可降級）', isDefault: true }
+                ]
+            },
+            B: {
+                chip: [
+                    { name: 'M4 Pro (14核CPU/20核GPU)', price: 0, desc: '預設配置', isDefault: true },
+                    { name: 'M4 Max (14核CPU/32核GPU)', price: 11200, desc: '升級到Max 14C CPU / 32C GPU（記憶體降為36GB，儲存強制1TB）' },
+                    { name: 'M4 Max (16核CPU/40核GPU)', price: 26200, desc: '升級到Max 16C CPU / 40C GPU（記憶體保持48GB，儲存強制1TB）' }
+                ],
+                memory: [
+                    { name: '48GB 統一記憶體', price: 0, desc: '預設配置', isDefault: true, allowedChips: ['M4 Pro (14核CPU/20核GPU)', 'M4 Max (16核CPU/40核GPU)'] },
+                    { name: '36GB 統一記憶體', price: 0, desc: '記憶體降級（M4 Max 14C不加價）', requiredChip: 'M4 Max (14核CPU/32核GPU)', isForced: true },
+                    { name: '64GB 統一記憶體', price: 6300, desc: '從48GB升級到64GB（僅限M4 Max 16C）', allowedChips: ['M4 Max (16核CPU/40核GPU)'] },
+                    { name: '128GB 統一記憶體', price: 31500, desc: '從48GB升級到128GB（僅限M4 Max 16C）', allowedChips: ['M4 Max (16核CPU/40核GPU)'] }
+                ],
+                storage: [
+                    { name: '512GB SSD', price: 0, desc: '預設配置', isDefault: true, disallowedChips: ['M4 Max (14核CPU/32核GPU)', 'M4 Max (16核CPU/40核GPU)'] },
+                    { name: '1TB SSD', price: 6300, desc: '從512GB升級到1TB', forcedForChips: ['M4 Max (14核CPU/32核GPU)', 'M4 Max (16核CPU/40核GPU)'] },
+                    { name: '2TB SSD', price: 18900, desc: '從512GB升級到2TB' },
+                    { name: '4TB SSD', price: 37800, desc: '從512GB升級到4TB' },
+                    { name: '8TB SSD', price: 75600, desc: '從512GB升級到8TB（僅限M4 Max晶片）', allowedChips: ['M4 Max (14核CPU/32核GPU)', 'M4 Max (16核CPU/40核GPU)'] }
+                ],
+                display: [
+                    { name: '標準顯示器', price: 0, desc: '預設配置', isDefault: true },
+                    { name: 'Nano-texture 奈米玻璃', price: 4500, desc: '減少眩光的奈米紋理玻璃' }
+                ],
+                power: [
+                    { name: '140W USB-C 電源轉接器', price: 0, desc: '預設配置（不可降級）', isDefault: true }
+                ]
+            },
+            C: {
+                chip: [
+                    { name: 'M4 Max (14核CPU/32核GPU)', price: 0, desc: '預設配置', isDefault: true },
+                    { name: 'M4 Max (16核CPU/40核GPU)', price: 8000, desc: '升級到Max 16C CPU / 40C GPU（記憶體強制升級48GB）' }
+                ],
+                memory: [
+                    { name: '36GB 統一記憶體', price: 0, desc: '預設配置（不可變動）', isDefault: true, allowedChips: ['M4 Max (14核CPU/32核GPU)'] },
+                    { name: '48GB 統一記憶體', price: 7000, desc: '從36GB升級到48GB（M4 Max 16C強制）', requiredChip: 'M4 Max (16核CPU/40核GPU)', isForced: true },
+                    { name: '64GB 統一記憶體', price: 13300, desc: '從48GB升級到64GB（僅限M4 Max 16C）', allowedChips: ['M4 Max (16核CPU/40核GPU)'], basePrice: 7000 },
+                    { name: '128GB 統一記憶體', price: 38500, desc: '從48GB升級到128GB（僅限M4 Max 16C）', allowedChips: ['M4 Max (16核CPU/40核GPU)'], basePrice: 7000 }
+                ],
+                storage: [
+                    { name: '1TB SSD', price: 0, desc: '預設配置', isDefault: true },
+                    { name: '2TB SSD', price: 12600, desc: '從1TB升級到2TB' },
+                    { name: '4TB SSD', price: 31500, desc: '從1TB升級到4TB' },
+                    { name: '8TB SSD', price: 69300, desc: '從1TB升級到8TB' }
+                ],
+                display: [
+                    { name: '標準顯示器', price: 0, desc: '預設配置', isDefault: true },
+                    { name: 'Nano-texture 奈米玻璃', price: 4500, desc: '減少眩光的奈米紋理玻璃' }
+                ],
+                power: [
+                    { name: '140W USB-C 電源轉接器', price: 0, desc: '預設配置（不可降級）', isDefault: true }
+                ]
+            },
+            D: {
+                memory: [
+                    { name: '48GB 統一記憶體', price: 0, desc: '預設配置', isDefault: true },
+                    { name: '64GB 統一記憶體', price: 6300, desc: '從48GB升級到64GB' },
+                    { name: '128GB 統一記憶體', price: 31500, desc: '從48GB升級到128GB' }
+                ],
+                storage: [
+                    { name: '1TB SSD', price: 0, desc: '預設配置', isDefault: true },
+                    { name: '2TB SSD', price: 12600, desc: '從1TB升級到2TB' },
+                    { name: '4TB SSD', price: 31500, desc: '從1TB升級到4TB' },
+                    { name: '8TB SSD', price: 69300, desc: '從1TB升級到8TB（預設開啟，因為是Max晶片）' }
+                ],
+                display: [
+                    { name: '標準顯示器', price: 0, desc: '預設配置', isDefault: true },
+                    { name: 'Nano-texture 奈米玻璃', price: 4500, desc: '減少眩光的奈米紋理玻璃' }
+                ],
+                power: [
+                    { name: '140W USB-C 電源轉接器', price: 0, desc: '預設配置（不可降級）', isDefault: true }
+                ]
+            }
+        }
+    }
+};
+        
+
+        // Canvas 圓角矩形助手函數
+        function drawRoundRect(ctx, x, y, width, height, radius) {
+            ctx.beginPath();
+            ctx.moveTo(x + radius, y);
+            ctx.lineTo(x + width - radius, y);
+            ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+            ctx.lineTo(x + width, y + height - radius);
+            ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+            ctx.lineTo(x + radius, y + height);
+            ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+            ctx.lineTo(x, y + radius);
+            ctx.quadraticCurveTo(x, y, x + radius, y);
+            ctx.closePath();
+            ctx.fill();
+        }
+
+        // 顯示Toast提示
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            if (toast) {
+                toast.textContent = message;
+                toast.classList.add('visible');
+                
+                setTimeout(() => {
+                    toast.classList.remove('visible');
+                }, 3000);
+            }
+        }
+
+        // 數字動畫效果
+        function animateNumber(element, start, end, duration = 800) {
+            const startTime = performance.now();
+            const range = end - start;
+            
+            function update(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                
+                // 使用 easeOutQuart 緩動函數
+                const easeProgress = 1 - Math.pow(1 - progress, 4);
+                const current = Math.round(start + (range * easeProgress));
+                
+                element.textContent = `NT${current.toLocaleString()}`;
+                element.classList.add('countup');
+                
+                if (progress < 1) {
+                    requestAnimationFrame(update);
+                } else {
+                    setTimeout(() => {
+                        element.classList.remove('countup');
+                    }, 100);
+                }
+            }
+            
+            requestAnimationFrame(update);
+        }
+
+        // 切換價格詳情顯示
+        function togglePriceDetails() {
+            const details = document.getElementById('priceDetails');
+            const icon = document.getElementById('toggleIcon');
+            
+            if (details.classList.contains('show')) {
+                details.classList.remove('show');
+                icon.textContent = '▼';
+            } else {
+                details.classList.add('show');
+                icon.textContent = '▲';
+            }
+        }
+
+        // 初始化默認配置
+        function initializeDefaults() {
+            if (!config.series || !config.size || !config.model) return;
+            
+            const upgrades = upgradeOptions[config.series][config.size][config.model];
+            if (!upgrades) return;
+            
+            if (!config.customizations) {
+                config.customizations = {};
+            }
+            
+            // 為每個類別設置默認值
+            Object.keys(upgrades).forEach(category => {
+                const categoryOptions = upgrades[category];
+                const defaultOption = categoryOptions.find(option => option.isDefault);
+                
+                if (defaultOption && !config.customizations[category]) {
+                    config.customizations[category] = defaultOption;
+                }
+            });
+        }
+
+        // 更新客製化價格預覽
+        function updateCustomizePrice() {
+            if (!config.series || !config.size || !config.model) return;
+            
+            const basePrice = basePrices[config.series][config.size][config.model];
+            const calculation = calculateCustomizationPrice();
+            
+            // 更新基礎價格
+            document.getElementById('basePrice').textContent = `NT${basePrice.toLocaleString()}`;
+            
+            // 更新當前價格 (使用動畫)
+            const currentPriceElement = document.getElementById('currentPrice');
+            const oldPrice = parseInt(currentPriceElement.textContent.replace(/[^\d]/g, '')) || basePrice;
+            const newPrice = calculation.totalPrice;
+            
+            if (oldPrice !== newPrice) {
+                animateNumber(currentPriceElement, oldPrice, newPrice);
+                
+                // 觸發脈衝動畫
+                const preview = document.getElementById('pricePreview');
+                preview.classList.add('pulse');
+                setTimeout(() => {
+                    preview.classList.remove('pulse');
+                }, 600);
+            }
+            
+            // 更新價格變化指示
+            const priceChangeElement = document.getElementById('priceChange');
+            const priceIncrease = calculation.totalUpgradePrice;
+            
+            if (priceIncrease > 0) {
+                priceChangeElement.textContent = `+NT${priceIncrease.toLocaleString()}`;
+                priceChangeElement.className = 'price-change positive';
+                priceChangeElement.style.display = 'inline-block';
+                priceChangeElement.classList.add('animated');
+                setTimeout(() => {
+                    priceChangeElement.classList.remove('animated');
+                }, 600);
+            } else {
+                priceChangeElement.style.display = 'none';
+            }
+            
+            // 更新詳細升級明細
+            const upgradeDetails = document.getElementById('upgradeDetails');
+            upgradeDetails.innerHTML = '';
+            
+            if (calculation.upgrades.length > 0) {
+                calculation.upgrades.forEach(upgrade => {
+                    const item = document.createElement('div');
+                    item.className = 'price-detail-item';
+                    item.innerHTML = `
+                        <span class="price-detail-label">${upgrade.name}</span>
+                        <span class="price-detail-value upgrade">${upgrade.price === 0 ? '預設' : `+NT${upgrade.price.toLocaleString()}`}</span>
+                    `;
+                    upgradeDetails.appendChild(item);
+                });
+            } else {
+                const item = document.createElement('div');
+                item.className = 'price-detail-item';
+                item.innerHTML = `
+                    <span class="price-detail-label">使用標準配置</span>
+                    <span class="price-detail-value">NT$0</span>
+                `;
+                upgradeDetails.appendChild(item);
+            }
+            
+            // 更新進度
+            updateCustomizeProgress();
+        }
+
+        // 計算客製化價格 - 修正版
+        function calculateCustomizationPrice() {
+            const basePrice = basePrices[config.series][config.size][config.model];
+            let totalUpgradePrice = 0;
+            let upgrades = [];
+            
+            if (config.customizations) {
+                Object.keys(config.customizations).forEach(category => {
+                    const upgrade = config.customizations[category];
+                    if (upgrade && upgrade.price !== undefined && upgrade.name) {
+                        // 只計算非默認選項的價格
+                        if (upgrade.price > 0) {
+                            totalUpgradePrice += upgrade.price;
+                        }
+                        upgrades.push({
+                            name: upgrade.name,
+                            price: upgrade.price
+                        });
+                    }
+                });
+            }
+            
+            return {
+                basePrice,
+                totalUpgradePrice,
+                totalPrice: basePrice + totalUpgradePrice,
+                upgrades
+            };
+        }
+
+        // 更新客製化進度
+        function updateCustomizeProgress() {
+            const totalCategories = getAvailableUpgradeCategories().length;
+            const selectedCategories = Object.keys(config.customizations || {}).length;
+            const progress = totalCategories > 0 ? (selectedCategories / totalCategories) * 100 : 0;
+            
+            const progressFill = document.getElementById('progressFill');
+            const progressPercent = document.getElementById('progressPercent');
+            
+            if (progressFill && progressPercent) {
+                progressFill.style.width = `${progress}%`;
+                progressPercent.textContent = `${Math.round(progress)}%`;
+            }
+        }
+
+        // 獲得可用的升級類別
+        function getAvailableUpgradeCategories() {
+            if (!config.series || !config.size || !config.model) return [];
+            
+            const upgrades = upgradeOptions[config.series][config.size][config.model];
+            return Object.keys(upgrades || {});
+        }
+
+        // 添加觸控反饋效果
+        function addTouchFeedback() {
+            const elements = document.querySelectorAll('.option, .generate-image-btn, .reset-btn, .purchase-btn, .social-card, .line-highlight, .continue-btn, .upgrade-option');
+            
+            elements.forEach(element => {
+                element.addEventListener('touchstart', function() {
+                    this.classList.add('pressed');
+                }, { passive: true });
+                
+                element.addEventListener('touchend', function() {
+                    this.classList.remove('pressed');
+                }, { passive: true });
+                
+                element.addEventListener('touchcancel', function() {
+                    this.classList.remove('pressed');
+                }, { passive: true });
+            });
+        }
+
+        function selectSeries(series) {
+            config.series = series;
+            document.querySelectorAll('[data-series]').forEach(el => el.classList.remove('selected'));
+            document.querySelector(`[data-series="${series}"]`).classList.add('selected');
+            showToast(`已選擇 MacBook ${series === 'air' ? 'Air' : 'Pro'}`);
+            
+            setTimeout(() => {
+                showSizeStep();
+                document.getElementById('sizeStep').scrollIntoView({ behavior: 'smooth' });
+            }, 500);
+        }
+
+        function showSizeStep() {
+            document.getElementById('sizeStep').style.display = 'block';
+            const sizeOptions = document.getElementById('sizeOptions');
+            
+            if (config.series === 'air') {
+                sizeOptions.innerHTML = `
+                    <div class="option" onclick="selectSize('13')">
+                        <div class="option-title">13 吋</div>
+                        <div class="option-price">NT$31,400 起</div>
+                        <div class="option-desc">輕薄便攜，完美平衡</div>
+                    </div>
+                    <div class="option" onclick="selectSize('15')">
+                        <div class="option-title">15 吋</div>
+                        <div class="option-price">NT$38,400 起</div>
+                        <div class="option-desc">大螢幕體驗，生產力加倍</div>
+                    </div>
+                `;
+            } else {
+                sizeOptions.innerHTML = `
+                    <div class="option" onclick="selectSize('14')">
+                        <div class="option-title">14 吋</div>
+                        <div class="option-price">NT$51,400 起</div>
+                        <div class="option-desc">專業便攜，性能與體積完美平衡</div>
+                    </div>
+                    <div class="option" onclick="selectSize('16')">
+                        <div class="option-title">16 吋</div>
+                        <div class="option-price">NT$77,900 起</div>
+                        <div class="option-desc">專業旗艦，極致性能體驗</div>
+                    </div>
+                `;
+            }
+            addTouchFeedback();
+        }
+
+        function selectSize(size) {
+            config.size = size;
+            document.querySelectorAll('#sizeOptions .option').forEach(el => el.classList.remove('selected'));
+            event.target.closest('.option').classList.add('selected');
+            showToast(`已選擇 ${size} 吋`);
+            
+            setTimeout(() => {
+                showModelStep();
+                document.getElementById('modelStep').scrollIntoView({ behavior: 'smooth' });
+            }, 500);
+        }
+
+        function showModelStep() {
+            document.getElementById('modelStep').style.display = 'block';
+            const modelOptions = document.getElementById('modelOptions');
+            const models = Object.keys(basePrices[config.series][config.size]);
+            
+            modelOptions.innerHTML = models.map(model => {
+                const modelConfig = baseConfigs[config.series][config.size][model];
+                const price = basePrices[config.series][config.size][model];
+                return `
+                    <div class="option" onclick="selectModel('${model}')">
+                        <div class="option-title">${model} 款 - ${modelConfig.desc}</div>
+                        <div class="option-price">NT${price.toLocaleString()}</div>
+                        <div class="option-desc">
+                            ${modelConfig.chip}<br>
+                            ${modelConfig.memory} 統一記憶體<br>
+                            ${modelConfig.storage} SSD
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            addTouchFeedback();
+        }
+
+        function selectModel(model) {
+            config.model = model;
+            config.customizations = {}; // 重置客製化選項
+            document.querySelectorAll('#modelOptions .option').forEach(el => el.classList.remove('selected'));
+            event.target.closest('.option').classList.add('selected');
+            showToast(`已選擇 ${model} 款`);
+            
+            setTimeout(() => {
+                showCustomizeStep();
+                document.getElementById('customizeStep').scrollIntoView({ behavior: 'smooth' });
+            }, 500);
+        }
+
+        function showCustomizeStep() {
+            document.getElementById('customizeStep').style.display = 'block';
+            addTouchFeedback();
+        }
+
+        function selectCustomize(isCustomized) {
+            config.isCustomized = isCustomized;
+            document.querySelectorAll('#customizeStep .option').forEach(el => el.classList.remove('selected'));
+            event.target.closest('.option').classList.add('selected');
+            
+            if (isCustomized) {
+                showToast('🛠️ 進入客製化配置模式');
+                setTimeout(() => {
+                    showCustomConfigStep();
+                    document.getElementById('customConfigStep').scrollIntoView({ behavior: 'smooth' });
+                }, 500);
+            } else {
+                showToast('🚀 使用標準配置');
+                setTimeout(() => {
+                    showColorStep();
+                    document.getElementById('colorStep').scrollIntoView({ behavior: 'smooth' });
+                }, 500);
+            }
+        }
+
+        function showCustomConfigStep() {
+            document.getElementById('customConfigStep').style.display = 'block';
+            
+            // 初始化默認配置
+            initializeDefaults();
+            
+            // 特殊處理Air 13" A款的動態選項
+            if (config.series === 'air' && config.size === '13' && config.model === 'A') {
+                updateAir13AOptions();
+            }
+            
+            // 特殊處理Pro 14" D/E/F款的動態選項
+            if (config.series === 'pro' && config.size === '14' && ['D', 'E', 'F'].includes(config.model)) {
+                updatePro14Options();
+            }
+            
+            // 初始化價格預覽
+            updateCustomizePrice();
+            
+            const customConfigOptions = document.getElementById('customConfigOptions');
+            const upgrades = upgradeOptions[config.series][config.size][config.model];
+            
+            let html = '';
+            
+            // 按順序顯示升級類別
+            const categoryOrder = ['chip', 'gpu', 'memory', 'storage', 'display', 'power'];
+            
+            categoryOrder.forEach(category => {
+                if (upgrades[category] && upgrades[category].length > 0) {
+                    const categoryNames = {
+                        chip: '🔧 晶片配置',
+                        gpu: '🎯 GPU配置',
+                        memory: '🧠 記憶體配置',
+                        storage: '💾 儲存配置',
+                        display: '🖥️ 顯示器配置',
+                        power: '🔌 電源轉接器'
+                    };
+                    
+                    html += createUpgradeCategory(category, categoryNames[category], upgrades[category]);
+                }
+            });
+            
+            customConfigOptions.innerHTML = html;
+            addTouchFeedback();
+            updateCustomizeProgress();
+        }
+
+        function updateAir13AOptions() {
+            const hasStorageUpgrade = config.customizations.storage && !config.customizations.storage.isDefault;
+            const hasMemoryUpgrade = config.customizations.memory && !config.customizations.memory.isDefault;
+            const hasAnyUpgrade = hasStorageUpgrade || hasMemoryUpgrade;
+            
+            // 動態更新GPU選項
+            if (hasAnyUpgrade) {
+                upgradeOptions.air[13].A.gpu = [
+                    { name: '10核GPU', price: 0, desc: '因記憶體/儲存升級自動免費升級', isDefault: true, autoUpgraded: true }
+                ];
+                config.customizations.gpu = upgradeOptions.air[13].A.gpu[0];
+            } else {
+                upgradeOptions.air[13].A.gpu = [
+                    { name: '8核GPU', price: 0, desc: '預設配置', isDefault: true },
+                    { name: '10核GPU', price: 3150, desc: '從8核GPU升級到10核GPU' }
+                ];
+                if (!config.customizations.gpu || config.customizations.gpu.autoUpgraded) {
+                    config.customizations.gpu = upgradeOptions.air[13].A.gpu[0];
+                }
+            }
+            
+            // 動態更新電源選項
+            if (hasStorageUpgrade) {
+                upgradeOptions.air[13].A.power = [
+                    { name: '35W 雙 USB-C 電源轉接器', price: 0, desc: '升級儲存後免費', isDefault: true },
+                    { name: '70W USB-C 電源轉接器', price: 0, desc: '升級儲存後免費' }
+                ];
+                if (!config.customizations.power || config.customizations.power.name === '30W USB-C 電源轉接器') {
+                    config.customizations.power = upgradeOptions.air[13].A.power[0];
+                }
+            } else {
+                upgradeOptions.air[13].A.power = [
+                    { name: '30W USB-C 電源轉接器', price: 0, desc: '預設配置', isDefault: true },
+                    { name: '35W 雙 USB-C 電源轉接器', price: 700, desc: '升級電源需加價' },
+                    { name: '70W USB-C 電源轉接器', price: 700, desc: '升級電源需加價' }
+                ];
+                if (!config.customizations.power || config.customizations.power.price === 0) {
+                    config.customizations.power = upgradeOptions.air[13].A.power[0];
+                }
+            }
+        }
+
+        // 修正Pro 14" D/E/F款升級邏輯
+        function updatePro14Options() {
+            const model = config.model;
+            const currentChip = config.customizations.chip;
+            
+            // 安全檢查
+            if (!currentChip || !currentChip.name) {
+                debugLog('updatePro14Options: 沒有選擇晶片');
+                return;
+            }
+            
+            debugLog('updatePro14Options:', {
+                model,
+                chipName: currentChip.name,
+                isDefault: currentChip.isDefault
+            });
+            
+            const memoryOptions = upgradeOptions[config.series][config.size][config.model].memory;
+            const powerOptions = upgradeOptions[config.series][config.size][config.model].power;
+            const storageOptions = upgradeOptions[config.series][config.size][config.model].storage;
+            
+            // D款電源供應器自動升級邏輯
+            if (model === 'D' && !currentChip.isDefault) {
+                // 升級任何晶片後自動升級96W電源
+                const power96W = powerOptions.find(opt => opt.name.includes('96W'));
+                if (power96W) {
+                    config.customizations.power = power96W;
+                    debugLog('D款自動升級電源到96W');
+                }
+            }
+            
+            // D款 M4 Max 晶片儲存強制升級邏輯
+            if (model === 'D' && currentChip.name.includes('M4 Max')) {
+                // 選擇任何 M4 Max 晶片後強制升級1TB儲存
+                const currentStorage = config.customizations.storage;
+                const storage1TB = storageOptions.find(opt => opt.name === '1TB SSD');
+                
+                // 如果當前儲存是512GB或沒有選擇，強制升級到1TB
+                if (!currentStorage || currentStorage.name === '512GB SSD') {
+                    if (storage1TB) {
+                        config.customizations.storage = storage1TB;
+                        debugLog('D款 M4 Max 強制升級儲存到1TB');
+                    }
+                }
+            }
+            
+            // 記憶體強制選擇邏輯
+            if (currentChip.name === 'M4 Max (14核CPU/32核GPU)') {
+                // Max 14C/32C：強制選擇36GB
+                const memory36GB = memoryOptions.find(opt => opt.name === '36GB 統一記憶體');
+                if (memory36GB) {
+                    config.customizations.memory = memory36GB;
+                    debugLog('強制選擇36GB記憶體');
+                }
+            } else if (currentChip.name === 'M4 Max (16核CPU/40核GPU)') {
+                // Max 16C/40C：強制選擇48GB（但如果已經選了更高的，就保持）
+                const currentMemory = config.customizations.memory;
+                const memory48GB = memoryOptions.find(opt => opt.name === '48GB 統一記憶體');
+                
+                debugLog('處理16C/40C記憶體選擇:', {
+                    currentMemory: currentMemory ? currentMemory.name : 'none',
+                    currentMemoryAllowed: currentMemory && currentMemory.allowedChips ? currentMemory.allowedChips.includes(currentChip.name) : false
+                });
+                
+                // 如果還沒選擇記憶體，或選擇的記憶體不符合要求，自動選擇48GB
+                if (!currentMemory || 
+                    !currentMemory.allowedChips || 
+                    !currentMemory.allowedChips.includes(currentChip.name) ||
+                    (currentMemory.name !== '48GB 統一記憶體' && 
+                     currentMemory.name !== '64GB 統一記憶體' && 
+                     currentMemory.name !== '128GB 統一記憶體')) {
+                    if (memory48GB) {
+                        config.customizations.memory = memory48GB;
+                        debugLog('強制選擇48GB記憶體');
+                    }
+                }
+            } else {
+                // Pro 晶片：如果當前選擇的記憶體不符合新晶片要求，重置為預設
+                const currentMemory = config.customizations.memory;
+                if (currentMemory && currentMemory.allowedChips && 
+                    !currentMemory.allowedChips.includes(currentChip.name)) {
+                    const defaultMemory = memoryOptions.find(opt => opt.isDefault);
+                    if (defaultMemory) {
+                        config.customizations.memory = defaultMemory;
+                        debugLog('重置記憶體為預設配置');
+                    }
+                }
+            }
+        }
+
+        // 修正Pro 16" A/B/C款升級邏輯
+function updatePro16Options() {
+    const model = config.model;
+    const currentChip = config.customizations.chip;
+    
+    // 安全檢查
+    if (!currentChip || !currentChip.name) {
+        debugLog('updatePro16Options: 沒有選擇晶片');
+        return;
+    }
+    
+    debugLog('updatePro16Options:', {
+        model,
+        chipName: currentChip.name,
+        isDefault: currentChip.isDefault
+    });
+    
+    const memoryOptions = upgradeOptions[config.series][config.size][config.model].memory;
+    const storageOptions = upgradeOptions[config.series][config.size][config.model].storage;
+    
+    // A款邏輯：晶片升級觸發記憶體和儲存強制升級
+    if (model === 'A') {
+        if (currentChip.name === 'M4 Max (14核CPU/32核GPU)') {
+            // 強制記憶體升級到36GB
+            const memory36GB = memoryOptions.find(opt => opt.name === '36GB 統一記憶體');
+            if (memory36GB) {
+                config.customizations.memory = memory36GB;
+                debugLog('A款 Max 14C 強制選擇36GB記憶體');
+            }
+            
+            // 強制儲存升級到1TB
+            const storage1TB = storageOptions.find(opt => opt.name === '1TB SSD');
+            if (storage1TB) {
+                config.customizations.storage = storage1TB;
+                debugLog('A款 Max 14C 強制升級儲存到1TB');
+            }
+       } else if (currentChip.name === 'M4 Max (16核CPU/40核GPU)') {
+    // 強制記憶體升級到48GB
+    const memory48GB = memoryOptions.find(opt => opt.name === '48GB 統一記憶體');
+    if (memory48GB) {
+        config.customizations.memory = memory48GB;
+        debugLog('A款 Max 16C 強制選擇48GB記憶體');
+    }
+            
+            // 強制儲存升級到1TB
+            const storage1TB = storageOptions.find(opt => opt.name === '1TB SSD');
+            if (storage1TB) {
+                config.customizations.storage = storage1TB;
+                debugLog('A款 Max 16C 強制升級儲存到1TB');
+            }
+        } else {
+            // M4 Pro：重置為預設或保持用戶選擇
+            const currentMemory = config.customizations.memory;
+            const currentStorage = config.customizations.storage;
+            
+            // 如果當前記憶體不符合Pro限制，重置為預設
+            if (currentMemory && currentMemory.requiredChip) {
+                const defaultMemory = memoryOptions.find(opt => opt.isDefault);
+                config.customizations.memory = defaultMemory;
+                debugLog('A款重置記憶體為預設');
+            }
+            
+            // 如果當前儲存是被強制的，可以重置為預設
+            if (currentStorage && currentStorage.name === '1TB SSD' && currentStorage.forcedForChips) {
+                const defaultStorage = storageOptions.find(opt => opt.isDefault);
+                config.customizations.storage = defaultStorage;
+                debugLog('A款重置儲存為預設');
+            }
+        }
+    }
+    
+    // B款邏輯：不同晶片對應不同記憶體策略
+    else if (model === 'B') {
+        if (currentChip.name === 'M4 Max (14核CPU/32核GPU)') {
+            // 記憶體降級到36GB（不加價）
+            const memory36GB = memoryOptions.find(opt => opt.name === '36GB 統一記憶體');
+            if (memory36GB) {
+                config.customizations.memory = memory36GB;
+                debugLog('B款 Max 14C 記憶體降級到36GB');
+            }
+            
+            // 強制儲存升級到1TB
+            const storage1TB = storageOptions.find(opt => opt.name === '1TB SSD');
+            if (storage1TB) {
+                config.customizations.storage = storage1TB;
+                debugLog('B款 Max 14C 強制升級儲存到1TB');
+            }
+        } else if (currentChip.name === 'M4 Max (16核CPU/40核GPU)') {
+            // 記憶體保持48GB
+            const memory48GB = memoryOptions.find(opt => opt.name === '48GB 統一記憶體');
+            if (memory48GB) {
+                config.customizations.memory = memory48GB;
+                debugLog('B款 Max 16C 保持48GB記憶體');
+            }
+            
+            // 強制儲存升級到1TB
+            const storage1TB = storageOptions.find(opt => opt.name === '1TB SSD');
+            if (storage1TB) {
+                config.customizations.storage = storage1TB;
+                debugLog('B款 Max 16C 強制升級儲存到1TB');
+            }
+        } else {
+            // M4 Pro：保持預設48GB
+            const defaultMemory = memoryOptions.find(opt => opt.isDefault);
+            if (defaultMemory) {
+                config.customizations.memory = defaultMemory;
+                debugLog('B款 Pro 保持預設48GB記憶體');
+            }
+            
+            // 可以重置儲存為預設512GB
+            const currentStorage = config.customizations.storage;
+            if (currentStorage && currentStorage.forcedForChips) {
+                const defaultStorage = storageOptions.find(opt => opt.isDefault);
+                config.customizations.storage = defaultStorage;
+                debugLog('B款 Pro 重置儲存為預設');
+            }
+        }
+    }
+    
+    // C款邏輯：升級16C晶片觸發記憶體強制升級
+    else if (model === 'C') {
+        if (currentChip.name === 'M4 Max (16核CPU/40核GPU)') {
+            // 強制記憶體升級到48GB
+            const memory48GB = memoryOptions.find(opt => opt.name === '48GB 統一記憶體');
+            if (memory48GB) {
+                config.customizations.memory = memory48GB;
+                debugLog('C款 Max 16C 強制升級記憶體到48GB');
+            }
+        } else {
+            // Max 14C：保持預設36GB
+            const defaultMemory = memoryOptions.find(opt => opt.isDefault);
+            if (defaultMemory) {
+                config.customizations.memory = defaultMemory;
+                debugLog('C款 Max 14C 保持預設36GB記憶體');
+            }
+        }
+    }
+    
+    // D款沒有晶片升級選項，不需要特殊處理
+}
+
+        function createUpgradeCategory(category, title, options) {
+            const hasSelection = config.customizations && config.customizations[category];
+            const categoryClass = hasSelection ? 'upgrade-category has-selection' : 'upgrade-category';
+            
+            return `
+                <div class="${categoryClass}" id="category-${category}">
+                    <h3>
+                        ${title}
+                        ${hasSelection ? '<span class="category-badge">已選擇</span>' : ''}
+                    </h3>
+                    <div class="upgrade-options">
+                        ${options.map((option, index) => createUpgradeOption(category, option, index)).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        // 獲取可用的升級選項 - 簡化版
+        function getAvailableUpgradeOptions(category, options) {
+            // 直接返回所有選項，禁用邏輯在checkUpgradeDisabled中處理
+            return options;
+        }
+
+        function createUpgradeOption(category, option, index, availableOptions) {
+            const currentSelection = config.customizations && config.customizations[category];
+            const isSelected = currentSelection && currentSelection.name === option.name;
+            const isDisabled = checkUpgradeDisabled(category, option);
+            
+            const hasNonDefaultSelection = currentSelection && !currentSelection.isDefault;
+            
+            let optionClass = 'upgrade-option';
+            if (isSelected) optionClass += ' selected';
+            if (isDisabled) optionClass += ' disabled';
+            if (option.isDefault && !isSelected && !hasNonDefaultSelection) optionClass += ' default';
+            
+            // 修正：使用特殊的選擇函數來處理動態選項，禁用的選項不添加點擊事件
+            const clickHandler = isDisabled ? '' : `selectUpgradeByOption('${category}', ${index})`;
+            
+            let priceText = '';
+            let priceClass = 'upgrade-price';
+            
+            if (option.isDefault) {
+                priceText = '已包含';
+                if (!hasNonDefaultSelection) {
+                    priceClass += ' default';
+                }
+            } else if (option.price === 0) {
+                priceText = '免費';
+                priceClass += ' free';
+            } else {
+                priceText = `+ NT${option.price.toLocaleString()}`;
+                priceClass += isDisabled ? ' disabled' : '';
+            }
+            
+            // 禁用選項的特殊樣式處理
+            if (isDisabled) {
+                priceClass += ' disabled';
+            }
+            
+            return `
+                <div class="${optionClass}" onclick="${clickHandler}" data-category="${category}" data-index="${index}">
+                    ${isSelected && !option.isDefault ? `<button class="remove-upgrade" onclick="removeUpgrade(event, '${category}')">×</button>` : ''}
+                    <div class="upgrade-info">
+                        <div class="upgrade-name">${option.name}</div>
+                        <div class="upgrade-desc">${option.desc || ''}</div>
+                    </div>
+                    <div class="${priceClass}">
+                        ${priceText}
+                    </div>
+                </div>
+            `;
+        }
+
+        function checkUpgradeDisabled(category, option) {
+            // Air 13" A款 特殊邏輯
+            if (config.series === 'air' && config.size === '13' && config.model === 'A') {
+                const hasMemoryUpgrade = config.customizations.memory && config.customizations.memory.autoUpgradeGPU;
+                const hasStorageUpgrade = config.customizations.storage && config.customizations.storage.autoUpgradeGPU;
+                const hasAnyAutoUpgrade = hasMemoryUpgrade || hasStorageUpgrade;
+                const hasManualGPUUpgrade = config.customizations.gpu && !config.customizations.gpu.isDefault && !config.customizations.gpu.autoUpgraded;
+                
+                if (category === 'gpu' && hasAnyAutoUpgrade && !option.autoUpgraded) {
+                    return true;
+                }
+                
+                if (hasManualGPUUpgrade) {
+                    if (category === 'memory' && option.autoUpgradeGPU) {
+                        return true;
+                    }
+                    if (category === 'storage' && option.autoUpgradeGPU) {
+                        return true;
+                    }
+                }
+            }
+            
+            // Pro 14" D/E/F款的新記憶體邏輯
+            if (config.series === 'pro' && config.size === '14' && ['D', 'E', 'F'].includes(config.model)) {
+                const currentChip = config.customizations.chip;
+                const currentChipName = currentChip ? currentChip.name : null;
+                
+                // 如果沒有選擇晶片，使用預設晶片名稱
+                let effectiveChipName = currentChipName;
+                if (!effectiveChipName) {
+                    const chipOptions = upgradeOptions[config.series][config.size][config.model].chip;
+                    const defaultChip = chipOptions.find(chip => chip.isDefault);
+                    effectiveChipName = defaultChip ? defaultChip.name : null;
+                }
+                
+                debugLog('檢查禁用狀態:', {
+                    category,
+                    optionName: option.name,
+                    currentChip: effectiveChipName,
+                    allowedChips: option.allowedChips,
+                    requiredChip: option.requiredChip
+                });
+                
+                // 記憶體選項檢查
+                if (category === 'memory') {
+                    // 如果有 allowedChips 限制
+                    if (option.allowedChips && Array.isArray(option.allowedChips)) {
+                        // 如果當前晶片不在允許列表中
+                        if (!effectiveChipName || !option.allowedChips.includes(effectiveChipName)) {
+                            debugLog('記憶體選項被禁用 - allowedChips:', option.name, 'current:', effectiveChipName, 'allowed:', option.allowedChips);
+                            return true;
+                        }
+                    }
+                    
+                    // 如果有 requiredChip 限制（只有特定晶片可以選）
+                    if (option.requiredChip) {
+                        if (effectiveChipName !== option.requiredChip) {
+                            debugLog('記憶體選項被禁用 - requiredChip:', option.name, 'current:', effectiveChipName, 'required:', option.requiredChip);
+                            return true;
+                        }
+                    }
+                }
+                
+                // 儲存選項檢查
+                if (category === 'storage') {
+                    // 檢查是否在允許列表中
+                    if (option.allowedChips && Array.isArray(option.allowedChips)) {
+                        if (!effectiveChipName || !option.allowedChips.includes(effectiveChipName)) {
+                            debugLog('儲存選項被禁用 - allowedChips:', option.name, 'current:', effectiveChipName, 'allowed:', option.allowedChips);
+                            return true;
+                        }
+                    }
+                    
+                    // 檢查是否在禁用列表中（新增）
+                    if (option.disallowedChips && Array.isArray(option.disallowedChips)) {
+                        if (effectiveChipName && option.disallowedChips.includes(effectiveChipName)) {
+                            debugLog('儲存選項被禁用 - disallowedChips:', option.name, 'current:', effectiveChipName, 'disallowed:', option.disallowedChips);
+                            return true;
+                        }
+                    }
+                }
+                
+                // 電源供應器特殊邏輯：D款升級晶片後自動升級96W
+                if (category === 'power' && config.model === 'D') {
+                    const hasChipUpgrade = currentChip && !currentChip.isDefault;
+                    
+                    if (option.name === '70W USB-C 電源轉接器' && hasChipUpgrade) {
+                        debugLog('電源選項被禁用:', option.name, 'hasChipUpgrade:', hasChipUpgrade);
+                        return true;
+                    }
+                }
+            }
+            
+            
+    // Pro 16" 邏輯
+    if (config.series === 'pro' && config.size === '16') {
+        const model = config.model;
+        const currentChip = config.customizations.chip;
+        
+       // 如果沒有選擇晶片，使用預設晶片名稱
+let effectiveChipName = currentChip ? currentChip.name : null;
+if (!effectiveChipName) {
+    if (model === 'D') {
+        // D款沒有晶片升級選項，直接從baseConfigs獲取
+        effectiveChipName = baseConfigs[config.series][config.size][config.model].chip;
+    } else {
+        const chipOptions = upgradeOptions[config.series][config.size][config.model].chip;
+        if (chipOptions) {
+            const defaultChip = chipOptions.find(chip => chip.isDefault);
+            effectiveChipName = defaultChip ? defaultChip.name : null;
+        }
+    }
+}
+        
+        debugLog('Pro 16" 檢查禁用狀態:', {
+            model,
+            category,
+            optionName: option.name,
+            currentChip: effectiveChipName,
+            allowedChips: option.allowedChips,
+            requiredChip: option.requiredChip,
+            disallowedChips: option.disallowedChips
+        });
+        
+        // 記憶體選項檢查
+        if (category === 'memory') {
+            // 如果有 allowedChips 限制
+            if (option.allowedChips && Array.isArray(option.allowedChips)) {
+                if (!effectiveChipName || !option.allowedChips.includes(effectiveChipName)) {
+                    debugLog('Pro 16" 記憶體選項被禁用 - allowedChips:', option.name);
+                    return true;
+                }
+            }
+            
+            // 如果有 requiredChip 限制（只有特定晶片可以選）
+            if (option.requiredChip) {
+                if (effectiveChipName !== option.requiredChip) {
+                    debugLog('Pro 16" 記憶體選項被禁用 - requiredChip:', option.name);
+                    return true;
+                }
+            }
+            
+            // D款沒有晶片升級，所有記憶體選項都可用
+            if (model === 'D') {
+                return false;
+            }
+        }
+        
+        // 儲存選項檢查
+        
+        if (category === 'storage') {
+             // D款特殊處理：本來就是Max晶片，所有儲存選項都可用
+    if (model === 'D') {
+        return false; // D款所有儲存選項都可選，包括8TB
+    }
+            // 512GB 在 Max 晶片時禁用
+            if (option.name === '512GB SSD' && effectiveChipName && effectiveChipName.includes('M4 Max')) {
+                debugLog('Pro 16" 儲存選項被禁用 - Max晶片不能選512GB:', option.name);
+                return true;
+            }
+            
+            // 8TB 僅限 Max 晶片
+            if (option.name === '8TB SSD') {
+                if (!effectiveChipName || !effectiveChipName.includes('M4 Max')) {
+                    debugLog('Pro 16" 儲存選項被禁用 - 8TB僅限Max:', option.name);
+                    return true;
+                }
+            }
+            
+            // 檢查 allowedChips 限制
+            if (option.allowedChips && Array.isArray(option.allowedChips)) {
+                if (!effectiveChipName || !option.allowedChips.includes(effectiveChipName)) {
+                    debugLog('Pro 16" 儲存選項被禁用 - allowedChips:', option.name);
+                    return true;
+                }
+            }
+            
+            // 檢查 disallowedChips 限制
+            if (option.disallowedChips && Array.isArray(option.disallowedChips)) {
+                if (effectiveChipName && option.disallowedChips.includes(effectiveChipName)) {
+                    debugLog('Pro 16" 儲存選項被禁用 - disallowedChips:', option.name);
+                    return true;
+                }
+            }
+        }
+        
+        // 晶片選項檢查（D款沒有晶片升級）
+        if (category === 'chip' && model === 'D') {
+            // D款沒有晶片升級選項，但不應該出現在這裡
+            return false;
+        }
+        
+        // 顯示器選項檢查（所有16吋都支援奈米玻璃）
+        if (category === 'display') {
+            return false; // 16吋所有款式都支援標準和奈米玻璃
+        }
+        
+        // 電源選項檢查（16吋都是140W，不可降級）
+        if (category === 'power') {
+            return false; // 16吋只有140W選項
+        }
+    }
+
+            return false;
+        }
+
+      // 完整替換 selectUpgradeByOption 函數：
+function selectUpgradeByOption(category, index) {
+    // 直接使用原始選項索引
+    const upgrades = upgradeOptions[config.series][config.size][config.model];
+    const selectedUpgrade = upgrades[category] && upgrades[category][index];
+    
+    debugLog('選擇升級選項:', {
+        category,
+        index,
+        selectedUpgrade: selectedUpgrade ? selectedUpgrade.name : 'undefined',
+        price: selectedUpgrade ? selectedUpgrade.price : 'undefined'
+    });
+    
+    // 安全檢查
+    if (!selectedUpgrade) {
+        console.error('選項不存在:', category, index, upgrades[category]);
+        return;
+    }
+    
+    // 檢查是否被禁用
+    if (checkUpgradeDisabled(category, selectedUpgrade)) {
+        debugLog('選項被禁用，無法選擇:', selectedUpgrade.name);
+        showToast(`❌ ${selectedUpgrade.name} 目前無法選擇`);
+        return;
+    }
+    
+    if (!config.customizations) {
+        config.customizations = {};
+    }
+    
+    // 保存選擇
+    config.customizations[category] = selectedUpgrade;
+    debugLog('已保存選擇:', category, selectedUpgrade.name, selectedUpgrade.price);
+    
+    // 處理 Air 13" A款 的特殊邏輯
+    if (config.series === 'air' && config.size === '13' && config.model === 'A') {
+        const hasMemoryUpgrade = category === 'memory' && selectedUpgrade.autoUpgradeGPU;
+        const hasStorageUpgrade = category === 'storage' && selectedUpgrade.autoUpgradeGPU;
+        const currentMemoryUpgrade = config.customizations.memory && config.customizations.memory.autoUpgradeGPU;
+        const currentStorageUpgrade = config.customizations.storage && config.customizations.storage.autoUpgradeGPU;
+        
+        if (hasMemoryUpgrade || hasStorageUpgrade || currentMemoryUpgrade || currentStorageUpgrade) {
+            if (config.customizations.gpu && !config.customizations.gpu.autoUpgraded) {
+                delete config.customizations.gpu;
+            }
+        }
+        
+        if (category === 'gpu' && !selectedUpgrade.autoUpgraded) {
+            const upgrades = upgradeOptions[config.series][config.size][config.model];
+            if (config.customizations.memory && config.customizations.memory.autoUpgradeGPU) {
+                const defaultMemory = upgrades.memory.find(opt => opt.isDefault);
+                config.customizations.memory = defaultMemory;
+            }
+            if (config.customizations.storage && config.customizations.storage.autoUpgradeGPU) {
+                const defaultStorage = upgrades.storage.find(opt => opt.isDefault);
+                config.customizations.storage = defaultStorage;
+            }
+        }
+    }
+    
+    // 處理 Pro 14" D/E/F款 的特殊邏輯
+    if (config.series === 'pro' && config.size === '14' && ['D', 'E', 'F'].includes(config.model)) {
+        if (category === 'chip') {
+            debugLog('晶片選擇變更，更新其他選項');
+            updatePro14Options();
+        }
+    }
+
+    // 處理 Pro 16" A/B/C款 的特殊邏輯
+    if (config.series === 'pro' && config.size === '16' && ['A', 'B', 'C'].includes(config.model)) {
+        if (category === 'chip') {
+            debugLog('Pro 16" 晶片選擇變更，更新其他選項');
+            updatePro16Options();
+        }
+    }
+
+    // 刷新界面和價格
+    showCustomConfigStep();
+    updateCustomizePrice();
+    showToast(`✅ 已選擇 ${selectedUpgrade.name}`);
+}
+
+        function selectUpgrade(category, index) {
+            const upgrades = upgradeOptions[config.series][config.size][config.model];
+            const selectedUpgrade = upgrades[category] && upgrades[category][index];
+            
+            // 安全檢查
+            if (!selectedUpgrade) {
+                console.error('選項不存在:', category, index, upgrades[category]);
+                return;
+            }
+            
+            // 如果是不能升級的選項，直接返回（已經自動選中）
+            if (selectedUpgrade.cannotUpgrade) {
+                return;
+            }
+            
+            if (!config.customizations) {
+                config.customizations = {};
+            }
+            
+            config.customizations[category] = selectedUpgrade;
+            
+            // 處理 Air 13" A款 的特殊邏輯
+            if (config.series === 'air' && config.size === '13' && config.model === 'A') {
+                const hasMemoryUpgrade = category === 'memory' && selectedUpgrade.autoUpgradeGPU;
+                const hasStorageUpgrade = category === 'storage' && selectedUpgrade.autoUpgradeGPU;
+                const currentMemoryUpgrade = config.customizations.memory && config.customizations.memory.autoUpgradeGPU;
+                const currentStorageUpgrade = config.customizations.storage && config.customizations.storage.autoUpgradeGPU;
+                
+                if (hasMemoryUpgrade || hasStorageUpgrade || currentMemoryUpgrade || currentStorageUpgrade) {
+                    if (config.customizations.gpu && !config.customizations.gpu.autoUpgraded) {
+                        delete config.customizations.gpu;
+                    }
+                }
+                
+                if (category === 'gpu' && !selectedUpgrade.autoUpgraded) {
+                    const upgrades = upgradeOptions[config.series][config.size][config.model];
+                    if (config.customizations.memory && config.customizations.memory.autoUpgradeGPU) {
+                        const defaultMemory = upgrades.memory.find(opt => opt.isDefault);
+                        config.customizations.memory = defaultMemory;
+                    }
+                    if (config.customizations.storage && config.customizations.storage.autoUpgradeGPU) {
+                        const defaultStorage = upgrades.storage.find(opt => opt.isDefault);
+                        config.customizations.storage = defaultStorage;
+                    }
+                }
+            }
+            
+            // 處理 Pro 14" D/E/F款 的特殊邏輯
+            if (config.series === 'pro' && config.size === '14' && ['D', 'E', 'F'].includes(config.model)) {
+                if (category === 'chip') {
+                    updatePro14Options();
+                }
+            }
+            
+            showCustomConfigStep();
+            updateCustomizePrice();
+            showToast(`✅ 已選擇 ${selectedUpgrade.name}`);
+        }
+
+        function removeUpgrade(event, category) {
+            event.stopPropagation();
+            
+            if (config.customizations && config.customizations[category]) {
+                const upgrades = upgradeOptions[config.series][config.size][config.model];
+                const defaultOption = upgrades[category].find(option => option.isDefault);
+                
+                if (defaultOption) {
+                    config.customizations[category] = defaultOption;
+                } else {
+                    delete config.customizations[category];
+                }
+                
+                showCustomConfigStep();
+                updateCustomizePrice();
+                showToast(`🔄 已重置為預設配置`);
+            }
+        }
+
+        function finishCustomization() {
+            showToast('✅ 客製化配置完成');
+            setTimeout(() => {
+                showColorStep();
+                document.getElementById('colorStep').scrollIntoView({ behavior: 'smooth' });
+            }, 500);
+        }
+
+        function showColorStep() {
+            document.getElementById('colorStep').style.display = 'block';
+            const colorOptions = document.getElementById('colorOptions');
+            
+            let colors = [];
+            if (config.series === 'air') {
+                colors = [
+                    ['午夜色', 'midnight'],
+                    ['星光色', 'starlight'],
+                    ['天藍色', 'space-blue'],
+                    ['銀色', 'silver']
+                ];
+            } else {
+                colors = [
+                    ['銀色', 'silver'],
+                    ['太空黑色', 'space-black']
+                ];
+            }
+            
+            colorOptions.innerHTML = colors.map(([name, value]) => `
+                <div class="option" onclick="selectColor('${value}')">
+                    <img src="${colorImages[config.series][value]}" alt="${name}" style="border-radius: 8px;">
+                    <div class="option-title">${name}</div>
+                </div>
+            `).join('');
+            addTouchFeedback();
+        }
+
+        function selectColor(color) {
+            config.color = color;
+            document.querySelectorAll('#colorOptions .option').forEach(el => el.classList.remove('selected'));
+            event.target.closest('.option').classList.add('selected');
+            showToast(`已選擇 ${getColorName(color)}`);
+            
+            setTimeout(() => {
+                if (config.series === 'pro' && !config.isCustomized) {
+                    showNanoStep();
+                    document.getElementById('nanoStep').scrollIntoView({ behavior: 'smooth' });
+                } else {
+                    showAccessoryStep();
+                    document.getElementById('accessoryStep').scrollIntoView({ behavior: 'smooth' });
+                }
+            }, 500);
+        }
+
+        function showNanoStep() {
+            document.getElementById('nanoStep').style.display = 'block';
+            document.getElementById('nanoOptions').innerHTML = `
+                <div class="option" onclick="selectNano(false)">
+                    <div class="option-title">標準玻璃</div>
+                    <div class="option-price">無額外費用</div>
+                    <div class="option-desc">標準光澤顯示器</div>
+                </div>
+                <div class="option" onclick="selectNano(true)">
+                    <div class="option-title">Nano-texture 奈米玻璃</div>
+                    <div class="option-price">+NT$4,500</div>
+                    <div class="option-desc">減少眩光，專業創作首選</div>
+                </div>
+            `;
+            addTouchFeedback();
+        }
+
+        function selectNano(nano) {
+            config.nano = nano;
+            document.querySelectorAll('#nanoOptions .option').forEach(el => el.classList.remove('selected'));
+            event.target.closest('.option').classList.add('selected');
+            showToast(`已選擇 ${nano ? 'Nano-texture 奈米玻璃' : '標準玻璃'}`);
+            
+            setTimeout(() => {
+                showAccessoryStep();
+                document.getElementById('accessoryStep').scrollIntoView({ behavior: 'smooth' });
+            }, 500);
+        }
+
+        function showAccessoryStep() {
+            document.getElementById('accessoryStep').style.display = 'block';
+            document.getElementById('accessoryOptions').innerHTML = `
+                <div class="option" onclick="selectAccessory('magic_mouse')">
+                    <div class="option-title">巧控滑鼠</div>
+                    <div class="option-price">生產力套組 (免費)</div>
+                    <div class="option-desc">原價 NT$2,290</div>
+                </div>
+                <div class="option" onclick="selectAccessory('magic_trackpad')">
+                    <div class="option-title">巧控板</div>
+                    <div class="option-price">生產力套組 (免費)</div>
+                    <div class="option-desc">原價 NT$4,990</div>
+                </div>
+                <div class="option" onclick="selectAccessory('magic_keyboard')">
+                    <div class="option-title">巧控鍵盤（含Touch ID）</div>
+                    <div class="option-price">生產力套組 (免費)</div>
+                    <div class="option-desc">原價 NT$5,990</div>
+                </div>
+                <div class="option" onclick="selectAccessory('airpods4_anc')">
+                    <div class="option-title">AirPods 4 主動降噪版</div>
+                    <div class="option-price">娛樂套組 (免費)</div>
+                    <div class="option-desc">原價 NT$5,990</div>
+                </div>
+                <div class="option" onclick="selectAccessory('airpods_pro2')">
+                    <div class="option-title">AirPods Pro 2</div>
+                    <div class="option-price">娛樂套組 (實付NT$1,500)</div>
+                    <div class="option-desc">原價 NT$7,490</div>
+                </div>
+            `;
+            addTouchFeedback();
+        }
+
+        function selectAccessory(accessory) {
+            config.accessory = accessory;
+            document.querySelectorAll('#accessoryOptions .option').forEach(el => el.classList.remove('selected'));
+            event.target.closest('.option').classList.add('selected');
+            showToast(`已選擇 ${accessories[accessory].name}`);
+            
+            setTimeout(() => {
+                showRebateStep();
+                document.getElementById('rebateStep').scrollIntoView({ behavior: 'smooth' });
+            }, 500);
+        }
+
+        function showRebateStep() {
+            document.getElementById('rebateStep').style.display = 'block';
+            
+            const rebateStep = document.getElementById('rebateStep');
+            if (!rebateStep.querySelector('.continue-btn')) {
+                const continueBtn = document.createElement('button');
+                continueBtn.className = 'continue-btn';
+                continueBtn.innerHTML = '📊 查看價格總覽';
+                continueBtn.style.cssText = `
+                    display: block;
+                    margin: 2rem auto 0;
+                    padding: 1rem 2rem;
+                    background: linear-gradient(135deg, var(--primary-color), #5ac8fa);
+                    color: white;
+                    border: none;
+                    border-radius: var(--radius-md);
+                    font-size: 1rem;
+                    font-weight: 600;
+                    cursor: pointer;
+                    box-shadow: var(--shadow-md);
+                    transition: var(--transition);
+                `;
+                continueBtn.onclick = () => {
+                    showSummaryStep();
+                    document.getElementById('summaryStep').scrollIntoView({ behavior: 'smooth' });
+                };
+                rebateStep.appendChild(continueBtn);
+                addTouchFeedback();
+            }
+            
+            document.getElementById('creditCard').addEventListener('input', updateRebateValues);
+            document.getElementById('referral').addEventListener('input', updateRebateValues);
+            document.getElementById('sellGift').addEventListener('change', function() {
+                document.getElementById('giftPriceGroup').style.display = this.checked ? 'block' : 'none';
+                updateRebateValues();
+            });
+            document.getElementById('giftPrice').addEventListener('input', updateRebateValues);
+        }
+
+        function updateRebateValues() {
+            config.creditCard = parseFloat(document.getElementById('creditCard').value) || 0;
+            config.referral = parseFloat(document.getElementById('referral').value) || 0;
+            config.sellGift = document.getElementById('sellGift').checked;
+            config.giftPrice = parseFloat(document.getElementById('giftPrice').value) || 0;
+        }
+
+        function showSummaryStep() {
+    document.getElementById('summaryStep').style.display = 'block';
+    updateSummary();
+    
+    // 記錄完整的用戶選擇
+    recordUserSelection();
+    
+    addTouchFeedback();
+}
+// 新增記錄用戶選擇的函數
+function recordUserSelection() {
+    const calculation = calculateFinalPrice();
+    
+    const userData = {
+        時間: new Date().toLocaleString('zh-TW'),
+        系列: config.series === 'air' ? 'MacBook Air' : 'MacBook Pro',
+        尺寸: config.size + '吋',
+        款式: config.model + '款',
+        配置: calculation.configDesc,
+        顏色: getColorName(config.color),
+        奈米玻璃: config.nano ? '是' : '否',
+        配件: config.accessory ? accessories[config.accessory].name : '無',
+        信用卡回饋: config.creditCard + '%',
+        導購回饋: config.referral + '%',
+        賣贈品: config.sellGift ? '是' : '否',
+        贈品售價: config.giftPrice || 0,
+        最終價格: Math.round(calculation.finalPrice),
+        點擊購買: config.clickedPurchase || '未點擊',
+        點擊社群: config.clickedSocial || '未點擊'
+    };
+    
+    // 呼叫後端記錄函數
+    google.script.run
+        .withSuccessHandler(function(result) {
+            if (result.success) {
+                console.log('用戶選擇記錄成功');
+            }
+        })
+        .withFailureHandler(function(error) {
+            console.error('記錄失敗:', error);
+        })
+        .recordData(userData);
+}
+
+        function updateSummary() {
+            config.creditCard = parseFloat(document.getElementById('creditCard').value) || 0;
+            config.referral = parseFloat(document.getElementById('referral').value) || 0;
+            config.sellGift = document.getElementById('sellGift').checked;
+            config.giftPrice = parseFloat(document.getElementById('giftPrice').value) || 0;
+            
+            const calculation = calculateFinalPrice();
+            
+            let priceRows = '';
+            
+            priceRows += `<div class="price-row"><span>MacBook ${config.series === 'air' ? 'Air' : 'Pro'} ${config.size}吋 ${config.model}款</span><span>NT${calculation.basePrice.toLocaleString()}</span></div>`;
+            priceRows += `<div class="price-row" style="font-size: 0.9rem; color: var(--text-secondary);"><span>${calculation.configDesc}</span><span></span></div>`;
+            
+            if (config.isCustomized && calculation.upgrades && calculation.upgrades.length > 0) {
+                calculation.upgrades.forEach(upgrade => {
+                    if (upgrade && upgrade.name && upgrade.price > 0) {
+                        priceRows += `<div class="price-row"><span>${upgrade.name}</span><span>+NT${upgrade.price.toLocaleString()}</span></div>`;
+                    }
+                });
+            }
+            
+            if (calculation.nanoFee > 0) {
+                priceRows += `<div class="price-row"><span>Nano-texture 奈米玻璃</span><span>+NT${calculation.nanoFee.toLocaleString()}</span></div>`;
+            }
+            
+            if (calculation.accessoryPrice > 0) {
+                priceRows += `<div class="price-row"><span>${accessories[config.accessory].name}</span><span>+NT${calculation.accessoryPrice.toLocaleString()}</span></div>`;
+            } else if (config.accessory) {
+                priceRows += `<div class="price-row"><span>${accessories[config.accessory].name}</span><span>免費</span></div>`;
+            }
+            
+            priceRows += `<div class="price-row"><span>小計</span><span>NT${calculation.subtotal.toLocaleString()}</span></div>`;
+            
+            if (calculation.creditCardRebate > 0) {
+                priceRows += `<div class="price-row"><span>信用卡回饋 (${config.creditCard}%)</span><span>-NT${Math.round(calculation.creditCardRebate).toLocaleString()}</span></div>`;
+            }
+            if (calculation.referralRebate > 0) {
+                priceRows += `<div class="price-row"><span>導購回饋 (${config.referral}%)</span><span>-NT${Math.round(calculation.referralRebate).toLocaleString()}</span></div>`;
+            }
+            if (calculation.giftSale > 0) {
+                priceRows += `<div class="price-row"><span>贈品售價</span><span>-NT${calculation.giftSale.toLocaleString()}</span></div>`;
+            }
+            
+            document.getElementById('priceSummary').innerHTML = `
+                ${priceRows}
+                <div class="price-row final-price"><span>最終入手價格</span><span>NT${Math.round(calculation.finalPrice).toLocaleString()}</span></div>
+            `;
+        }
+
+        function calculateFinalPrice() {
+            const basePrice = basePrices[config.series][config.size][config.model];
+            const baseConfig = baseConfigs[config.series][config.size][config.model];
+            
+            let totalUpgradePrice = 0;
+            let upgrades = [];
+            let finalConfig = { ...baseConfig };
+            
+            if (config.isCustomized && config.customizations) {
+                Object.keys(config.customizations).forEach(category => {
+                    const upgrade = config.customizations[category];
+                    if (upgrade && upgrade.price !== undefined && upgrade.price > 0 && upgrade.name) {
+                        if (!(category === 'gpu' && upgrade.autoUpgraded)) {
+                            totalUpgradePrice += upgrade.price;
+                            upgrades.push({ name: upgrade.name, price: upgrade.price });
+                        }
+                        
+                        if (category === 'memory' && upgrade.name) {
+                            finalConfig.memory = upgrade.name.split(' ')[0];
+                        } else if (category === 'storage' && upgrade.name) {
+                            finalConfig.storage = upgrade.name.split(' ')[0];
+                        } else if (category === 'chip' && upgrade.name) {
+                            finalConfig.chip = upgrade.name;
+                        } else if (category === 'gpu' && upgrade.name) {
+                            if (upgrade.name.includes('10核')) {
+                                finalConfig.chip = finalConfig.chip.replace('8核GPU', '10核GPU');
+                            }
+                        }
+                    }
+                });
+            }
+            
+            const nanoFee = (config.series === 'pro' && config.nano && !config.isCustomized) ? 4500 : 0;
+            const accessoryPrice = accessories[config.accessory]?.price || 0;
+            const subtotal = basePrice + totalUpgradePrice + nanoFee + accessoryPrice;
+            const creditCardRebate = subtotal * (config.creditCard / 100);
+            const referralRebate = subtotal * (config.referral / 100);
+            const giftSale = config.sellGift ? config.giftPrice : 0;
+            const finalPrice = subtotal - creditCardRebate - referralRebate - giftSale;
+            
+            return {
+                basePrice,
+                totalUpgradePrice,
+                upgrades,
+                nanoFee,
+                accessoryPrice,
+                subtotal,
+                creditCardRebate,
+                referralRebate,
+                giftSale,
+                finalPrice,
+                configDesc: `${finalConfig.chip} / ${finalConfig.memory} / ${finalConfig.storage}`
+            };
+        }
+
+        function getColorName(color) {
+            const colorMap = {
+                'midnight': '午夜色',
+                'starlight': '星光色',
+                'space-blue': '天藍色',
+                'silver': '銀色',
+                'space-black': '太空黑色'
+            };
+            return colorMap[color] || color;
+        }
+
+       // 完全替換原本的 generateShoppingImage 函數：
+
+function generateShoppingImage() {
+    const canvas = document.getElementById('imageCanvas');
+    const ctx = canvas.getContext('2d');
+    
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+    gradient.addColorStop(0, '#f8f9fa');
+    gradient.addColorStop(1, '#e9ecef');
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    
+    const calculation = calculateFinalPrice();
+    
+    // 載入產品圖片
+    const productImage = new Image();
+    productImage.crossOrigin = 'anonymous';
+    
+    // 獲取對應的產品圖片URL
+    const imgs = getImages();
+    const imageUrl = imgs.color[config.series] && imgs.color[config.series][config.color]
+        ? imgs.color[config.series][config.color]
+        : null;
+    
+    if (imageUrl) {
+        productImage.onload = function() {
+            drawImageContent(ctx, calculation, productImage);
+        };
+        productImage.onerror = function() {
+            console.error('圖片載入失敗，使用預設佈局');
+            drawImageContent(ctx, calculation, null);
+        };
+        productImage.src = imageUrl;
+    } else {
+        // 沒有圖片時使用預設佈局
+        drawImageContent(ctx, calculation, null);
+    }
+}
+
+function drawImageContent(ctx, calculation, productImage) {
+    let y = 60;
+    
+    // 繪製標題
+    ctx.fillStyle = '#1d1d1f';
+    ctx.font = 'bold 32px -apple-system, BlinkMacSystemFont, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('🧾 BTS購買清單', ctx.canvas.width/2, y);
+    y += 50;
+    
+    ctx.font = '16px -apple-system, BlinkMacSystemFont, sans-serif';
+    ctx.fillStyle = '#6c757d';
+    ctx.fillText(new Date().toLocaleDateString('zh-TW'), ctx.canvas.width/2, y);
+    y += 60;
+    
+    // 繪製主要卡片背景
+    ctx.fillStyle = 'white';
+    ctx.shadowColor = 'rgba(0,0,0,0.15)';
+    ctx.shadowBlur = 20;
+    ctx.shadowOffsetY = 10;
+    
+    const cardX = 40, cardY = y - 30, cardW = ctx.canvas.width - 80, cardH = 1000, cardR = 20;
+    drawRoundRect(ctx, cardX, cardY, cardW, cardH, cardR);
+    
+    ctx.shadowColor = 'transparent';
+    ctx.shadowBlur = 0;
+    ctx.shadowOffsetY = 0;
+    
+    let currentY = y + 40;
+    
+    // 如果有產品圖片，先繪製圖片
+    if (productImage) {
+        const imgSize = 120;
+        const imgX = ctx.canvas.width/2 - imgSize/2;
+        const imgY = currentY;
+        
+        // 繪製產品圖片
+        ctx.drawImage(productImage, imgX, imgY, imgSize, imgSize);
+        currentY += imgSize + 20;
+    }
+    
+    // 繪製產品標題
+ctx.fillStyle = '#1d1d1f';
+ctx.font = 'bold 28px -apple-system, BlinkMacSystemFont, sans-serif';
+ctx.textAlign = 'center';
+ctx.fillText(`專屬你的 MacBook ${config.series === 'air' ? 'Air' : 'Pro'} ${config.size}吋`, ctx.canvas.width/2, currentY);
+    
+    // 繪製顏色資訊
+    if (config.color) {
+        ctx.font = '16px -apple-system, BlinkMacSystemFont, sans-serif';
+        ctx.fillStyle = '#6c757d';
+        const colorName = getColorName(config.color);
+        ctx.fillText(colorName, ctx.canvas.width/2, currentY + 25);
+        currentY += 80;
+    } else {
+        currentY += 50;
+    }
+    
+    // 繪製價格明細
+    drawPriceDetails(ctx, calculation, currentY);
+}
+
+function drawPriceDetails(ctx, calculation, startY) {
+    let currentY = startY;
+    
+    // 繪製價格明細標題
+    ctx.fillStyle = '#0071e3';
+    ctx.font = 'bold 22px -apple-system, BlinkMacSystemFont, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('💰 價格明細', ctx.canvas.width/2, currentY);
+    currentY += 50;
+    
+    ctx.fillStyle = '#1d1d1f';
+    ctx.font = '15px -apple-system, BlinkMacSystemFont, sans-serif';
+    ctx.textAlign = 'left';
+    
+    const priceItems = [
+        [`MacBook ${config.series === 'air' ? 'Air' : 'Pro'} ${config.size}吋 ${config.model}款`, `NT${calculation.basePrice.toLocaleString()}`, '#1d1d1f']
+    ];
+    
+    // 添加客製化升級項目
+    if (config.isCustomized && config.customizations) {
+        Object.keys(config.customizations).forEach(category => {
+            const upgrade = config.customizations[category];
+            if (upgrade && upgrade.price > 0 && upgrade.name) {
+                priceItems.push([upgrade.name, `+NT${upgrade.price.toLocaleString()}`, '#6c757d']);
+            }
+        });
+    }
+    
+    // 添加奈米玻璃
+    if (calculation.nanoFee > 0) {
+        priceItems.push(['Nano-texture 奈米玻璃', `+NT${calculation.nanoFee.toLocaleString()}`, '#6c757d']);
+    }
+    
+    // 添加配件
+    if (accessories[config.accessory]) {
+        const accessoryText = calculation.accessoryPrice === 0 ? '免費' : `+NT${calculation.accessoryPrice.toLocaleString()}`;
+        const accessoryColor = calculation.accessoryPrice === 0 ? '#28a745' : '#6c757d';
+        priceItems.push([accessories[config.accessory].name, accessoryText, accessoryColor]);
+    }
+    
+    // 繪製價格項目
+    priceItems.forEach(([item, price, color]) => {
+        ctx.fillStyle = color;
+        ctx.fillText(item, 85, currentY);
+        ctx.textAlign = 'right';
+        ctx.font = 'bold 15px -apple-system, BlinkMacSystemFont, sans-serif';
+        ctx.fillText(price, ctx.canvas.width - 85, currentY);
+        ctx.textAlign = 'left';
+        ctx.font = '15px -apple-system, BlinkMacSystemFont, sans-serif';
+        currentY += 25;
+    });
+    
+    // 繪製分隔線
+    currentY += 10;
+    ctx.strokeStyle = '#e9ecef';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(85, currentY);
+    ctx.lineTo(ctx.canvas.width - 85, currentY);
+    ctx.stroke();
+    currentY += 25;
+    
+    // 繪製小計
+    ctx.fillStyle = '#1d1d1f';
+    ctx.font = 'bold 16px -apple-system, BlinkMacSystemFont, sans-serif';
+    ctx.fillText('小計', 85, currentY);
+    ctx.textAlign = 'right';
+    ctx.fillText(`NT${calculation.subtotal.toLocaleString()}`, ctx.canvas.width - 85, currentY);
+    ctx.textAlign = 'left';
+    currentY += 35;
+    
+    // 處理省錢明細
+    const totalSaved = calculation.creditCardRebate + calculation.referralRebate + calculation.giftSale;
+    if (totalSaved > 0) {
+        const savings = [
+            calculation.creditCardRebate > 0 ? [`信用卡回饋 (${config.creditCard}%)`, `-NT${Math.round(calculation.creditCardRebate).toLocaleString()}`] : null,
+            calculation.referralRebate > 0 ? [`導購回饋 (${config.referral}%)`, `-NT${Math.round(calculation.referralRebate).toLocaleString()}`] : null,
+            calculation.giftSale > 0 ? ['贈品售價', `-NT${calculation.giftSale.toLocaleString()}`] : null
+        ].filter(Boolean);
+        
+        if (savings.length > 0) {
+            ctx.fillStyle = '#f0f9f0';
+            drawRoundRect(ctx, 60, currentY - 15, ctx.canvas.width - 120, Math.min(150, 40 + (savings.length * 25)), 12);
+            
+            ctx.fillStyle = '#28a745';
+            ctx.font = 'bold 18px -apple-system, BlinkMacSystemFont, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('🎉 省錢明細', ctx.canvas.width/2, currentY + 10);
+            currentY += 35;
+            
+            ctx.fillStyle = '#28a745';
+            ctx.font = '14px -apple-system, BlinkMacSystemFont, sans-serif';
+            ctx.textAlign = 'left';
+            
+            savings.forEach(([item, amount]) => {
+                ctx.fillText(item, 85, currentY);
+                ctx.textAlign = 'right';
+                ctx.font = 'bold 14px -apple-system, BlinkMacSystemFont, sans-serif';
+                ctx.fillText(amount, ctx.canvas.width - 85, currentY);
+                ctx.textAlign = 'left';
+                ctx.font = '14px -apple-system, BlinkMacSystemFont, sans-serif';
+                currentY += 22;
+            });
+            
+            currentY += 15;
+        }
+    }
+    
+    // 繪製最終價格
+    currentY += 20;
+    const finalPriceGradient = ctx.createLinearGradient(60, currentY, ctx.canvas.width - 60, currentY + 60);
+    finalPriceGradient.addColorStop(0, '#0071e3');
+    finalPriceGradient.addColorStop(1, '#5ac8fa');
+    ctx.fillStyle = finalPriceGradient;
+    drawRoundRect(ctx, 60, currentY, ctx.canvas.width - 120, 60, 15);
+    
+    ctx.fillStyle = 'white';
+    ctx.font = 'bold 18px -apple-system, BlinkMacSystemFont, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('🏷️ 最終入手價格', 85, currentY + 25);
+    ctx.textAlign = 'right';
+    ctx.font = 'bold 24px -apple-system, BlinkMacSystemFont, sans-serif';
+    ctx.fillText(`NT${Math.round(calculation.finalPrice).toLocaleString()}`, ctx.canvas.width - 85, currentY + 38);
+    currentY += 80;
+    
+    // 繪製設計師資訊
+    ctx.fillStyle = '#6c757d';
+    ctx.font = 'bold 14px -apple-system, BlinkMacSystemFont, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('DESIGNED BY Neil尼歐', ctx.canvas.width/2, currentY + 20);
+    ctx.font = '12px -apple-system, BlinkMacSystemFont, sans-serif';
+    ctx.fillText('MacBook BTS優惠計算機 BETA v2.1', ctx.canvas.width/2, currentY + 40);
+    
+    // 下載圖片
+    try {
+        const link = document.createElement('a');
+        link.download = `MacBook_BTS購買清單_${new Date().toLocaleDateString('zh-TW').replace(/\//g, '')}.png`;
+        link.href = ctx.canvas.toDataURL('image/png');
+        link.click();
+        showToast('📄 BTS購買清單已成功生成並下載！');
+    } catch (error) {
+        console.error('生成圖片時發生錯誤:', error);
+        showToast('📄 BTS購買清單已成功生成！');
+    }
+}
+
+        function resetCalculator() {
+            config = {
+                series: '',
+                size: '',
+                model: '',
+                isCustomized: false,
+                customizations: {},
+                color: '',
+                nano: false,
+                accessory: '',
+                creditCard: 0,
+                referral: 0,
+                sellGift: false,
+                giftPrice: 0,
+                clickedPurchase: '',
+                clickedSocial: ''
+            };
+            
+            document.querySelectorAll('.step').forEach((step, index) => {
+                if (index > 0) {
+                    step.style.display = 'none';
+                }
+            });
+            
+            document.querySelectorAll('.option.selected, .upgrade-option.selected').forEach(option => {
+                option.classList.remove('selected');
+            });
+            
+            document.getElementById('creditCard').value = '';
+            document.getElementById('referral').value = '';
+            document.getElementById('sellGift').checked = false;
+            document.getElementById('giftPrice').value = '';
+            document.getElementById('giftPriceGroup').style.display = 'none';
+            
+            const existingBtn = document.querySelector('#rebateStep .continue-btn');
+            if (existingBtn) {
+                existingBtn.remove();
+            }
+            
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            showToast('🔄 已重新開始計算！');
+        }
+
+    // 修復版本：替換原本的 recordPurchaseClick 和 recordSocialClick 函數
+
+function recordPurchaseClick(purchaseMethod) {
+    config.clickedPurchase = purchaseMethod;
+    
+    // 立即記錄點擊行為到後端
+    const calculation = calculateFinalPrice();
+    const clickData = {
+        時間: new Date().toLocaleString('zh-TW'),
+        系列: config.series === 'air' ? 'MacBook Air' : 'MacBook Pro',
+        尺寸: config.size + '吋',
+        款式: config.model + '款',
+        配置: calculation.configDesc,
+        顏色: getColorName(config.color),
+        奈米玻璃: config.nano ? '是' : '否',
+        配件: config.accessory ? accessories[config.accessory].name : '無',
+        信用卡回饋: config.creditCard + '%',
+        導購回饋: config.referral + '%',
+        賣贈品: config.sellGift ? '是' : '否',
+        贈品售價: config.giftPrice || 0,
+        最終價格: Math.round(calculation.finalPrice),
+        點擊類型: '購買按鈕',
+        點擊項目: purchaseMethod
+    };
+    
+    // 呼叫後端記錄函數
+    google.script.run
+        .withSuccessHandler(function(result) {
+            if (result.success) {
+                console.log('購買點擊記錄成功:', purchaseMethod);
+            }
+        })
+        .withFailureHandler(function(error) {
+            console.error('購買點擊記錄失敗:', error);
+        })
+        .recordClickData(clickData);
+}
+
+function recordSocialClick(socialPlatform) {
+    config.clickedSocial = socialPlatform;
+    
+    // 立即記錄點擊行為到後端
+    const calculation = calculateFinalPrice();
+    const clickData = {
+        時間: new Date().toLocaleString('zh-TW'),
+        系列: config.series === 'air' ? 'MacBook Air' : 'MacBook Pro',
+        尺寸: config.size + '吋',
+        款式: config.model + '款',
+        配置: calculation.configDesc,
+        顏色: getColorName(config.color),
+        奈米玻璃: config.nano ? '是' : '否',
+        配件: config.accessory ? accessories[config.accessory].name : '無',
+        信用卡回饋: config.creditCard + '%',
+        導購回饋: config.referral + '%',
+        賣贈品: config.sellGift ? '是' : '否',
+        贈品售價: config.giftPrice || 0,
+        最終價格: Math.round(calculation.finalPrice),
+        點擊類型: '社群平台',
+        點擊項目: socialPlatform
+    };
+    
+    // 呼叫後端記錄函數
+    google.script.run
+        .withSuccessHandler(function(result) {
+            if (result.success) {
+                console.log('社群點擊記錄成功:', socialPlatform);
+            }
+        })
+        .withFailureHandler(function(error) {
+            console.error('社群點擊記錄失敗:', error);
+        })
+        .recordClickData(clickData);
+}
+
+// 可選：添加用戶選擇完整記錄（在 showSummaryStep 函數中調用）
+function recordUserSelection() {
+    const calculation = calculateFinalPrice();
+    
+    const userData = {
+        時間: new Date().toLocaleString('zh-TW'),
+        系列: config.series === 'air' ? 'MacBook Air' : 'MacBook Pro',
+        尺寸: config.size + '吋',
+        款式: config.model + '款',
+        配置: calculation.configDesc,
+        顏色: getColorName(config.color),
+        奈米玻璃: config.nano ? '是' : '否',
+        配件: config.accessory ? accessories[config.accessory].name : '無',
+        信用卡回饋: config.creditCard + '%',
+        導購回饋: config.referral + '%',
+        賣贈品: config.sellGift ? '是' : '否',
+        贈品售價: config.giftPrice || 0,
+        最終價格: Math.round(calculation.finalPrice),
+        點擊購買: config.clickedPurchase || '未點擊',
+        點擊社群: config.clickedSocial || '未點擊'
+    };
+    
+    // 呼叫後端記錄函數
+    google.script.run
+        .withSuccessHandler(function(result) {
+            if (result.success) {
+                console.log('用戶選擇記錄成功');
+            }
+        })
+        .withFailureHandler(function(error) {
+            console.error('用戶選擇記錄失敗:', error);
+        })
+        .recordData(userData);
+}
+
+        // ═══ Admin 圖片面板 ═══
+        function openAdmin() {
+            document.getElementById('adminOverlay').classList.add('open');
+            renderAdminPanel();
+        }
+
+        function closeAdmin() {
+            document.getElementById('adminOverlay').classList.remove('open');
+        }
+
+        function handleOverlayClick(e) {
+            if (e.target === document.getElementById('adminOverlay')) closeAdmin();
+        }
+
+        function escA(s) { return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;'); }
+
+        function renderAdminPanel() {
+            const imgs = getImages();
+            let html = '';
+
+            html += '<p class="admin-section-title">主圖（系列選擇頁）</p>';
+            [['air','MacBook Air 主圖'],['pro','MacBook Pro 主圖']].forEach(([k,label]) => {
+                const url = imgs.main[k] || '';
+                html += `<div class="admin-img-row">
+                    <img class="admin-img-preview" id="adpv-main-${k}" src="${escA(url)}" onerror="this.src=''">
+                    <div class="admin-img-info">
+                        <div class="admin-img-label">${label}</div>
+                        <input class="admin-img-input" type="url" id="ad-main-${k}" value="${escA(url)}"
+                            placeholder="https://..."
+                            oninput="document.getElementById('adpv-main-${k}').src=this.value">
+                    </div>
+                </div>`;
+            });
+
+            ['air','pro'].forEach(model => {
+                const modelLabel = model === 'air' ? 'MacBook Air' : 'MacBook Pro';
+                html += `<p class="admin-section-title">${modelLabel} 顏色圖片</p>`;
+                ADMIN_COLOR_CONFIG[model].forEach(({key, label}) => {
+                    const url = imgs.color[model][key] || '';
+                    html += `<div class="admin-img-row">
+                        <img class="admin-img-preview" id="adpv-${model}-${key}" src="${escA(url)}" onerror="this.src=''">
+                        <div class="admin-img-info">
+                            <div class="admin-img-label">${label}</div>
+                            <input class="admin-img-input" type="url" id="ad-${model}-${key}" value="${escA(url)}"
+                                placeholder="https://..."
+                                oninput="document.getElementById('adpv-${model}-${key}').src=this.value">
+                        </div>
+                    </div>`;
+                });
+            });
+
+            document.getElementById('adminPanelBody').innerHTML = html;
+        }
+
+        function saveAdminImages() {
+            const imgs = getImages();
+
+            ['air','pro'].forEach(k => {
+                const v = document.getElementById(`ad-main-${k}`)?.value;
+                if (v !== undefined) imgs.main[k] = v;
+            });
+
+            ['air','pro'].forEach(model => {
+                ADMIN_COLOR_CONFIG[model].forEach(({key}) => {
+                    const v = document.getElementById(`ad-${model}-${key}`)?.value;
+                    if (v !== undefined) imgs.color[model][key] = v;
+                });
+            });
+
+            localStorage.setItem('bts_mac_images', JSON.stringify(imgs));
+
+            colorImages = getImages().color;
+            const airEl = document.querySelector('[data-series="air"] img');
+            const proEl = document.querySelector('[data-series="pro"] img');
+            if (airEl) airEl.src = getImages().main.air;
+            if (proEl) proEl.src = getImages().main.pro;
+
+            closeAdmin();
+            showToast('✅ 圖片連結已儲存！');
+        }
+
+        function resetAdminImages() {
+            if (!confirm('確定要恢復所有圖片為預設值嗎？')) return;
+            localStorage.removeItem('bts_mac_images');
+            colorImages = DEFAULT_IMAGES.color;
+            const airEl = document.querySelector('[data-series="air"] img');
+            const proEl = document.querySelector('[data-series="pro"] img');
+            if (airEl) airEl.src = DEFAULT_IMAGES.main.air;
+            if (proEl) proEl.src = DEFAULT_IMAGES.main.pro;
+            closeAdmin();
+            showToast('🔄 已恢復預設圖片');
+        }
+
+// 在 showSummaryStep() 函數的開頭添加這行：
+// recordUserSelection();
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('MacBook BTS優惠計算機 BETA v2.1 載入完成 - DEF款記憶體邏輯全面修復版');
+            if (DEBUG_MODE) {
+                console.log('🔍 調試模式已啟用 - 請查看控制台日誌');
+            }
+            addTouchFeedback();
+            
+            setTimeout(() => {
+                showToast('✨ MacBook BTS優惠計算機 v2.1 ');
+            }, 1000);
+        });
+        
+        window.addEventListener('error', function(e) {
+            console.error('JavaScript 錯誤:', e.error);
+        });
+        
+        window.addEventListener('unhandledrejection', function(e) {
+            console.error('未處理的 Promise 錯誤:', e.reason);
+        });
+        
+    </script>
+</body>
+</html>

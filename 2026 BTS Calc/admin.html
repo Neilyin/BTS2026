@@ -4,158 +4,270 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>BTS 後台管理</title>
-  <style>
+      <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap');
+
     :root {
       --blue:    #0071e3;
+      --blue-dark: #0062c3;
       --green:   #34c759;
       --red:     #ff3b30;
       --orange:  #ff9500;
       --bg:      #f5f5f7;
       --card:    #ffffff;
       --text:    #1d1d1f;
-      --sub:     #6e6e73;
-      --border:  #d2d2d7;
-      --sel-bg:  #f0f6ff;
-      --radius:  12px;
-      --shadow:  0 2px 12px rgba(0,0,0,.08);
-      --sidebar: 220px;
-    }
-    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
-    body { font-family:-apple-system,BlinkMacSystemFont,'Noto Sans TC',sans-serif; background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+      --sub:     #86868b;
+      --border:  rgba(0, 0, 0, 0.1);
+      --sel-bg:  rgba(0, 113, 227, 0.08);
+      --radius:  16px;
+      --sidebar: 240px;
+      --transition: 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 
-    /* ── Layout ── */
-    .layout { display:flex; min-height:100vh; }
+      /* Liquid Glass tokens */
+      --glass-bg:       rgba(255, 255, 255, 0.45);
+      --glass-blur:     blur(30px) saturate(210%);
+      --glass-border:   rgba(255, 255, 255, 0.5);
+      --glass-shadow:
+        0 1px 0 rgba(255, 255, 255, 0.45) inset,
+        0 10px 40px rgba(0, 0, 0, 0.04),
+        0 1px 3px rgba(0, 0, 0, 0.02);
+      --glass-shadow-hover:
+        0 1px 0 rgba(255, 255, 255, 0.6) inset,
+        0 20px 50px rgba(0, 0, 0, 0.06),
+        0 4px 12px rgba(0, 0, 0, 0.03);
+    }
+
+    
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Noto Sans TC', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* ── Liquid Background Blobs ── */
+    .liquid-bg {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      overflow: hidden;
+      pointer-events: none;
+      background: var(--bg);
+      transition: background-color 0.5s ease;
+    }
+    .blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(100px);
+      opacity: 0.35;
+      animation: float 25s infinite alternate ease-in-out;
+    }
+    .blob-1 {
+      width: 40vw;
+      height: 40vw;
+      background: radial-gradient(circle, rgba(0, 113, 227, 0.12) 0%, rgba(0, 113, 227, 0) 70%);
+      top: -10%;
+      left: 10%;
+    }
+    .blob-2 {
+      width: 45vw;
+      height: 45vw;
+      background: radial-gradient(circle, rgba(52, 199, 89, 0.08) 0%, rgba(52, 199, 89, 0) 70%);
+      bottom: -10%;
+      right: 15%;
+      animation-duration: 30s;
+    }
+    @keyframes float {
+      0% { transform: translate(0, 0) scale(1); }
+      50% { transform: translate(40px, -60px) scale(1.05); }
+      100% { transform: translate(-20px, 20px) scale(0.95); }
+    }
+
+    .layout { display:flex; min-height:100vh; position: relative; z-index: 1; }
 
     /* ── Sidebar ── */
     .sidebar {
-      width:var(--sidebar); background:var(--card); border-right:1px solid var(--border);
-      position:fixed; top:0; left:0; height:100vh; overflow-y:auto; z-index:50;
-      display:flex; flex-direction:column;
+      width: var(--sidebar);
+      background: var(--glass-bg);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
+      border-right: 1px solid var(--glass-border);
+      position: fixed; top: 0; left: 0; height: 100vh; overflow-y: auto; z-index: 50;
+      display: flex; flex-direction: column;
+      box-shadow: 1px 0 10px rgba(0, 0, 0, 0.02);
+      transition: background var(--transition);
     }
-    .sidebar-logo { padding:20px 18px 12px; border-bottom:1px solid var(--border); }
-    .sidebar-logo h1 { font-size:15px; font-weight:700; }
-    .sidebar-logo p  { font-size:11px; color:var(--sub); margin-top:2px; }
-    .nav-group { padding:10px 0; border-bottom:1px solid var(--border); }
-    .nav-group-label { font-size:10px; font-weight:700; color:var(--sub); padding:6px 18px 4px; text-transform:uppercase; letter-spacing:.5px; }
+    .sidebar-logo { padding: 24px 20px 16px; border-bottom: 1px solid var(--border); }
+    .sidebar-logo h1 { font-family: 'Outfit', sans-serif; font-size: 16px; font-weight: 800; letter-spacing: -0.3px; }
+    .sidebar-logo p  { font-size: 11px; color: var(--sub); margin-top: 4px; font-weight: 500; }
+    .nav-group { padding: 12px 0; border-bottom: 1px solid var(--border); }
+    .nav-group-label { font-size: 10px; font-weight: 700; color: var(--sub); padding: 6px 20px 6px; text-transform: uppercase; letter-spacing: .8px; }
     .nav-item {
-      display:flex; align-items:center; gap:8px;
-      padding:9px 18px; font-size:13px; font-weight:500; cursor:pointer;
-      border-radius:0; transition:background .15s; color:var(--text);
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 20px; font-size: 13px; font-weight: 600; cursor: pointer;
+      transition: all var(--transition); color: var(--text);
     }
-    .nav-item:hover { background:var(--bg); }
-    .nav-item.active { background:var(--sel-bg); color:var(--blue); font-weight:600; }
-    .nav-item .nav-dot { width:6px; height:6px; border-radius:50%; background:var(--border); flex-shrink:0; }
-    .nav-item.active .nav-dot { background:var(--blue); }
-    .sidebar-footer { margin-top:auto; padding:16px 18px; border-top:1px solid var(--border); }
+    .nav-item:hover { background: rgba(0, 113, 227, 0.05); }
+    .nav-item.active { background: var(--sel-bg); color: var(--blue); }
+    .nav-item .nav-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--border); flex-shrink: 0; transition: all var(--transition); }
+    .nav-item.active .nav-dot { background: var(--blue); transform: scale(1.2); }
+    .sidebar-footer { margin-top: auto; padding: 20px; border-top: 1px solid var(--border); }
     .save-btn-sidebar {
-      width:100%; padding:10px; background:var(--blue); color:#fff;
-      border:none; border-radius:10px; font-size:13px; font-weight:600; cursor:pointer;
-      transition:background .2s; display:flex; align-items:center; justify-content:center; gap:6px;
+      width: 100%; padding: 12px; background: var(--blue); color: #fff;
+      border: none; border-radius: 12px; font-size: 13px; font-weight: 700; cursor: pointer;
+      transition: all var(--transition); display: flex; align-items: center; justify-content: center; gap: 8px;
+      box-shadow: 0 4px 12px rgba(0, 113, 227, 0.2);
     }
-    .save-btn-sidebar:hover { background:#005bbf; }
-    .save-btn-sidebar.saved { background:var(--green); }
+    .save-btn-sidebar:hover { background: var(--blue-dark); box-shadow: 0 6px 16px rgba(0, 113, 227, 0.35); }
+    .save-btn-sidebar.saved { background: var(--green) !important; box-shadow: 0 4px 12px rgba(52, 199, 89, 0.2); }
 
     /* ── Main ── */
-    .main { margin-left:var(--sidebar); flex:1; padding:28px 32px; max-width:900px; }
+    .main { margin-left: var(--sidebar); flex: 1; padding: 32px 40px; max-width: 960px; }
 
     /* ── Section header ── */
-    .section-header { margin-bottom:24px; }
-    .section-header h2 { font-size:22px; font-weight:700; }
-    .section-header p  { font-size:13px; color:var(--sub); margin-top:4px; }
+    .section-header { margin-bottom: 28px; }
+    .section-header h2 { font-family: 'Outfit', sans-serif; font-size: 24px; font-weight: 800; letter-spacing: -0.5px; }
+    .section-header p  { font-size: 13px; color: var(--sub); margin-top: 4px; font-weight: 500; }
 
     /* ── Card ── */
-    .card { background:var(--card); border-radius:var(--radius); box-shadow:var(--shadow); padding:20px 24px; margin-bottom:16px; }
-    .card-title { font-size:14px; font-weight:700; margin-bottom:16px; padding-bottom:10px; border-bottom:1px solid var(--border); display:flex; align-items:center; gap:8px; }
-    .card-title span { font-size:16px; }
+    .card {
+      background: var(--glass-bg);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
+      border: 1px solid var(--glass-border);
+      box-shadow: var(--glass-shadow);
+      border-radius: var(--radius);
+      padding: 22px 26px;
+      margin-bottom: 20px;
+      transition: border-color var(--transition), box-shadow var(--transition);
+    }
+    .card:hover {
+      border-color: rgba(0, 113, 227, 0.15);
+      box-shadow: var(--glass-shadow-hover);
+    }
+    .card-title {
+      font-size: 14px; font-weight: 700; margin-bottom: 18px; padding-bottom: 12px;
+      border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 8px;
+    }
+    .card-title svg { color: var(--blue); }
 
     /* ── Form elements ── */
-    .field-row { display:flex; align-items:center; gap:12px; margin-bottom:12px; }
-    .field-row:last-child { margin-bottom:0; }
-    .field-label { font-size:13px; font-weight:500; min-width:140px; flex-shrink:0; }
-    .field-label.small { min-width:80px; font-size:12px; }
+    .field-row { display: flex; align-items: center; gap: 14px; margin-bottom: 14px; }
+    .field-row:last-child { margin-bottom: 0; }
+    .field-label { font-size: 13px; font-weight: 600; min-width: 140px; flex-shrink: 0; }
+    .field-label.small { min-width: 90px; font-size: 12px; }
     .field-input {
-      flex:1; padding:8px 12px; border:1.5px solid var(--border); border-radius:8px;
-      font-size:13px; font-family:inherit; color:var(--text); background:var(--bg);
-      outline:none; transition:border-color .2s;
+      flex: 1; padding: 10px 14px; border: 1.5px solid var(--border); border-radius: 10px;
+      font-size: 13px; font-family: inherit; color: var(--text); background: rgba(0,0,0,0.03);
+      outline: none; transition: all var(--transition); font-weight: 500;
     }
-    .field-input:focus { border-color:var(--blue); background:#fff; }
-    .field-input.url-input { font-size:11px; font-family:monospace; }
-    .field-input.price-input { max-width:120px; text-align:right; }
+        .field-input:focus { border-color: var(--blue); background: var(--card); box-shadow: 0 0 0 3px rgba(0,113,227,0.15); }
+    .field-input.url-input { font-size: 11px; font-family: monospace; }
+    .field-input.price-input { max-width: 120px; text-align: right; font-weight: 600; }
 
-    /* 圖片預覽 */
-    .img-preview { width:48px; height:36px; object-fit:contain; border-radius:6px; border:1px solid var(--border); background:var(--bg); flex-shrink:0; }
+    /* Image preview */
+    .img-preview { width: 56px; height: 42px; object-fit: contain; border-radius: 8px; border: 1.5px solid var(--border); background: var(--bg); flex-shrink: 0; transition: transform var(--transition); }
+    .img-preview:hover { transform: scale(1.1); }
 
-    /* ── Grid for image rows ── */
-    .img-grid { display:grid; gap:10px; }
-    .img-row { display:flex; align-items:center; gap:10px; padding:8px; background:var(--bg); border-radius:8px; }
-    .img-row-label { font-size:12px; font-weight:600; min-width:70px; }
+    /* Grid for image rows */
+    .img-grid { display: grid; gap: 12px; }
+    .img-row { display: flex; align-items: center; gap: 12px; padding: 10px; background: rgba(0,0,0,0.02); border-radius: 10px; border: 1px solid var(--border); }
+        .img-row-label { font-size: 12px; font-weight: 700; min-width: 70px; }
 
-    /* ── Price table ── */
-    .price-table { width:100%; border-collapse:collapse; }
-    .price-table th { font-size:11px; font-weight:700; color:var(--sub); text-align:left; padding:6px 8px; border-bottom:1.5px solid var(--border); text-transform:uppercase; letter-spacing:.4px; }
-    .price-table td { padding:6px 8px; border-bottom:1px solid var(--bg); vertical-align:middle; }
-    .price-table tr:last-child td { border-bottom:none; }
-    .price-table td .field-input { margin:0; }
+    /* Price table */
+    .price-table { width: 100%; border-collapse: collapse; }
+    .price-table th { font-size: 11px; font-weight: 700; color: var(--sub); text-align: left; padding: 8px 10px; border-bottom: 1.5px solid var(--border); text-transform: uppercase; letter-spacing: .5px; }
+    .price-table td { padding: 8px 10px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+    .price-table tr:last-child td { border-bottom: none; }
+    .price-table td .field-input { margin: 0; }
 
-    /* ── Gift row ── */
-    .gift-row { display:flex; align-items:center; gap:8px; padding:10px; background:var(--bg); border-radius:8px; margin-bottom:8px; }
-    .gift-row-name { font-size:13px; font-weight:500; flex:1; }
-    .gift-price-group { display:flex; align-items:center; gap:6px; }
-    .gift-price-group label { font-size:11px; color:var(--sub); white-space:nowrap; }
+    /* Gift row - CRUD */
+    .gift-row { display: grid; grid-template-columns: 1fr auto; align-items: start; gap: 10px; padding: 14px; background: rgba(0,0,0,0.02); border-radius: 12px; border: 1px solid var(--border); margin-bottom: 10px; }
+        .gift-row.is-none { opacity: .65; }
+    .gift-row-fields { display: flex; flex-direction: column; gap: 8px; }
+    .gift-name-row { display: flex; gap: 8px; }
+    .gift-name-row .field-input { flex: 1; font-weight: 600; }
+    .gift-name-row .field-input.tag-input { max-width: 230px; font-size: 12px; font-weight: 500; }
+    .field-input[readonly] { opacity: .6; cursor: not-allowed; }
+    .gift-price-group { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .gift-price-group label { font-size: 11px; color: var(--sub); white-space: nowrap; font-weight: 500; }
+    .btn-del { width: 34px; height: 34px; border-radius: 8px; border: 1px solid var(--border); background: transparent; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px; transition: all var(--transition); color: var(--sub); flex-shrink: 0; }
+    .btn-del:hover { background: rgba(255,59,48,.1); border-color: rgba(255,59,48,.3); color: var(--red); }
+    .btn-add-gift { width: 100%; margin-top: 8px; padding: 11px; border-radius: 10px; border: 1.5px dashed var(--border); background: transparent; cursor: pointer; font-size: 13px; font-weight: 600; color: var(--sub); transition: all var(--transition); display: flex; align-items: center; justify-content: center; gap: 6px; font-family: inherit; }
+    .btn-add-gift:hover { border-color: var(--blue); color: var(--blue); background: rgba(0,113,227,.04); }
+    .badge-locked { font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 6px; background: rgba(0,0,0,.04); color: var(--sub); border: 1px solid var(--border); white-space: nowrap; align-self: center; }
+    
+    /* Tab panels */
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; animation: fadeIn .3s ease; }
 
-    /* ── Tab panels ── */
-    .tab-panel { display:none; }
-    .tab-panel.active { display:block; }
+    /* Subsection tabs (Air/Pro toggle) */
+    .sub-tabs { display: flex; gap: 8px; margin-bottom: 18px; }
+    .sub-tab { padding: 8px 18px; border-radius: 20px; font-size: 13px; font-weight: 600; cursor: pointer; border: 1px solid var(--border); background: var(--glass-bg); color: var(--sub); transition: all var(--transition); }
+    .sub-tab:hover { border-color: rgba(0, 113, 227, 0.3); color: var(--text); }
+    .sub-tab.active { background: var(--blue); color: #fff; border-color: var(--blue); box-shadow: 0 4px 10px rgba(0, 113, 227, 0.2); }
 
-    /* ── Subsection tabs (Air/Pro toggle) ── */
-    .sub-tabs { display:flex; gap:8px; margin-bottom:16px; }
-    .sub-tab { padding:6px 16px; border-radius:20px; font-size:13px; font-weight:600; cursor:pointer; border:1.5px solid var(--border); background:var(--card); color:var(--sub); transition:.15s; }
-    .sub-tab.active { background:var(--blue); color:#fff; border-color:var(--blue); }
+    /* Chip accordion */
+    .chip-accordion { border: 1px solid var(--border); border-radius: 12px; margin-bottom: 12px; overflow: hidden; background: var(--glass-bg); }
+    .chip-acc-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; cursor: pointer; font-size: 13px; font-weight: 700; transition: all var(--transition); }
+    .chip-acc-header:hover { background: rgba(0, 113, 227, 0.05); }
+    .chip-acc-body { display: none; padding: 14px; border-top: 1px solid var(--border); background: rgba(0,0,0,0.02); }
+        .chip-acc-body.open { display: block; }
+    .chip-acc-arrow { transition: transform var(--transition); font-size: 10px; color: var(--sub); }
+    .chip-acc-arrow.open { transform: rotate(90deg); }
 
-    /* ── Chip accordion ── */
-    .chip-accordion { border:1.5px solid var(--border); border-radius:10px; margin-bottom:10px; overflow:hidden; }
-    .chip-acc-header { display:flex; align-items:center; justify-content:space-between; padding:12px 14px; cursor:pointer; background:var(--card); font-size:13px; font-weight:600; }
-    .chip-acc-header:hover { background:var(--bg); }
-    .chip-acc-body { display:none; padding:12px 14px; border-top:1px solid var(--border); background:var(--bg); }
-    .chip-acc-body.open { display:block; }
-    .chip-acc-arrow { transition:transform .2s; }
-    .chip-acc-arrow.open { transform:rotate(90deg); }
+    /* Badge */
+    .badge { font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 6px; text-transform: uppercase; }
+    .badge.air { background: rgba(52, 199, 89, 0.12); color: #1a7a3b; }
+    .badge.pro { background: rgba(0, 113, 227, 0.12); color: var(--blue); }
+    .badge.max { background: rgba(175, 82, 222, 0.12); color: #6c2bd9; }
 
-    /* ── Badge ── */
-    .badge { font-size:10px; font-weight:700; padding:2px 7px; border-radius:5px; }
-    .badge.air { background:#e8f7ed; color:#1a7a3b; }
-    .badge.pro { background:#f0f6ff; color:var(--blue); }
-    .badge.max { background:#f5f0ff; color:#6c2bd9; }
+    /* Action bar */
+    .action-bar {
+      display: flex; align-items: center; gap: 12px; margin-bottom: 24px; padding: 16px 24px;
+      background: var(--glass-bg); backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur);
+      border: 1px solid var(--glass-border); border-radius: var(--radius); box-shadow: var(--glass-shadow);
+    }
+    .action-bar p { flex: 1; font-size: 13px; color: var(--sub); font-weight: 600; }
+    .btn { padding: 10px 18px; border-radius: 10px; font-size: 13px; font-weight: 700; border: none; cursor: pointer; transition: all var(--transition); display: flex; align-items: center; gap: 6px; }
+    .btn:active { transform: scale(0.96); }
+    .btn.primary  { background: var(--blue); color: #fff; box-shadow: 0 4px 10px rgba(0, 113, 227, 0.2); }
+    .btn.primary:hover { background: var(--blue-dark); }
+    .btn.danger   { background: var(--red); color: #fff; box-shadow: 0 4px 10px rgba(255, 59, 48, 0.2); }
+    .btn.danger:hover { background: #d32f2f; }
+    .btn.secondary { background: rgba(0,0,0,0.04); border: 1px solid var(--border); color: var(--text); }
+        .btn.success  { background: var(--green); color: #fff; box-shadow: 0 4px 10px rgba(52, 199, 89, 0.2); }
 
-    /* ── Action bar ── */
-    .action-bar { display:flex; align-items:center; gap:10px; margin-bottom:20px; padding:14px 20px; background:var(--card); border-radius:var(--radius); box-shadow:var(--shadow); }
-    .action-bar p { flex:1; font-size:13px; color:var(--sub); }
-    .btn { padding:8px 16px; border-radius:8px; font-size:13px; font-weight:600; border:none; cursor:pointer; transition:.15s; }
-    .btn:active { opacity:.8; }
-    .btn.primary  { background:var(--blue); color:#fff; }
-    .btn.danger   { background:var(--red);  color:#fff; }
-    .btn.secondary { background:var(--bg); border:1.5px solid var(--border); color:var(--text); }
-    .btn.success  { background:var(--green); color:#fff; }
+    /* Toast */
+    .toast {
+      position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(20px);
+      background: rgba(0, 0, 0, 0.85); color: #fff; font-size: 13px; font-weight: 600; padding: 12px 24px; border-radius: 24px;
+      z-index: 999; opacity: 0; transition: all var(--transition); pointer-events: none;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.2); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-    /* ── Toast ── */
-    .toast { position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(20px); background:rgba(0,0,0,.85); color:#fff; font-size:13px; font-weight:500; padding:10px 20px; border-radius:20px; z-index:999; opacity:0; transition:.25s; pointer-events:none; }
-    .toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
-
-    /* ── RWD ── */
-    @media(max-width:768px) {
-      :root { --sidebar:0px; }
-      .sidebar { display:none; }
-      .main { margin-left:0; padding:16px; }
+    /* RWD */
+    @media(max-width: 768px) {
+      :root { --sidebar: 0px; }
+      .sidebar { display: none; }
+      .main { margin-left: 0; padding: 20px 16px; }
     }
   </style>
 </head>
 <body>
+<div class="liquid-bg">
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+</div>
 <div class="layout">
 
   <!-- ── Sidebar ── -->
   <aside class="sidebar">
     <div class="sidebar-logo">
-      <h1>⚙️ BTS 後台</h1>
+      <h1>BTS 後台</h1>
       <p>2026 Apple BTS 管理介面</p>
     </div>
 
@@ -179,7 +291,7 @@
 
     <div class="sidebar-footer">
       <button class="save-btn-sidebar" id="sidebar-save-btn" onclick="saveAll()">
-        💾 儲存所有設定
+        儲存所有設定
       </button>
     </div>
   </aside>
@@ -189,10 +301,10 @@
 
     <!-- Action bar -->
     <div class="action-bar">
-      <p id="status-text">讀取中…</p>
+      <p id="status-text">讀取中...</p>
       <button class="btn secondary" onclick="exportJSON()">匯出 JSON</button>
       <button class="btn danger"    onclick="resetAll()">清除覆蓋</button>
-      <button class="btn primary"   onclick="saveAll()">💾 儲存</button>
+      <button class="btn primary"   onclick="saveAll()">儲存</button>
     </div>
 
     <!-- ══ Tab: 活動總設定 ══ -->
@@ -200,12 +312,12 @@
       <div class="section-header"><h2>活動總設定</h2><p>購買連結、回饋選項</p></div>
 
       <div class="card">
-        <div class="card-title"><span>🔗</span> 購買連結</div>
+        <div class="card-title">購買連結</div>
         <div id="links-fields"></div>
       </div>
 
       <div class="card">
-        <div class="card-title"><span>💳</span> 回饋選項（用逗號分隔，例：0,0.5,1,1.5,2）</div>
+        <div class="card-title">回饋選項（用逗號分隔，例：0,0.5,1,1.5,2）</div>
         <div class="field-row">
           <span class="field-label">信用卡回饋 (%)</span>
           <input class="field-input" id="cc-rebate-opts" type="text">
@@ -219,38 +331,38 @@
 
     <!-- ══ Tab: BTS 贈品 ══ -->
     <div class="tab-panel" id="tab-gifts">
-      <div class="section-header"><h2>BTS 贈品設定</h2><p>各套組的 BTS 實付價（0 = 免費）</p></div>
+      <div class="section-header"><h2>BTS 贈品設定</h2><p>可新增、編輯、刪除各套組的配件項目與價格　｜　灰色「不加購」列為固定項目不可刪除</p></div>
 
       <div class="card">
-        <div class="card-title"><span>✏️</span> iPad Pencil 套組</div>
+        <div class="card-title"> iPad Pencil 套組</div>
         <div id="gift-ipadPencil"></div>
       </div>
       <div class="card">
-        <div class="card-title"><span>⌨️</span> iPad Air 鍵盤（11吋）</div>
+        <div class="card-title"> iPad Air 鍵盤（11吋）</div>
         <div id="gift-ipadAirKeyboard-11"></div>
       </div>
       <div class="card">
-        <div class="card-title"><span>⌨️</span> iPad Air 鍵盤（13吋）</div>
+        <div class="card-title"> iPad Air 鍵盤（13吋）</div>
         <div id="gift-ipadAirKeyboard-13"></div>
       </div>
       <div class="card">
-        <div class="card-title"><span>⌨️</span> iPad Pro 鍵盤（11吋）</div>
+        <div class="card-title"> iPad Pro 鍵盤（11吋）</div>
         <div id="gift-ipadProKeyboard-11"></div>
       </div>
       <div class="card">
-        <div class="card-title"><span>⌨️</span> iPad Pro 鍵盤（13吋）</div>
+        <div class="card-title"> iPad Pro 鍵盤（13吋）</div>
         <div id="gift-ipadProKeyboard-13"></div>
       </div>
       <div class="card">
-        <div class="card-title"><span>🎵</span> iPad AirPods 套組</div>
+        <div class="card-title"> iPad AirPods 套組</div>
         <div id="gift-ipadAirpods"></div>
       </div>
       <div class="card">
-        <div class="card-title"><span>🖱️</span> MacBook 生產力套組</div>
+        <div class="card-title"> MacBook 生產力套組</div>
         <div id="gift-macbookProductivity"></div>
       </div>
       <div class="card">
-        <div class="card-title"><span>🎵</span> MacBook AirPods 套組</div>
+        <div class="card-title"> MacBook AirPods 套組</div>
         <div id="gift-macbookAirpods"></div>
       </div>
     </div>
@@ -375,39 +487,85 @@ function renderMeta() {
 // ═══════════════════════════════════════════
 //  Render: BTS 贈品
 // ═══════════════════════════════════════════
+// ── 共用：取巢狀路徑 ──
+function getNestedArr(obj, path) {
+  return path.split('.').reduce((o, k) => o?.[k], obj);
+}
+
+// ── CRUD renderGiftList ──
 function renderGiftList(containerId, giftArr, cfgPath) {
   const el = document.getElementById(containerId);
   if (!el) return;
+  // escape path/id for single-quoted onclick usage
+  const P = cfgPath.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+  const C = containerId.replace(/'/g,"\\'");
+
   el.innerHTML = giftArr.map((g, i) => {
-    const p = g.btsPrice ?? g.btcPrice ?? 0;
-    return `<div class="gift-row">
-      <span class="gift-name">${g.name}</span>
-      <div class="gift-price-group">
-        <label>BTS 實付 NT$</label>
-        <input class="field-input price-input" type="number" min="0" value="${p}"
-               oninput="setGiftPrice('${cfgPath}',${i},this.value)">
-        <label style="margin-left:8px">原價 NT$</label>
-        <input class="field-input price-input" type="number" min="0" value="${g.originalPrice}"
-               oninput="setGiftOrigPrice('${cfgPath}',${i},this.value)">
+    const isNone = g.id === 'none';
+    const p = g.btsPrice ?? 0;
+    return `<div class="gift-row${isNone ? ' is-none' : ''}">
+      <div class="gift-row-fields">
+        <div class="gift-name-row">
+          <input class="field-input" type="text" placeholder="配件名稱"
+                 value="${escHtml(g.name)}" ${isNone ? 'readonly' : ''}
+                 oninput='setGiftField("${P}",${i},"name",this.value)'>
+          <input class="field-input tag-input" type="text" placeholder="標籤說明（顯示在計算機）"
+                 value="${escHtml(g.tag||'')}" ${isNone ? 'readonly' : ''}
+                 oninput='setGiftField("${P}",${i},"tag",this.value)'>
+        </div>
+        <div class="gift-price-group">
+          <label>BTS 實付 NT$</label>
+          <input class="field-input price-input" type="number" min="0" value="${p}"
+                 ${isNone ? 'disabled' : ''}
+                 oninput='setGiftField("${P}",${i},"btsPrice",+this.value)'>
+          <label style="margin-left:8px">原價 NT$</label>
+          <input class="field-input price-input" type="number" min="0" value="${g.originalPrice||0}"
+                 ${isNone ? 'disabled' : ''}
+                 oninput='setGiftField("${P}",${i},"originalPrice",+this.value)'>
+        </div>
       </div>
+      ${isNone
+        ? '<span class="badge-locked">🔒 不加購（固定）</span>'
+        : `<button class="btn-del" onclick='deleteGiftItem("${P}",${i},"${C}")' title="刪除此項目">🗑</button>`}
     </div>`;
   }).join('');
+
+  el.innerHTML += `<button class="btn-add-gift" onclick='addGiftItem("${P}","${C}")'>
+    ＋ 新增配件項目
+  </button>`;
 }
 
-function setGiftPrice(path, idx, val) {
+function setGiftField(path, idx, field, val) {
+  const arr = getNestedArr(cfg, path);
+  if (arr && arr[idx] !== undefined) arr[idx][field] = val;
+}
+
+function deleteGiftItem(path, idx, containerId) {
   const arr = getNestedArr(cfg, path);
   if (!arr) return;
-  const key = 'btsPrice' in arr[idx] ? 'btsPrice' : 'btcPrice';
-  arr[idx][key] = parseFloat(val)||0;
+  const itemName = arr[idx]?.name || '此項目';
+  if (!confirm(`確定要刪除「${itemName}」嗎？`)) return;
+  arr.splice(idx, 1);
+  renderGiftList(containerId, getNestedArr(cfg, path), path);
+  toast(`已刪除「${itemName}」`);
 }
 
-function setGiftOrigPrice(path, idx, val) {
+function addGiftItem(path, containerId) {
   const arr = getNestedArr(cfg, path);
-  if (arr) arr[idx].originalPrice = parseFloat(val)||0;
-}
-
-function getNestedArr(obj, path) {
-  return path.split('.').reduce((o,k) => o?.[k], obj);
+  if (!arr) return;
+  const newItem = {
+    id: 'item_' + Date.now(),
+    name: '新配件',
+    btsPrice: 0,
+    originalPrice: 0,
+    tag: '免費'
+  };
+  // 插在 none 項目之前，讓 none 永遠在最後
+  const noneIdx = arr.findIndex(g => g.id === 'none');
+  if (noneIdx >= 0) arr.splice(noneIdx, 0, newItem);
+  else arr.push(newItem);
+  renderGiftList(containerId, getNestedArr(cfg, path), path);
+  toast('已新增配件，請填入名稱與價格');
 }
 
 function renderGifts() {
@@ -433,7 +591,7 @@ function renderImgGrid(containerId, colorImages, productKey, sizesObj) {
     const colorMap = colorImages[sz] || {};
     const colors   = Object.keys(colorMap);
     return `<div class="card">
-      <div class="card-title"><span>📐</span>${sz} 吋</div>
+      <div class="card-title">${sz} 吋</div>
       <div class="img-grid">
         ${colors.map(c => {
           const inputId = `img-${productKey}-${sz}-${c.replace(/\s/g,'')}`;
@@ -484,7 +642,7 @@ function renderIpadSizePrice(containerId, prod, prodKey) {
   if (!el) return;
   el.innerHTML = Object.entries(prod.sizes).map(([sz, data]) => `
   <div class="card">
-    <div class="card-title"><span>📐</span>${data.label}
+    <div class="card-title">${data.label}
       <span style="font-size:12px;color:var(--sub);font-weight:400">Cellular 加價</span>
       <input class="field-input price-input" type="number" value="${data.cellularExtra}"
              oninput="cfg.products.${prodKey}.sizes['${sz}'].cellularExtra=+this.value" style="width:90px">
@@ -523,7 +681,7 @@ function renderMacAirPrices() {
   const air = cfg.products.macbookAir;
   el.innerHTML = Object.entries(air.sizes).map(([sz, data]) => `
   <div class="card">
-    <div class="card-title"><span>💻</span>MacBook Air ${data.label}
+    <div class="card-title">MacBook Air ${data.label}
       <input class="field-input price-input" type="number" value="${data.basePrice}"
              oninput="cfg.products.macbookAir.sizes['${sz}'].basePrice=+this.value" style="margin-left:auto">
       <span style="font-size:12px;color:var(--sub)">起始價</span>
@@ -578,7 +736,7 @@ function renderMacProPrices() {
   const tierBadge = { base:'air', pro:'pro', max:'max' };
   el.innerHTML = `
   <div class="card">
-    <div class="card-title"><span>✨</span>奈米紋理玻璃加價
+    <div class="card-title">奈米紋理玻璃加價
       <input class="field-input price-input" type="number" value="${pro.nanoPrice}"
              oninput="cfg.products.macbookPro.nanoPrice=+this.value" style="margin-left:auto">
     </div>
@@ -587,7 +745,7 @@ function renderMacProPrices() {
     data.chips.map((chip, ci) => `
     <div class="card">
       <div class="card-title">
-        <span>💻</span>${sz}吋 ${chip.name} ${chip.detail}
+        ${sz}吋 ${chip.name} ${chip.detail}
         <span class="badge ${tierBadge[chip.tier]||'air'}">${chip.tier?.toUpperCase()}</span>
         <input class="field-input price-input" type="number" value="${chip.basePrice}"
                oninput="cfg.products.macbookPro.sizes['${sz}'].chips[${ci}].basePrice=+this.value" style="margin-left:auto">
@@ -632,10 +790,10 @@ function toggleAcc(headerEl) {
 function saveAll() {
   const ok = saveConfigOverride(cfg);
   if (ok) {
-    toast('✅ 設定已儲存到本地');
+    toast('設定已儲存到本地');
     const btn = document.getElementById('sidebar-save-btn');
-    btn.classList.add('saved'); btn.textContent = '✅ 已儲存';
-    setTimeout(() => { btn.classList.remove('saved'); btn.innerHTML = '💾 儲存所有設定'; }, 2000);
+    btn.classList.add('saved'); btn.textContent = '已儲存';
+    setTimeout(() => { btn.classList.remove('saved'); btn.innerHTML = '儲存所有設定'; }, 2000);
     updateStatus();
   } else {
     toast('❌ 儲存失敗，請確認瀏覽器允許 localStorage');
@@ -648,7 +806,7 @@ function exportJSON() {
   a.href = URL.createObjectURL(blob);
   a.download = 'bts-config-override.json';
   a.click();
-  toast('📥 JSON 已匯出');
+  toast('JSON 已匯出');
 }
 
 function resetAll() {
@@ -656,7 +814,7 @@ function resetAll() {
   clearConfigOverride();
   cfg = JSON.parse(JSON.stringify(BTS_CONFIG));
   renderAll();
-  toast('🔄 已回復預設值');
+  toast('已回復預設值');
   updateStatus();
 }
 
@@ -665,10 +823,10 @@ function updateStatus() {
   const el = document.getElementById('status-text');
   if (saved) {
     const keys = Object.keys(saved).length;
-    el.textContent = `✅ 本地設定已覆蓋（${keys} 個區塊）`;
+    el.textContent = `本地設定已覆蓋（${keys} 個區塊）`;
     el.style.color = 'var(--green)';
   } else {
-    el.textContent = '📋 使用預設值（尚未有本地覆蓋）';
+    el.textContent = '使用預設值（尚未有本地覆蓋）';
     el.style.color = 'var(--sub)';
   }
 }

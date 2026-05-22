@@ -1,0 +1,2311 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>iPad BTS優惠計算機BETA</title>
+    <style>
+        :root {
+          /* Apple風格配色 */
+          --primary-color: #0071e3;
+          --secondary-color: #34c759;
+          --accent-color: #ac39ff;
+          --danger-color: #ff3b30;
+          --warning-color: #ff9800;
+          --background-color: #f5f5f7;
+          --card-background: #ffffff;
+          --text-color: #1d1d1f;
+          --text-secondary: #86868b;
+          --border-color: #d2d2d7;
+          --hover-color: #f2f2f7;
+          --shadow-sm: 0 2px 10px rgba(0, 0, 0, 0.1);
+          --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.1);
+          --shadow-lg: 0 8px 30px rgba(0, 0, 0, 0.12);
+          --radius-sm: 8px;
+          --radius-md: 12px;
+          --radius-lg: 20px;
+          --transition: all 0.3s ease;
+          --transition-fast: all 0.15s ease;
+          --safe-area-top: env(safe-area-inset-top, 0px);
+          --safe-area-bottom: env(safe-area-inset-bottom, 0px);
+        }
+        
+        * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+          -webkit-tap-highlight-color: transparent;
+        }
+        
+        html, body {
+          height: 100%;
+          width: 100%;
+          overflow-x: hidden;
+          font-family: -apple-system, BlinkMacSystemFont, 'Noto Sans TC', sans-serif;
+        }
+        
+        body {
+          font-size: 16px;
+          line-height: 1.6;
+          color: var(--text-color);
+          background-color: var(--background-color);
+          -webkit-font-smoothing: antialiased;
+          -moz-osx-font-smoothing: grayscale;
+          padding-bottom: calc(16px + var(--safe-area-bottom));
+        }
+        
+        /* Beta 徽章樣式 */
+        .beta-badge {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          background: white;
+          color: var(--primary-color);
+          font-size: 10px;
+          font-weight: 700;
+          letter-spacing: 0.5px;
+          padding: 3px 8px;
+          border-radius: 6px;
+          margin-left: 8px;
+          vertical-align: middle;
+          text-transform: uppercase;
+          border: 1px solid var(--primary-color);
+          box-shadow: 0 2px 8px rgba(0, 113, 227, 0.2);
+          animation: betaPulse 2s ease-in-out infinite;
+          position: relative;
+          overflow: hidden;
+        }
+        
+        .beta-badge::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: -100%;
+          width: 100%;
+          height: 100%;
+          background: linear-gradient(90deg, transparent, rgba(0, 113, 227, 0.1), transparent);
+          animation: betaShine 3s ease-in-out infinite;
+        }
+        
+        @keyframes betaPulse {
+          0%, 100% { 
+            transform: scale(1);
+            box-shadow: 0 2px 8px rgba(0, 113, 227, 0.2);
+            border-color: var(--primary-color);
+          }
+          50% { 
+            transform: scale(1.05);
+            box-shadow: 0 3px 12px rgba(0, 113, 227, 0.3);
+            border-color: #0062c3;
+          }
+        }
+        
+        @keyframes betaShine {
+          0% { left: -100%; }
+          50% { left: 100%; }
+          100% { left: 100%; }
+        }
+        
+        .container {
+          max-width: 1200px;
+          margin: 0 auto;
+          padding: 20px;
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+          font-weight: 600;
+          line-height: 1.3;
+        }
+        
+        .header {
+          text-align: center;
+          margin-bottom: 2.5rem;
+          padding: 1.5rem 0;
+          background: linear-gradient(135deg, var(--primary-color), #5ac8fa);
+          border-radius: var(--radius-lg);
+          color: white;
+          box-shadow: var(--shadow-md);
+          position: relative;
+          overflow: hidden;
+        }
+        
+        .header::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: -100%;
+          width: 100%;
+          height: 100%;
+          background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+          animation: headerShine 4s ease-in-out infinite;
+        }
+        
+        @keyframes headerShine {
+          0% { left: -100%; }
+          50% { left: 100%; }
+          100% { left: 100%; }
+        }
+        
+        .header h1 {
+          font-size: 2.2rem;
+          font-weight: 700;
+          margin-bottom: 0.8rem;
+          position: relative;
+          z-index: 1;
+        }
+        
+        .header p {
+          font-size: 1.1rem;
+          opacity: 0.9;
+          margin-bottom: 0.5rem;
+          position: relative;
+          z-index: 1;
+        }
+        
+        .step {
+          background-color: var(--card-background);
+          border-radius: var(--radius-lg);
+          padding: 2rem;
+          margin-bottom: 1.5rem;
+          box-shadow: var(--shadow-md);
+          border: 1px solid rgba(0, 0, 0, 0.04);
+          transition: var(--transition);
+          position: relative;
+          overflow: hidden;
+        }
+        
+        .step::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: -100%;
+          width: 100%;
+          height: 100%;
+          background: linear-gradient(90deg, transparent, rgba(0, 113, 227, 0.03), transparent);
+          transition: left 0.6s;
+        }
+        
+        .step:hover::before {
+          left: 100%;
+        }
+        
+        .step:hover {
+          transform: translateY(-3px);
+          box-shadow: var(--shadow-lg);
+        }
+        
+        .step h2 {
+          font-size: 1.6rem;
+          font-weight: 600;
+          margin-bottom: 1.5rem;
+          color: var(--text-color);
+          text-align: center;
+          position: relative;
+          z-index: 1;
+        }
+        
+        .options {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+          gap: 1.2rem;
+        }
+        
+        .option {
+          border: 2px solid var(--border-color);
+          border-radius: var(--radius-md);
+          padding: 1.5rem;
+          cursor: pointer;
+          transition: var(--transition);
+          text-align: center;
+          background-color: var(--card-background);
+          position: relative;
+          overflow: hidden;
+          box-shadow: var(--shadow-sm);
+        }
+        
+        .option::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: -100%;
+          width: 100%;
+          height: 100%;
+          background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+          transition: left 0.5s;
+        }
+        
+        .option:hover::before {
+          left: 100%;
+        }
+        
+        .option:hover {
+          border-color: var(--primary-color);
+          transform: translateY(-5px);
+          box-shadow: var(--shadow-md);
+        }
+        
+        .option.selected {
+          border-color: var(--primary-color);
+          background: linear-gradient(135deg, rgba(0, 113, 227, 0.08), rgba(90, 200, 250, 0.05));
+          transform: translateY(-3px);
+          box-shadow: 0 8px 30px rgba(0, 113, 227, 0.2);
+        }
+        
+        .option.selected::after {
+          content: '✓';
+          position: absolute;
+          top: 10px;
+          right: 15px;
+          background: var(--primary-color);
+          color: white;
+          width: 24px;
+          height: 24px;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 14px;
+          font-weight: bold;
+          animation: checkmark 0.3s ease-out;
+        }
+        
+        @keyframes checkmark {
+          0% { transform: scale(0); }
+          50% { transform: scale(1.2); }
+          100% { transform: scale(1); }
+        }
+        
+        .option img {
+          width: 200px;
+          height: 200px;
+          object-fit: cover;
+          margin-bottom: 1rem;
+          border-radius: var(--radius-sm);
+          transition: var(--transition);
+        }
+        
+        .option:hover img {
+          transform: scale(1.02);
+        }
+        
+        .option-title {
+          font-size: 1.2rem;
+          font-weight: 600;
+          margin-bottom: 0.5rem;
+          color: var(--text-color);
+        }
+        
+        .option-price {
+          font-size: 1rem;
+          color: var(--text-secondary);
+          font-weight: 500;
+        }
+        
+        .option.selected .option-title {
+          color: var(--primary-color);
+          font-weight: 700;
+        }
+        
+        .option.selected .option-price {
+          color: var(--primary-color);
+          font-weight: 600;
+        }
+        
+        .input-group {
+          margin: 1.5rem 0;
+        }
+        
+        .input-group label {
+          display: block;
+          font-weight: 600;
+          margin-bottom: 0.6rem;
+          color: var(--text-color);
+          font-size: 1rem;
+        }
+        
+        .input-group input {
+          width: 100%;
+          padding: 1rem;
+          border: 2px solid var(--border-color);
+          border-radius: var(--radius-md);
+          font-size: 1rem;
+          background-color: var(--card-background);
+          transition: var(--transition);
+          outline: none;
+        }
+        
+        .input-group input:focus {
+          border-color: var(--primary-color);
+          box-shadow: 0 0 0 4px rgba(0, 113, 227, 0.1);
+          transform: translateY(-1px);
+        }
+        
+        .checkbox-group {
+          margin: 1.5rem 0;
+        }
+        
+        .checkbox-group label {
+          display: flex;
+          align-items: center;
+          font-size: 1rem;
+          cursor: pointer;
+          font-weight: 500;
+          color: var(--text-color);
+          transition: var(--transition);
+          padding: 0.5rem;
+          border-radius: var(--radius-sm);
+        }
+        
+        .checkbox-group label:hover {
+          color: var(--primary-color);
+          background-color: rgba(0, 113, 227, 0.05);
+        }
+        
+        .checkbox-group input {
+          margin-right: 0.6rem;
+          transform: scale(1.3);
+          accent-color: var(--primary-color);
+        }
+        
+        .price-summary {
+          background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+          border-radius: var(--radius-lg);
+          padding: 2rem;
+          margin: 2rem 0;
+          border: 1px solid rgba(0, 0, 0, 0.08);
+          box-shadow: var(--shadow-md);
+          position: relative;
+          overflow: hidden;
+        }
+        
+        .price-summary::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: -100%;
+          width: 100%;
+          height: 100%;
+          background: linear-gradient(90deg, transparent, rgba(0, 113, 227, 0.05), transparent);
+          animation: priceShine 3s ease-in-out infinite;
+        }
+        
+        @keyframes priceShine {
+          0% { left: -100%; }
+          50% { left: 100%; }
+          100% { left: 100%; }
+        }
+        
+        .price-row {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 0.8rem;
+          padding: 0.5rem 0;
+          font-size: 1rem;
+          position: relative;
+          z-index: 1;
+        }
+        
+        .price-row:last-child {
+          margin-bottom: 0;
+        }
+        
+        .final-price {
+          font-size: 2rem;
+          font-weight: 700;
+          color: var(--primary-color);
+          border-top: 3px solid var(--primary-color);
+          padding: 1.5rem;
+          margin-top: 1.5rem;
+          background: linear-gradient(135deg, rgba(0, 113, 227, 0.08), rgba(90, 200, 250, 0.05));
+          border-radius: var(--radius-md);
+          text-align: center;
+          box-shadow: 0 4px 20px rgba(0, 113, 227, 0.1);
+          animation: finalPricePulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes finalPricePulse {
+          0%, 100% { transform: scale(1); }
+          50% { transform: scale(1.02); }
+        }
+        
+        .action-buttons {
+          display: flex;
+          gap: 1rem;
+          justify-content: center;
+          margin: 2rem 0;
+          flex-wrap: wrap;
+        }
+        
+        .generate-image-btn, .reset-btn {
+          padding: 1.2rem 2.5rem;
+          border-radius: var(--radius-md);
+          font-size: 1rem;
+          font-weight: 600;
+          cursor: pointer;
+          border: none;
+          box-shadow: var(--shadow-md);
+          transition: var(--transition);
+          display: flex;
+          align-items: center;
+          gap: 0.8rem;
+          position: relative;
+          overflow: hidden;
+          min-width: 200px;
+          justify-content: center;
+        }
+        
+        .generate-image-btn {
+          background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+          color: white;
+        }
+        
+        .generate-image-btn::before,
+        .reset-btn::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: -100%;
+          width: 100%;
+          height: 100%;
+          background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+          transition: left 0.5s;
+        }
+        
+        .generate-image-btn:hover::before,
+        .reset-btn:hover::before {
+          left: 100%;
+        }
+        
+        .generate-image-btn:hover {
+          transform: translateY(-3px);
+          box-shadow: 0 8px 30px rgba(255,107,107,0.4);
+          background: linear-gradient(135deg, #ff5252, #d32f2f);
+        }
+        
+        .reset-btn {
+          background: linear-gradient(135deg, var(--secondary-color), #30d158);
+          color: white;
+        }
+        
+        .reset-btn:hover {
+          transform: translateY(-3px);
+          box-shadow: 0 8px 30px rgba(52,199,89,0.4);
+          background: linear-gradient(135deg, #28a745, #20c251);
+        }
+        
+        .generate-image-btn:active,
+        .reset-btn:active {
+          transform: translateY(-1px);
+          box-shadow: var(--shadow-sm);
+        }
+        
+        .purchase-section {
+          margin: 3rem 0;
+        }
+        
+        .purchase-section h2 {
+          font-size: 1.8rem;
+          font-weight: 600;
+          margin-bottom: 2rem;
+          text-align: center;
+          color: var(--text-color);
+        }
+        
+        .purchase-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+          gap: 1.5rem;
+          margin-bottom: 2rem;
+        }
+        
+        .purchase-category {
+          background-color: var(--card-background);
+          border-radius: var(--radius-lg);
+          padding: 2rem;
+          box-shadow: var(--shadow-md);
+          border: 1px solid rgba(0, 0, 0, 0.04);
+          transition: var(--transition);
+          position: relative;
+          overflow: hidden;
+        }
+        
+        .purchase-category::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: -100%;
+          width: 100%;
+          height: 100%;
+          background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+          transition: left 0.6s;
+        }
+        
+        .purchase-category:hover::before {
+          left: 100%;
+        }
+        
+        .purchase-category:hover {
+          transform: translateY(-5px);
+          box-shadow: var(--shadow-lg);
+        }
+        
+        .purchase-category h3 {
+          font-size: 1.3rem;
+          font-weight: 600;
+          margin-bottom: 1.5rem;
+          color: var(--text-color);
+          text-align: center;
+          position: relative;
+          z-index: 1;
+        }
+        
+        .purchase-items {
+          display: flex;
+          flex-direction: column;
+          gap: 1rem;
+        }
+        
+        .purchase-btn {
+          display: flex;
+          align-items: center;
+          gap: 0.8rem;
+          padding: 1.2rem 1.5rem;
+          border-radius: var(--radius-md);
+          text-decoration: none;
+          font-weight: 600;
+          font-size: 1rem;
+          transition: var(--transition);
+          box-shadow: var(--shadow-sm);
+          justify-content: center;
+          position: relative;
+          overflow: hidden;
+        }
+        
+        .purchase-btn::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: -100%;
+          width: 100%;
+          height: 100%;
+          background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+          transition: left 0.5s;
+        }
+        
+        .purchase-btn:hover::before {
+          left: 100%;
+        }
+        
+        .purchase-btn.primary {
+          background: linear-gradient(135deg, var(--primary-color), #5ac8fa);
+          color: white;
+        }
+        
+        .purchase-btn.primary:hover {
+          transform: translateY(-3px);
+          box-shadow: 0 6px 25px rgba(0,113,227,0.4);
+          background: linear-gradient(135deg, #0056b3, #4fb3e1);
+        }
+        
+        .purchase-btn.secondary {
+          background: linear-gradient(135deg, var(--hover-color), #e5e5ea);
+          color: var(--text-color);
+          border: 2px solid var(--border-color);
+        }
+        
+        .purchase-btn.secondary:hover {
+          border-color: var(--primary-color);
+          background: linear-gradient(135deg, #f0f8ff, #e8f4ff);
+          transform: translateY(-3px);
+          box-shadow: var(--shadow-md);
+        }
+        
+        .purchase-btn:active {
+          transform: translateY(-1px);
+          box-shadow: var(--shadow-sm);
+        }
+        
+        .btn-icon {
+          font-size: 1.2rem;
+        }
+        
+        .social-section {
+          margin: 3rem 0 2rem 0;
+        }
+        
+        .social-section h2 {
+          font-size: 1.8rem;
+          font-weight: 600;
+          margin-bottom: 2rem;
+          text-align: center;
+          color: var(--text-color);
+        }
+        
+        .highlight-social {
+          margin-bottom: 2rem;
+        }
+        
+        .line-highlight {
+          background: linear-gradient(135deg, #06C755, #00A300);
+          color: white;
+          text-decoration: none;
+          padding: 2rem;
+          border-radius: var(--radius-lg);
+          display: flex;
+          align-items: center;
+          gap: 1.2rem;
+          box-shadow: 0 6px 25px rgba(6,199,85,0.3);
+          transition: var(--transition);
+          position: relative;
+          overflow: hidden;
+        }
+        
+        .line-highlight::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: -100%;
+          width: 100%;
+          height: 100%;
+          background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+          transition: left 0.5s;
+        }
+        
+        .line-highlight:hover::before {
+          left: 100%;
+        }
+        
+        .line-highlight:hover {
+          transform: translateY(-5px);
+          box-shadow: 0 10px 40px rgba(6,199,85,0.4);
+          background: linear-gradient(135deg, #05b34a, #009a00);
+        }
+        
+        .social-content {
+          flex: 1;
+        }
+        
+        .social-title {
+          font-size: 1.3rem;
+          font-weight: 700;
+          margin-bottom: 0.5rem;
+        }
+        
+        .social-desc {
+          font-size: 1rem;
+          opacity: 0.9;
+        }
+        
+        .social-icon {
+          font-size: 1.8rem;
+          min-width: 2.5rem;
+          text-align: center;
+        }
+        
+        .social-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+          gap: 1rem;
+        }
+        
+        .social-card {
+          background-color: var(--card-background);
+          color: var(--text-color);
+          text-decoration: none;
+          padding: 1.5rem;
+          border-radius: var(--radius-md);
+          text-align: center;
+          font-weight: 500;
+          border: 2px solid var(--border-color);
+          transition: var(--transition);
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 0.8rem;
+          font-size: 0.9rem;
+          box-shadow: var(--shadow-sm);
+          position: relative;
+          overflow: hidden;
+        }
+        
+        .social-card::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: -100%;
+          width: 100%;
+          height: 100%;
+          background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+          transition: left 0.5s;
+        }
+        
+        .social-card:hover::before {
+          left: 100%;
+        }
+        
+        .social-card:hover {
+          border-color: var(--primary-color);
+          transform: translateY(-3px);
+          box-shadow: var(--shadow-md);
+        }
+        
+        .social-card.youtube:hover {
+          border-color: #ff0000;
+          background: linear-gradient(135deg, #fff5f5, rgba(255, 0, 0, 0.05));
+        }
+        
+        .social-card.instagram:hover {
+          border-color: #e4405f;
+          background: linear-gradient(135deg, #fef7f8, rgba(228, 64, 95, 0.05));
+        }
+        
+        .social-card.threads:hover {
+          border-color: #000;
+          background: linear-gradient(135deg, #f8f8f8, rgba(0, 0, 0, 0.05));
+        }
+        
+        /* Toast 提示 */
+        .toast {
+          position: fixed;
+          bottom: calc(30px + var(--safe-area-bottom));
+          left: 50%;
+          transform: translateX(-50%) translateY(20px);
+          background: linear-gradient(135deg, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.8));
+          color: white;
+          padding: 12px 24px;
+          border-radius: var(--radius-md);
+          font-size: 14px;
+          font-weight: 500;
+          opacity: 0;
+          transition: opacity 0.3s ease, transform 0.3s ease;
+          z-index: 1000;
+          pointer-events: none;
+          box-shadow: var(--shadow-lg);
+          backdrop-filter: blur(10px);
+        }
+        
+        .toast.visible {
+          opacity: 1;
+          transform: translateX(-50%) translateY(0);
+        }
+        
+        /* 漣漪效果 */
+        .ripple {
+          position: absolute;
+          border-radius: 50%;
+          background-color: rgba(0, 113, 227, 0.3);
+          transform: scale(0);
+          animation: ripple 0.6s linear;
+          pointer-events: none;
+        }
+        
+        @keyframes ripple {
+          to {
+            transform: scale(2.5);
+            opacity: 0;
+          }
+        }
+        
+        /* 觸控反饋 */
+        .pressed {
+          background-color: var(--hover-color) !important;
+          transform: scale(0.98) !important;
+        }
+        
+        #imageCanvas {
+          display: none;
+        }
+        
+        /* 響應式設計優化 */
+        @media (max-width: 768px) {
+          .container {
+            padding: 15px;
+          }
+          
+          .header {
+            margin-bottom: 2rem;
+            padding: 1.2rem;
+          }
+          
+          .header h1 {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+          }
+          
+          .header p {
+            font-size: 1rem;
+          }
+          
+          .step {
+            padding: 1.5rem;
+            margin-bottom: 1.2rem;
+            border-radius: var(--radius-md);
+          }
+          
+          .step h2 {
+            font-size: 1.4rem;
+            margin-bottom: 1.2rem;
+          }
+          
+          .options {
+            grid-template-columns: 1fr;
+            gap: 1rem;
+          }
+          
+          .option {
+            padding: 1.2rem;
+            border-radius: var(--radius-md);
+          }
+          
+          .option img {
+            width: 160px;
+            height: 160px;
+          }
+          
+          .option-title {
+            font-size: 1.1rem;
+          }
+          
+          .option-price {
+            font-size: 0.95rem;
+          }
+          
+          .input-group {
+            margin: 1.2rem 0;
+          }
+          
+          .input-group input {
+            padding: 0.9rem;
+            font-size: 16px;
+          }
+          
+          .price-summary {
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+          }
+          
+          .price-row {
+            font-size: 0.95rem;
+          }
+          
+          .final-price {
+            font-size: 1.6rem;
+            padding: 1.2rem;
+          }
+          
+          .action-buttons {
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+            margin: 1.5rem 0;
+          }
+          
+          .generate-image-btn,
+          .reset-btn {
+            width: 100%;
+            max-width: 300px;
+            padding: 1rem 2rem;
+            font-size: 0.95rem;
+          }
+          
+          .purchase-section {
+            margin: 2rem 0;
+          }
+          
+          .purchase-section h2 {
+            font-size: 1.6rem;
+            margin-bottom: 1.5rem;
+          }
+          
+          .purchase-grid {
+            grid-template-columns: 1fr;
+            gap: 1.2rem;
+            margin-bottom: 1.5rem;
+          }
+          
+          .purchase-category {
+            padding: 1.5rem;
+            border-radius: var(--radius-md);
+          }
+          
+          .purchase-category h3 {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+          }
+          
+          .purchase-items {
+            gap: 0.8rem;
+          }
+          
+          .purchase-btn {
+            padding: 1rem;
+            font-size: 0.95rem;
+            border-radius: var(--radius-sm);
+          }
+          
+          .social-section {
+            margin: 2rem 0 1.5rem 0;
+          }
+          
+          .social-section h2 {
+            font-size: 1.6rem;
+            margin-bottom: 1.5rem;
+          }
+          
+          .highlight-social {
+            margin-bottom: 1.5rem;
+          }
+          
+          .line-highlight {
+            padding: 1.5rem;
+            border-radius: var(--radius-md);
+            gap: 1rem;
+          }
+          
+          .social-title {
+            font-size: 1.1rem;
+          }
+          
+          .social-desc {
+            font-size: 0.9rem;
+          }
+          
+          .social-icon {
+            font-size: 1.5rem;
+          }
+          
+          .social-grid {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.8rem;
+          }
+          
+          .social-card {
+            padding: 1.2rem;
+            font-size: 0.85rem;
+            border-radius: var(--radius-sm);
+          }
+        }
+
+        /* 極小螢幕優化 */
+        @media (max-width: 375px) {
+          .container {
+            padding: 12px;
+          }
+          
+          .header h1 {
+            font-size: 1.6rem;
+          }
+          
+          .header p {
+            font-size: 0.9rem;
+          }
+          
+          .step {
+            padding: 1.2rem;
+          }
+          
+          .step h2 {
+            font-size: 1.3rem;
+          }
+          
+          .option {
+            padding: 1rem;
+          }
+          
+          .option img {
+            width: 140px;
+            height: 140px;
+          }
+          
+          .option-title {
+            font-size: 1rem;
+          }
+          
+          .option-price {
+            font-size: 0.9rem;
+          }
+          
+          .final-price {
+            font-size: 1.4rem;
+          }
+          
+          .generate-image-btn,
+          .reset-btn {
+            padding: 0.9rem 1.5rem;
+            font-size: 0.9rem;
+          }
+          
+          .purchase-category {
+            padding: 1.2rem;
+          }
+          
+          .purchase-btn {
+            padding: 0.9rem;
+            font-size: 0.9rem;
+          }
+          
+          .line-highlight {
+            padding: 1.2rem;
+          }
+          
+          .social-title {
+            font-size: 1rem;
+          }
+          
+          .social-desc {
+            font-size: 0.8rem;
+          }
+          
+          .social-grid {
+            grid-template-columns: 1fr;
+          }
+          
+          .social-card {
+            padding: 1rem;
+            font-size: 0.8rem;
+          }
+        }
+
+        /* 動畫效果 */
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(10px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideInUp {
+          from { opacity: 0; transform: translateY(30px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+          0% { transform: scale(1); }
+          50% { transform: scale(1.05); }
+          100% { transform: scale(1); }
+        }
+
+        .step {
+          animation: fadeIn 0.6s ease-out;
+        }
+
+        .option:hover {
+          animation: pulse 0.4s ease-out;
+        }
+
+        .purchase-category:hover {
+          animation: pulse 0.3s ease-out;
+        }
+
+        .option:active,
+        .purchase-btn:active,
+        .action-buttons button:active {
+          transform: scale(0.98);
+        }
+
+        /* ── Admin Image Panel ── */
+        .admin-trigger {
+          position: fixed;
+          bottom: calc(24px + var(--safe-area-bottom));
+          right: 20px;
+          width: 44px; height: 44px;
+          border-radius: 50%;
+          background: rgba(29,29,31,0.72);
+          backdrop-filter: blur(12px);
+          -webkit-backdrop-filter: blur(12px);
+          color: white;
+          border: none;
+          font-size: 18px;
+          cursor: pointer;
+          z-index: 100;
+          display: flex; align-items: center; justify-content: center;
+          box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+          transition: all 0.25s ease;
+        }
+        .admin-trigger:hover { background: rgba(29,29,31,0.9); transform: scale(1.08); }
+
+        .admin-overlay {
+          position: fixed; inset: 0;
+          background: rgba(0,0,0,0.45);
+          backdrop-filter: blur(6px);
+          -webkit-backdrop-filter: blur(6px);
+          z-index: 200;
+          display: none;
+          align-items: flex-start; justify-content: center;
+          overflow-y: auto; padding: 20px;
+          animation: fadeIn 0.2s ease;
+        }
+        .admin-overlay.open { display: flex; }
+
+        .admin-panel {
+          background: white;
+          border-radius: 20px;
+          width: 100%; max-width: 620px;
+          margin: auto;
+          box-shadow: 0 24px 80px rgba(0,0,0,0.3);
+          overflow: hidden;
+        }
+        .admin-panel-header {
+          display: flex; align-items: center; justify-content: space-between;
+          padding: 18px 24px;
+          background: linear-gradient(135deg, #1d1d1f, #3a3a3c);
+          color: white;
+        }
+        .admin-panel-header h3 { font-size: 16px; font-weight: 700; margin: 0; }
+        .admin-panel-close {
+          background: rgba(255,255,255,0.15); border: none; color: white;
+          width: 30px; height: 30px; border-radius: 50%; font-size: 14px;
+          cursor: pointer; display: flex; align-items: center; justify-content: center;
+          transition: background 0.2s;
+        }
+        .admin-panel-close:hover { background: rgba(255,255,255,0.28); }
+
+        .admin-panel-body { padding: 20px 24px; max-height: 68vh; overflow-y: auto; }
+
+        .admin-section-title {
+          font-size: 11px; font-weight: 700; color: var(--text-secondary);
+          text-transform: uppercase; letter-spacing: 0.6px;
+          margin: 20px 0 10px; padding-bottom: 8px;
+          border-bottom: 1px solid var(--border-color);
+        }
+        .admin-section-title:first-child { margin-top: 0; }
+
+        .admin-img-row {
+          display: flex; align-items: center; gap: 10px;
+          margin-bottom: 8px; background: #f8f8f8;
+          border-radius: 10px; padding: 10px 12px;
+        }
+        .admin-img-preview {
+          width: 52px; height: 52px; object-fit: contain;
+          border-radius: 8px; border: 1px solid #e5e5e5;
+          background: white; flex-shrink: 0;
+        }
+        .admin-img-info { flex: 1; min-width: 0; }
+        .admin-img-label { font-size: 12px; font-weight: 700; color: #1d1d1f; margin-bottom: 4px; }
+        .admin-img-input {
+          width: 100%; padding: 7px 10px;
+          border: 1.5px solid #d2d2d7; border-radius: 8px;
+          font-size: 11px; font-family: monospace; color: #1d1d1f;
+          background: white; outline: none; transition: border-color 0.2s;
+        }
+        .admin-img-input:focus { border-color: var(--primary-color); box-shadow: 0 0 0 3px rgba(0,113,227,0.1); }
+
+        .admin-panel-footer {
+          display: flex; gap: 10px;
+          padding: 16px 24px; border-top: 1px solid #e5e5e5;
+          background: #fafafa;
+        }
+        .admin-btn {
+          flex: 1; padding: 12px; border-radius: 10px;
+          font-size: 14px; font-weight: 600; cursor: pointer; border: none;
+          transition: all 0.2s; font-family: inherit;
+        }
+        .admin-btn.primary { background: var(--primary-color); color: white; }
+        .admin-btn.primary:hover { background: #0062c3; }
+        .admin-btn.secondary { background: #e5e5ea; color: #1d1d1f; }
+        .admin-btn.secondary:hover { background: #d2d2d7; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>iPad BTS優惠計算機<span class="beta-badge">BETA</span></h1>
+            <p>精準計算您的最佳購買方案</p>
+            <p style="font-size: 14px; opacity: 0.8; margin-top: 8px;">Designed By Neil</p>
+        </div>
+
+        <!-- 步驟1: 選擇型號 -->
+        <div class="step">
+            <h2>選擇您的 iPad</h2>
+            <div class="options">
+                <div class="option" data-model="air" onclick="selectModel('air')">
+                    <img src="https://drive.google.com/thumbnail?id=1aY-VmqSUABu4b23zIYssb1vVyGctzP2J&sz=w400" alt="iPad Air">
+                    <div class="option-title">iPad Air</div>
+                    <div class="option-price">NT$18,200 起</div>
+                </div>
+                <div class="option" data-model="pro" onclick="selectModel('pro')">
+                    <img src="https://drive.google.com/thumbnail?id=1KMfy_wW3p-0YM1jcgCbBZUYSVIBHBCyn&sz=w400" alt="iPad Pro">
+                    <div class="option-title">iPad Pro</div>
+                    <div class="option-price">NT$31,400 起</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 步驟2: 選擇尺寸 -->
+        <div class="step" id="sizeStep" style="display: none;">
+            <h2>選擇尺寸</h2>
+            <div class="options" id="sizeOptions"></div>
+        </div>
+
+        <!-- 步驟3: 選擇容量 -->
+        <div class="step" id="storageStep" style="display: none;">
+            <h2>選擇容量</h2>
+            <div class="options" id="storageOptions"></div>
+        </div>
+
+        <!-- 步驟4: 選擇連線方式 -->
+        <div class="step" id="connectivityStep" style="display: none;">
+            <h2>選擇連線方式</h2>
+            <div class="options" id="connectivityOptions"></div>
+        </div>
+
+        <!-- 步驟5: 選擇顏色 -->
+        <div class="step" id="colorStep" style="display: none;">
+            <h2>選擇顏色</h2>
+            <div class="options" id="colorOptions"></div>
+        </div>
+
+        <!-- 步驟6: Nano-texture (僅Pro 1TB/2TB) -->
+        <div class="step" id="nanoStep" style="display: none;">
+            <h2>Nano-texture 奈米玻璃</h2>
+            <div class="options" id="nanoOptions"></div>
+        </div>
+
+        <!-- 步驟7: 配件優惠 -->
+        <div class="step" id="accessoryStep" style="display: none;">
+            <h2>選擇配件優惠</h2>
+            <div class="options" id="accessoryOptions"></div>
+        </div>
+
+        <!-- 回饋計算 -->
+        <div class="step" id="rebateStep" style="display: none;">
+            <h2>回饋計算</h2>
+            <div class="input-group">
+                <label for="creditCard">信用卡回饋 (%)</label>
+                <input type="number" id="creditCard" step="0.1" min="0" max="100" placeholder="例如: 1.5">
+            </div>
+            <div class="input-group">
+                <label for="referral">導購回饋 (%)</label>
+                <input type="number" id="referral" step="0.1" min="0" max="100" placeholder="例如: 2.0">
+            </div>
+            <div class="checkbox-group">
+                <label>
+                    <input type="checkbox" id="sellGift">
+                    是否將贈品賣掉？
+                </label>
+            </div>
+            <div class="input-group" id="giftPriceGroup" style="display: none;">
+                <label for="giftPrice">贈品售價 (NT$)</label>
+                <input type="number" id="giftPrice" min="0" placeholder="例如: 3000">
+            </div>
+        </div>
+
+        <!-- 價格總覽 -->
+        <div class="step" id="summaryStep" style="display: none;">
+            <h2>價格總覽</h2>
+            <div class="price-summary" id="priceSummary"></div>
+            
+            <!-- 操作按鈕 -->
+            <div class="action-buttons">
+                <button class="generate-image-btn" onclick="generateShoppingImage()">
+                    🧾 生成BTS購買清單
+                </button>
+                <button class="reset-btn" onclick="resetCalculator()">
+                    🔄 重頭計算
+                </button>
+            </div>
+            
+            <div class="purchase-section">
+                <h2>🛒 購買管道</h2>
+                <div class="purchase-grid">
+                    <div class="purchase-category">
+                        <h3>💰 導購優惠</h3>
+                        <div class="purchase-items">
+                            <a href="https://buy.line.me/u/partner/880044448765" target="_blank" class="purchase-btn primary" onclick="recordPurchaseClick('LINE導購購買')">
+                                <span class="btn-icon">📱</span>
+                                <span>LINE導購購買</span>
+                            </a>
+                            <a href="https://www.shopback.com.tw/apple-online-store" target="_blank" class="purchase-btn primary" onclick="recordPurchaseClick('SHOPBACK導購')">
+                                <span class="btn-icon">💸</span>
+                                <span>SHOPBACK導購</span>
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <div class="purchase-category">
+                        <h3>🎓 官方管道</h3>
+                        <div class="purchase-items">
+                            <a href="https://www.apple.com/tw-edu/store?afid=p240%7Cgo~cmp-245083142~adg-45431763499~ad-714867929676_kwd-344917936483~dev-c~ext-~prd-~mca-~nt-search&cid=aos-tw-kwgo-edu--" target="_blank" class="purchase-btn primary" onclick="recordPurchaseClick('蘋果教育商店')">
+                                <span class="btn-icon">🍎</span>
+                                <span>蘋果教育商店</span>
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <div class="purchase-category">
+                        <h3>🤝 Neil 服務</h3>
+                        <div class="purchase-items">
+                            <a href="https://script.google.com/macros/s/AKfycbw9LGd5m5lzdr-G-G13cgc4YXunTcqQUsS8_KlPoW52nT4chjKRGNX9_iFxBeVizmy-/exec" target="_blank" class="purchase-btn secondary" onclick="recordPurchaseClick('Neil的Apple交易平台')">
+                                <span class="btn-icon">🔄</span>
+                                <span>Neil的Apple交易平台</span>
+                            </a>
+                            <a href="https://script.google.com/macros/s/AKfycbz1wAnl3eSL5XPMHR7phlSp0-4BbFdb0znWZ-0N5dyycfwoKLXHqohRK-b_5h4UoO5X/exec" target="_blank" class="purchase-btn secondary" onclick="recordPurchaseClick('BTS代購')">
+                                <span class="btn-icon">📦</span>
+                                <span>BTS代購</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="social-section">
+                <h2>📱 追蹤 Neil 獲得最新資訊</h2>
+                <div class="highlight-social">
+                    <a href="https://line.me/ti/g2/MOo9NqsHqjfW421BLRl3EbGg0DE6DTzY7vq8xA?utm_source=invitation&utm_medium=link_copy&utm_campaign=default" target="_blank" class="line-highlight" onclick="recordSocialClick('LINE社群')">
+                        <span class="social-icon">💬</span>
+                        <div class="social-content">
+                            <div class="social-title">LINE社群</div>
+                            <div class="social-desc">最新即時消息都在這裡！</div>
+                        </div>
+                    </a>
+                </div>
+                
+                <div class="social-grid">
+                    <a href="https://www.dcard.tw/f/apple" target="_blank" class="social-card" onclick="recordSocialClick('Dcard Apple版')">
+                        <span class="social-icon">🃏</span>
+                        <span>Dcard Apple版</span>
+                    </a>
+                    <a href="https://www.dcard.tw/@neilyinnnnnnn" target="_blank" class="social-card" onclick="recordSocialClick('Dcard個人看板')">
+                        <span class="social-icon">👤</span>
+                        <span>Dcard個人看板</span>
+                    </a>
+                    <a href="https://www.youtube.com/channel/UCUn8VlPDRSq_7K3N4zbmHsQ" target="_blank" class="social-card youtube" onclick="recordSocialClick('YouTube')">
+                        <span class="social-icon">📺</span>
+                        <span>YouTube</span>
+                    </a>
+                    <a href="https://www.instagram.com/neil.tw_/" target="_blank" class="social-card instagram" onclick="recordSocialClick('Instagram')">
+                        <span class="social-icon">📷</span>
+                        <span>Instagram</span>
+                    </a>
+                    <a href="https://www.threads.net/@neil.tw_?hl=zh-tw" target="_blank" class="social-card threads" onclick="recordSocialClick('Threads')">
+                        <span class="social-icon">🧵</span>
+                        <span>Threads</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 隱藏的Canvas用於生成圖片 -->
+    <canvas id="imageCanvas" width="800" height="1200" style="display:none;"></canvas>
+
+    <!-- Toast 提示 -->
+    <div class="toast" id="toast">操作成功！</div>
+
+    <!-- ⚙️ 圖片管理 Admin 按鈕 -->
+    <button class="admin-trigger" onclick="openAdmin()" title="管理圖片連結">⚙️</button>
+
+    <!-- 圖片管理 Admin 面板 -->
+    <div class="admin-overlay" id="adminOverlay" onclick="handleOverlayClick(event)">
+        <div class="admin-panel">
+            <div class="admin-panel-header">
+                <h3>🖼 圖片連結管理</h3>
+                <button class="admin-panel-close" onclick="closeAdmin()">✕</button>
+            </div>
+            <div class="admin-panel-body" id="adminPanelBody"></div>
+            <div class="admin-panel-footer">
+                <button class="admin-btn secondary" onclick="resetAdminImages()">恢復預設</button>
+                <button class="admin-btn primary"   onclick="saveAdminImages()">儲存</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let config = {
+            model: '',
+            size: '',
+            storage: '',
+            connectivity: '',
+            color: '',
+            nano: false,
+            accessory: '',
+            creditCard: 0,
+            referral: 0,
+            sellGift: false,
+            giftPrice: 0,
+            clickedPurchase: '',
+            clickedSocial: ''
+        };
+
+        const prices = {
+            air: {
+                11: { 128: 18200, 256: 21700, 512: 28700, 1024: 34000 },
+                13: { 128: 25200, 256: 28700, 512: 35700, 1024: 41000 }
+            },
+            pro: {
+                11: { 256: 31400, 512: 38400, 1024: 52400, 2048: 66400 },
+                13: { 256: 42400, 512: 49400, 1024: 63400, 2048: 77400 }
+            }
+        };
+
+        // ── 預設圖片（可被 localStorage 覆蓋）──
+        const DEFAULT_IMAGES = {
+            main: {
+                air: 'https://drive.google.com/thumbnail?id=1aY-VmqSUABu4b23zIYssb1vVyGctzP2J&sz=w800',
+                pro: 'https://drive.google.com/thumbnail?id=1KMfy_wW3p-0YM1jcgCbBZUYSVIBHBCyn&sz=w800'
+            },
+            color: {
+                air: {
+                    'space-gray': 'https://drive.google.com/thumbnail?id=1jqwBxKOcZMwcUstr84MLNM5nZsceZ80u&sz=w400',
+                    'starlight':  'https://drive.google.com/thumbnail?id=1X_u3wF2hK8HWcTEjaZ0P6NilkeGdtcaf&sz=w400',
+                    'blue':       'https://drive.google.com/thumbnail?id=1GCxqI-B2OPrqaIdCLU_fgfbErAAgJeVU&sz=w400',
+                    'purple':     'https://drive.google.com/thumbnail?id=1_DP-4P0pvYAJTvGeVadPceBea9V9G4k6&sz=w400'
+                },
+                pro: {
+                    'silver':      'https://drive.google.com/thumbnail?id=1uj0Fq_yXUGqodCS1rMXsMQtUOHMn2XXF&sz=w400',
+                    'space-black': 'https://drive.google.com/thumbnail?id=1lb9tZkhv-UnsCIMuLs4AA360dsjM19bP&sz=w400'
+                }
+            }
+        };
+
+        const ADMIN_COLOR_CONFIG = {
+            air: [
+                { key: 'space-gray', label: '太空灰色' },
+                { key: 'starlight',  label: '星光色' },
+                { key: 'blue',       label: '藍色' },
+                { key: 'purple',     label: '紫色' }
+            ],
+            pro: [
+                { key: 'silver',      label: '銀色' },
+                { key: 'space-black', label: '太空黑色' }
+            ]
+        };
+
+        function getImages() {
+            try {
+                const saved = localStorage.getItem('bts_ipad_images');
+                if (saved) {
+                    const p = JSON.parse(saved);
+                    return {
+                        main:  { ...DEFAULT_IMAGES.main,  ...(p.main  || {}) },
+                        color: {
+                            air: { ...DEFAULT_IMAGES.color.air, ...(p.color?.air || {}) },
+                            pro: { ...DEFAULT_IMAGES.color.pro, ...(p.color?.pro || {}) }
+                        }
+                    };
+                }
+            } catch(e) {}
+            return DEFAULT_IMAGES;
+        }
+
+        // 向後相容（供 showColorStep 使用）
+        let colorImages = getImages().color;
+        let mainImages  = getImages().main;
+
+        const accessories = {
+            pencil: { name: 'Apple Pencil Pro', price: 0, originalPrice: 4000 },
+            keyboard_air_11: { name: '11吋 Air 巧控鍵盤', price: 4800, originalPrice: 8800 },
+            keyboard_air_13: { name: '13吋 Air 巧控鍵盤', price: 5300, originalPrice: 9300 },
+            keyboard_pro_11: { name: '11吋 Pro 巧控鍵盤', price: 5200, originalPrice: 9200 },
+            keyboard_pro_13: { name: '13吋 Pro 巧控鍵盤', price: 7000, originalPrice: 11000 },
+            airpods4: { name: 'AirPods 4 一般版', price: 0, originalPrice: 4490 },
+            airpods4_anc: { name: 'AirPods 4 主動降噪版', price: 1500, originalPrice: 5990 },
+            airpods_pro2: { name: 'AirPods Pro 2', price: 3000, originalPrice: 7490 }
+        };
+
+        // 顯示Toast提示
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            if (toast) {
+                toast.textContent = message;
+                toast.classList.add('visible');
+                
+                setTimeout(() => {
+                    toast.classList.remove('visible');
+                }, 3000);
+            }
+        }
+
+        // 添加漣漪效果
+        function createRipple(event) {
+            try {
+                const button = event.currentTarget;
+                const circle = document.createElement('span');
+                const diameter = Math.max(button.clientWidth, button.clientHeight);
+                const radius = diameter / 2;
+
+                const rect = button.getBoundingClientRect();
+                const x = event.clientX || (event.touches && event.touches[0] ? event.touches[0].clientX : rect.left + rect.width / 2);
+                const y = event.clientY || (event.touches && event.touches[0] ? event.touches[0].clientY : rect.top + rect.height / 2);
+
+                circle.style.width = circle.style.height = `${diameter}px`;
+                circle.style.left = `${x - rect.left - radius}px`;
+                circle.style.top = `${y - rect.top - radius}px`;
+                circle.classList.add('ripple');
+
+                const existingRipple = button.querySelector('.ripple');
+                if (existingRipple) {
+                    existingRipple.remove();
+                }
+
+                button.appendChild(circle);
+
+                setTimeout(() => {
+                    if (circle.parentNode) {
+                        circle.parentNode.removeChild(circle);
+                    }
+                }, 600);
+            } catch (error) {
+                console.log('漣漪效果錯誤:', error);
+            }
+        }
+
+        // 添加觸控反饋效果
+        function addTouchFeedback() {
+            const elements = document.querySelectorAll('.option, .generate-image-btn, .reset-btn, .purchase-btn, .social-card, .line-highlight');
+            
+            elements.forEach(element => {
+                // 移除舊的事件監聽器以避免重複綁定
+                element.removeEventListener('touchstart', handleTouchStart);
+                element.removeEventListener('touchend', handleTouchEnd);
+                element.removeEventListener('touchcancel', handleTouchEnd);
+                element.removeEventListener('mousedown', handleTouchStart);
+                element.removeEventListener('mouseup', handleTouchEnd);
+                element.removeEventListener('mouseleave', handleTouchEnd);
+                
+                // 添加新的事件監聽器
+                element.addEventListener('touchstart', handleTouchStart, { passive: true });
+                element.addEventListener('touchend', handleTouchEnd, { passive: true });
+                element.addEventListener('touchcancel', handleTouchEnd, { passive: true });
+                element.addEventListener('mousedown', handleTouchStart, { passive: true });
+                element.addEventListener('mouseup', handleTouchEnd, { passive: true });
+                element.addEventListener('mouseleave', handleTouchEnd, { passive: true });
+                
+                // 添加漣漪效果
+                element.addEventListener('touchstart', createRipple, { passive: true });
+                element.addEventListener('mousedown', createRipple, { passive: true });
+            });
+        }
+
+        function handleTouchStart() {
+            this.classList.add('pressed');
+        }
+
+        function handleTouchEnd() {
+            this.classList.remove('pressed');
+        }
+
+        function selectModel(model) {
+            config.model = model;
+            document.querySelectorAll('[data-model]').forEach(el => el.classList.remove('selected'));
+            document.querySelector(`[data-model="${model}"]`).classList.add('selected');
+            showToast(`已選擇 iPad ${model === 'air' ? 'Air' : 'Pro'}`);
+            showSizeStep();
+        }
+
+        function showSizeStep() {
+            document.getElementById('sizeStep').style.display = 'block';
+            const sizeOptions = document.getElementById('sizeOptions');
+            sizeOptions.innerHTML = `
+                <div class="option" onclick="selectSize('11')">
+                    <div class="option-title">11 吋</div>
+                </div>
+                <div class="option" onclick="selectSize('13')">
+                    <div class="option-title">13 吋</div>
+                </div>
+            `;
+            addTouchFeedback();
+        }
+
+        function selectSize(size) {
+            config.size = size;
+            document.querySelectorAll('#sizeOptions .option').forEach(el => el.classList.remove('selected'));
+            event.target.closest('.option').classList.add('selected');
+            showToast(`已選擇 ${size} 吋`);
+            showStorageStep();
+        }
+
+        function showStorageStep() {
+            document.getElementById('storageStep').style.display = 'block';
+            const storageOptions = document.getElementById('storageOptions');
+            const storages = config.model === 'air' ? 
+                [['128GB', 128], ['256GB', 256], ['512GB', 512], ['1TB', 1024]] :
+                [['256GB', 256], ['512GB', 512], ['1TB', 1024], ['2TB', 2048]];
+            
+            storageOptions.innerHTML = storages.map(([label, value]) => `
+                <div class="option" onclick="selectStorage(${value})">
+                    <div class="option-title">${label}</div>
+                    <div class="option-price">NT$${prices[config.model][config.size][value].toLocaleString()}</div>
+                </div>
+            `).join('');
+            addTouchFeedback();
+        }
+
+        function selectStorage(storage) {
+            config.storage = storage;
+            document.querySelectorAll('#storageOptions .option').forEach(el => el.classList.remove('selected'));
+            event.target.closest('.option').classList.add('selected');
+            showToast(`已選擇 ${storage}GB`);
+            showConnectivityStep();
+        }
+
+        function showConnectivityStep() {
+            document.getElementById('connectivityStep').style.display = 'block';
+            const basePrice = prices[config.model][config.size][config.storage];
+            const cellularPrice = basePrice + (config.model === 'air' ? 5000 : 7000);
+            
+            document.getElementById('connectivityOptions').innerHTML = `
+                <div class="option" onclick="selectConnectivity('wifi')">
+                    <div class="option-title">Wi-Fi</div>
+                    <div class="option-price">NT$${basePrice.toLocaleString()}</div>
+                </div>
+                <div class="option" onclick="selectConnectivity('cellular')">
+                    <div class="option-title">行動網路版</div>
+                    <div class="option-price">NT$${cellularPrice.toLocaleString()}</div>
+                </div>
+            `;
+            addTouchFeedback();
+        }
+
+        function selectConnectivity(connectivity) {
+            config.connectivity = connectivity;
+            document.querySelectorAll('#connectivityOptions .option').forEach(el => el.classList.remove('selected'));
+            event.target.closest('.option').classList.add('selected');
+            showToast(`已選擇 ${connectivity === 'wifi' ? 'Wi-Fi' : '行動網路版'}`);
+            showColorStep();
+        }
+
+        function showColorStep() {
+            document.getElementById('colorStep').style.display = 'block';
+            const colors = config.model === 'air' ? 
+                [['太空灰色', 'space-gray'], ['星光色', 'starlight'], ['藍色', 'blue'], ['紫色', 'purple']] :
+                [['銀色', 'silver'], ['太空黑色', 'space-black']];
+            
+            document.getElementById('colorOptions').innerHTML = colors.map(([name, value]) => `
+                <div class="option" onclick="selectColor('${value}')">
+                    <img src="${colorImages[config.model][value]}" alt="${name}" style="border-radius: 8px;">
+                    <div class="option-title">${name}</div>
+                </div>
+            `).join('');
+            addTouchFeedback();
+        }
+
+        function selectColor(color) {
+            config.color = color;
+            document.querySelectorAll('#colorOptions .option').forEach(el => el.classList.remove('selected'));
+            event.target.closest('.option').classList.add('selected');
+            showToast(`已選擇 ${getColorName(color)}`);
+            
+            if (config.model === 'pro' && (config.storage === 1024 || config.storage === 2048)) {
+                showNanoStep();
+            } else {
+                showAccessoryStep();
+            }
+        }
+
+        function showNanoStep() {
+            document.getElementById('nanoStep').style.display = 'block';
+            document.getElementById('nanoOptions').innerHTML = `
+                <div class="option" onclick="selectNano(false)">
+                    <div class="option-title">標準玻璃</div>
+                    <div class="option-price">無額外費用</div>
+                </div>
+                <div class="option" onclick="selectNano(true)">
+                    <div class="option-title">Nano-texture 奈米玻璃</div>
+                    <div class="option-price">+NT$3,500</div>
+                </div>
+            `;
+            addTouchFeedback();
+        }
+
+        function selectNano(nano) {
+            config.nano = nano;
+            document.querySelectorAll('#nanoOptions .option').forEach(el => el.classList.remove('selected'));
+            event.target.closest('.option').classList.add('selected');
+            showToast(`已選擇 ${nano ? 'Nano-texture 奈米玻璃' : '標準玻璃'}`);
+            showAccessoryStep();
+        }
+
+        function showAccessoryStep() {
+            document.getElementById('accessoryStep').style.display = 'block';
+            const keyboardKey = `keyboard_${config.model}_${config.size}`;
+            
+            document.getElementById('accessoryOptions').innerHTML = `
+                <div class="option" onclick="selectAccessory('pencil')">
+                    <div class="option-title">Apple Pencil Pro</div>
+                    <div class="option-price">生產力套組 (免費)</div>
+                </div>
+                <div class="option" onclick="selectAccessory('${keyboardKey}')">
+                    <div class="option-title">${accessories[keyboardKey].name}</div>
+                    <div class="option-price">生產力套組 (實付NT$${accessories[keyboardKey].price.toLocaleString()})</div>
+                </div>
+                <div class="option" onclick="selectAccessory('airpods4')">
+                    <div class="option-title">AirPods 4 一般版</div>
+                    <div class="option-price">AirPods套組 (免費)</div>
+                </div>
+                <div class="option" onclick="selectAccessory('airpods4_anc')">
+                    <div class="option-title">AirPods 4 主動降噪版</div>
+                    <div class="option-price">AirPods套組 (實付NT$1,500)</div>
+                </div>
+                <div class="option" onclick="selectAccessory('airpods_pro2')">
+                    <div class="option-title">AirPods Pro 2</div>
+                    <div class="option-price">AirPods套組 (實付NT$3,000)</div>
+                </div>
+            `;
+            addTouchFeedback();
+        }
+
+        function selectAccessory(accessory) {
+            config.accessory = accessory;
+            document.querySelectorAll('#accessoryOptions .option').forEach(el => el.classList.remove('selected'));
+            event.target.closest('.option').classList.add('selected');
+            showToast(`已選擇 ${accessories[accessory].name}`);
+            showRebateStep();
+        }
+
+        function showRebateStep() {
+            document.getElementById('rebateStep').style.display = 'block';
+            
+            document.getElementById('creditCard').addEventListener('input', updateSummary);
+            document.getElementById('referral').addEventListener('input', updateSummary);
+            document.getElementById('sellGift').addEventListener('change', function() {
+                document.getElementById('giftPriceGroup').style.display = this.checked ? 'block' : 'none';
+                updateSummary();
+            });
+            document.getElementById('giftPrice').addEventListener('input', updateSummary);
+            
+            showSummaryStep();
+        }
+
+        function showSummaryStep() {
+            document.getElementById('summaryStep').style.display = 'block';
+            updateSummary();
+            addTouchFeedback();
+        }
+
+        function updateSummary() {
+            config.creditCard = parseFloat(document.getElementById('creditCard').value) || 0;
+            config.referral = parseFloat(document.getElementById('referral').value) || 0;
+            config.sellGift = document.getElementById('sellGift').checked;
+            config.giftPrice = parseFloat(document.getElementById('giftPrice').value) || 0;
+            
+            const basePrice = prices[config.model][config.size][config.storage];
+            const connectivityFee = config.connectivity === 'cellular' ? (config.model === 'air' ? 5000 : 7000) : 0;
+            const nanoFee = config.nano ? 3500 : 0;
+            const accessoryPrice = accessories[config.accessory]?.price || 0;
+            
+            const subtotal = basePrice + connectivityFee + nanoFee + accessoryPrice;
+            const creditCardRebate = subtotal * (config.creditCard / 100);
+            const referralRebate = subtotal * (config.referral / 100);
+            const giftSale = config.sellGift ? config.giftPrice : 0;
+            const finalPrice = subtotal - creditCardRebate - referralRebate - giftSale;
+            
+            // 顯示配件價格，即使是免費也要顯示
+            let accessoryDisplay = '';
+            if (accessories[config.accessory]) {
+                const accessory = accessories[config.accessory];
+                const displayPrice = accessory.price === 0 ? '免費' : `+NT$${accessory.price.toLocaleString()}`;
+                accessoryDisplay = `<div class="price-row"><span>${accessory.name}</span><span>${displayPrice}</span></div>`;
+            }
+            
+            document.getElementById('priceSummary').innerHTML = `
+                <div class="price-row"><span>iPad ${config.model === 'air' ? 'Air' : 'Pro'} ${config.size}吋 ${config.storage}GB</span><span>NT$${basePrice.toLocaleString()}</span></div>
+                ${connectivityFee > 0 ? `<div class="price-row"><span>行動網路版</span><span>+NT$${connectivityFee.toLocaleString()}</span></div>` : ''}
+                ${nanoFee > 0 ? `<div class="price-row"><span>Nano-texture 奈米玻璃</span><span>+NT$${nanoFee.toLocaleString()}</span></div>` : ''}
+                ${accessoryDisplay}
+                <div class="price-row"><span>小計</span><span>NT$${subtotal.toLocaleString()}</span></div>
+                ${creditCardRebate > 0 ? `<div class="price-row"><span>信用卡回饋 (${config.creditCard}%)</span><span>-NT$${Math.round(creditCardRebate).toLocaleString()}</span></div>` : ''}
+                ${referralRebate > 0 ? `<div class="price-row"><span>導購回饋 (${config.referral}%)</span><span>-NT$${Math.round(referralRebate).toLocaleString()}</span></div>` : ''}
+                ${giftSale > 0 ? `<div class="price-row"><span>贈品售價</span><span>-NT$${giftSale.toLocaleString()}</span></div>` : ''}
+                <div class="price-row final-price"><span>最終入手價格</span><span>NT$${Math.round(finalPrice).toLocaleString()}</span></div>
+            `;
+            
+            // 記錄到Google Sheets
+            recordToSheet();
+        }
+
+        function recordToSheet() {
+            const data = {
+                時間: new Date().toLocaleString('zh-TW'),
+                型號: config.model === 'air' ? 'iPad Air' : 'iPad Pro',
+                尺寸: `${config.size}吋`,
+                容量: `${config.storage}GB`,
+                連線: config.connectivity === 'wifi' ? 'Wi-Fi' : '行動網路版',
+                顏色: getColorName(config.color),
+                奈米玻璃: config.nano ? '是' : '否',
+                配件: accessories[config.accessory]?.name || '',
+                信用卡回饋: `${config.creditCard}%`,
+                導購回饋: `${config.referral}%`,
+                賣贈品: config.sellGift ? '是' : '否',
+                贈品售價: config.giftPrice,
+                最終價格: Math.round(calculateFinalPrice()),
+                點擊購買: config.clickedPurchase || '未點擊',
+                點擊社群: config.clickedSocial || '未點擊'
+            };
+            
+            // 連接到Google Apps Script記錄數據
+            if (typeof google !== 'undefined' && google.script) {
+                google.script.run
+                    .withSuccessHandler(function(result) {
+                        console.log('數據記錄成功:', result);
+                    })
+                    .withFailureHandler(function(error) {
+                        console.error('數據記錄失敗:', error);
+                    })
+                    .recordData(data);
+            }
+        }
+
+        function getColorName(color) {
+            const colorMap = {
+                'space-gray': '太空灰色',
+                'starlight': '星光色',
+                'blue': '藍色',
+                'purple': '紫色',
+                'silver': '銀色',
+                'space-black': '太空黑色'
+            };
+            return colorMap[color] || color;
+        }
+
+        function calculateFinalPrice() {
+            const basePrice = prices[config.model][config.size][config.storage];
+            const connectivityFee = config.connectivity === 'cellular' ? (config.model === 'air' ? 5000 : 7000) : 0;
+            const nanoFee = config.nano ? 3500 : 0;
+            const accessoryPrice = accessories[config.accessory]?.price || 0;
+            const subtotal = basePrice + connectivityFee + nanoFee + accessoryPrice;
+            const creditCardRebate = subtotal * (config.creditCard / 100);
+            const referralRebate = subtotal * (config.referral / 100);
+            const giftSale = config.sellGift ? config.giftPrice : 0;
+            return subtotal - creditCardRebate - referralRebate - giftSale;
+        }
+
+        // 生成收據樣式的BTS購買清單
+        function generateShoppingImage() {
+            showToast('⏳ 正在載入產品圖片...');
+
+            const imgs = getImages();
+            const imgUrl = (imgs.color[config.model] && imgs.color[config.model][config.color])
+                           || imgs.main[config.model] || '';
+
+            if (!imgUrl) {
+                _drawReceiptCanvas(null);
+                return;
+            }
+
+            const productImg = new Image();
+            productImg.crossOrigin = 'anonymous';
+            let drawn = false;
+            const doDraw = (img) => { if (!drawn) { drawn = true; _drawReceiptCanvas(img); } };
+
+            productImg.onload  = () => doDraw(productImg);
+            productImg.onerror = () => doDraw(null);
+            setTimeout(() => doDraw(null), 4000);
+            productImg.src = imgUrl;
+        }
+
+        function _drawReceiptCanvas(productImg) {
+            const canvas = document.getElementById('imageCanvas');
+            const ctx = canvas.getContext('2d');
+
+            // 計算價格
+            const basePrice       = prices[config.model][config.size][config.storage];
+            const connectivityFee = config.connectivity === 'cellular' ? (config.model === 'air' ? 5000 : 7000) : 0;
+            const nanoFee         = config.nano ? 3500 : 0;
+            const accessoryPrice  = accessories[config.accessory]?.price || 0;
+            const subtotal        = basePrice + connectivityFee + nanoFee + accessoryPrice;
+            const creditCardRebate = subtotal * (config.creditCard / 100);
+            const referralRebate   = subtotal * (config.referral  / 100);
+            const giftSale         = config.sellGift ? config.giftPrice : 0;
+            const finalPrice       = subtotal - creditCardRebate - referralRebate - giftSale;
+            const totalSaved       = creditCardRebate + referralRebate + giftSale;
+
+            // 動態計算 canvas 高度
+            const IMG_H      = productImg ? 220 : 0;
+            const CONFIG_H   = 30 * ([true,true,true,true,config.nano,true].filter(Boolean).length) + 40;
+            const PRICE_H    = 28 * ([true, connectivityFee>0, nanoFee>0, !!config.accessory].filter(Boolean).length) + 100;
+            const SAVINGS_H  = totalSaved > 0 ? (28 * [creditCardRebate>0, referralRebate>0, giftSale>0].filter(Boolean).length + 120) : 0;
+            const FIXED_H    = 310; // header + dividers + final price + footer
+            const cardH      = IMG_H + CONFIG_H + PRICE_H + SAVINGS_H + FIXED_H;
+            canvas.height    = cardH + 160;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // 背景
+            const bg = ctx.createLinearGradient(0, 0, 0, canvas.height);
+            bg.addColorStop(0, '#f0f4ff');
+            bg.addColorStop(1, '#e8f0fe');
+            ctx.fillStyle = bg;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            let y = 60;
+
+            // 標題
+            ctx.fillStyle = '#1d1d1f';
+            ctx.font = 'bold 30px -apple-system, BlinkMacSystemFont, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('BTS 購買清單', canvas.width/2, y);
+            y += 44;
+
+            ctx.font = '15px -apple-system, BlinkMacSystemFont, sans-serif';
+            ctx.fillStyle = '#86868b';
+            ctx.fillText(new Date().toLocaleDateString('zh-TW'), canvas.width/2, y);
+            y += 52;
+
+            // 白色卡片背景
+            ctx.fillStyle = 'white';
+            ctx.shadowColor = 'rgba(0,0,0,0.12)';
+            ctx.shadowBlur = 24;
+            ctx.shadowOffsetY = 8;
+            const cX = 40, cY = y - 24, cW = canvas.width - 80, cR = 20;
+            ctx.beginPath();
+            ctx.moveTo(cX+cR, cY); ctx.lineTo(cX+cW-cR, cY);
+            ctx.quadraticCurveTo(cX+cW, cY, cX+cW, cY+cR);
+            ctx.lineTo(cX+cW, cY+cardH-cR);
+            ctx.quadraticCurveTo(cX+cW, cY+cardH, cX+cW-cR, cY+cardH);
+            ctx.lineTo(cX+cR, cY+cardH);
+            ctx.quadraticCurveTo(cX, cY+cardH, cX, cY+cardH-cR);
+            ctx.lineTo(cX, cY+cR);
+            ctx.quadraticCurveTo(cX, cY, cX+cR, cY);
+            ctx.closePath();
+            ctx.fill();
+            ctx.shadowColor = 'transparent'; ctx.shadowBlur = 0; ctx.shadowOffsetY = 0;
+
+            let cy = y + 28;
+
+            // ── 產品圖片 ──
+            if (productImg) {
+                try {
+                    const iW = 200, iH = 200;
+                    ctx.drawImage(productImg, canvas.width/2 - iW/2, cy, iW, iH);
+                    cy += iH + 20;
+                } catch(e) {
+                    cy += 10;
+                }
+            }
+
+            // ── 您選擇的配置 ──
+            ctx.fillStyle = '#0071e3';
+            ctx.font = 'bold 18px -apple-system, BlinkMacSystemFont, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('您選擇的配置', canvas.width/2, cy);
+            cy += 36;
+
+            const configItems = [
+                `型號：iPad ${config.model === 'air' ? 'Air' : 'Pro'} ${config.size}吋`,
+                `容量：${config.storage >= 1024 ? (config.storage/1024)+'TB' : config.storage+'GB'}`,
+                `連線：${config.connectivity === 'wifi' ? 'Wi-Fi' : '行動網路版'}`,
+                `顏色：${getColorName(config.color)}`,
+                config.nano ? 'Nano-texture 奈米玻璃' : null,
+                `配件：${accessories[config.accessory]?.name || '無'}`
+            ].filter(Boolean);
+
+            ctx.fillStyle = '#1d1d1f';
+            ctx.font = '16px -apple-system, BlinkMacSystemFont, sans-serif';
+            ctx.textAlign = 'left';
+            configItems.forEach(item => {
+                ctx.fillText(item, 80, cy);
+                cy += 30;
+            });
+            cy += 18;
+
+            // 分隔線
+            const drawDivider = (color = '#e5e5e5', lw = 1) => {
+                ctx.strokeStyle = color; ctx.lineWidth = lw;
+                ctx.beginPath(); ctx.moveTo(80, cy); ctx.lineTo(canvas.width-80, cy); ctx.stroke();
+                cy += 30;
+            };
+            drawDivider();
+
+            // ── 價格明細 ──
+            ctx.fillStyle = '#0071e3';
+            ctx.font = 'bold 18px -apple-system, BlinkMacSystemFont, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('價格明細', canvas.width/2, cy);
+            cy += 36;
+
+            const drawPriceRow = (label, value, bold = false) => {
+                ctx.font = (bold ? 'bold ' : '') + '16px -apple-system, BlinkMacSystemFont, sans-serif';
+                ctx.fillStyle = '#1d1d1f';
+                ctx.textAlign = 'left';  ctx.fillText(label, 80, cy);
+                ctx.textAlign = 'right'; ctx.fillText(value, canvas.width-80, cy);
+                cy += 28;
+            };
+
+            drawPriceRow(`iPad ${config.model === 'air' ? 'Air' : 'Pro'} ${config.size}吋 ${config.storage >= 1024 ? (config.storage/1024)+'TB' : config.storage+'GB'}`, `NT$${basePrice.toLocaleString()}`);
+            if (connectivityFee > 0) drawPriceRow('行動網路版', `+NT$${connectivityFee.toLocaleString()}`);
+            if (nanoFee > 0)         drawPriceRow('Nano-texture 奈米玻璃', `+NT$${nanoFee.toLocaleString()}`);
+            if (config.accessory && accessories[config.accessory]) {
+                drawPriceRow(accessories[config.accessory].name, accessoryPrice === 0 ? '免費' : `+NT$${accessoryPrice.toLocaleString()}`);
+            }
+
+            cy += 6;
+            drawDivider();
+            drawPriceRow('小計', `NT$${subtotal.toLocaleString()}`, true);
+            cy += 10;
+
+            // ── 省錢明細 ──
+            if (totalSaved > 0) {
+                drawDivider();
+                ctx.fillStyle = '#34c759';
+                ctx.font = 'bold 18px -apple-system, BlinkMacSystemFont, sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText('省錢明細', canvas.width/2, cy);
+                cy += 36;
+
+                const drawSaveRow = (label, value) => {
+                    ctx.font = '16px -apple-system, BlinkMacSystemFont, sans-serif';
+                    ctx.fillStyle = '#34c759';
+                    ctx.textAlign = 'left';  ctx.fillText(label, 80, cy);
+                    ctx.textAlign = 'right'; ctx.fillText(value, canvas.width-80, cy);
+                    cy += 28;
+                };
+                if (creditCardRebate > 0) drawSaveRow(`信用卡回饋 (${config.creditCard}%)`, `-NT$${Math.round(creditCardRebate).toLocaleString()}`);
+                if (referralRebate > 0)   drawSaveRow(`導購回饋 (${config.referral}%)`,     `-NT$${Math.round(referralRebate).toLocaleString()}`);
+                if (giftSale > 0)         drawSaveRow('贈品售價',                            `-NT$${giftSale.toLocaleString()}`);
+
+                cy += 6;
+                ctx.font = 'bold 16px -apple-system, BlinkMacSystemFont, sans-serif';
+                ctx.fillStyle = '#34c759';
+                ctx.textAlign = 'left';  ctx.fillText('總共省下', 80, cy);
+                ctx.textAlign = 'right'; ctx.fillText(`NT$${Math.round(totalSaved).toLocaleString()}`, canvas.width-80, cy);
+                cy += 36;
+            }
+
+            // ── 最終價格 ──
+            drawDivider('#0071e3', 2);
+
+            const fpBg = ctx.createLinearGradient(cX, cy-10, cX+cW, cy+60);
+            fpBg.addColorStop(0, 'rgba(0,113,227,0.06)');
+            fpBg.addColorStop(1, 'rgba(90,200,250,0.04)');
+            ctx.fillStyle = fpBg;
+            ctx.fillRect(cX+1, cy-14, cW-2, 70);
+
+            ctx.fillStyle = '#0071e3';
+            ctx.font = 'bold 22px -apple-system, BlinkMacSystemFont, sans-serif';
+            ctx.textAlign = 'left';  ctx.fillText('最終入手價格', 80, cy+26);
+            ctx.textAlign = 'right'; ctx.fillText(`NT$${Math.round(finalPrice).toLocaleString()}`, canvas.width-80, cy+26);
+            cy += 80;
+
+            // ── 署名 ──
+            ctx.fillStyle = '#86868b';
+            ctx.font = 'bold 14px -apple-system, BlinkMacSystemFont, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('DESIGNED BY Neil尼歐', canvas.width/2, cy + 30);
+            ctx.font = '12px -apple-system, BlinkMacSystemFont, sans-serif';
+            ctx.fillText('iPad BTS優惠計算機 BETA', canvas.width/2, cy + 50);
+
+            // 下載
+            try {
+                const link = document.createElement('a');
+                link.download = `BTS購買清單_${new Date().toLocaleDateString('zh-TW').replace(/\//g, '')}.png`;
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+                recordClickAction('功能使用', '生成BTS購買清單');
+                showToast('📄 BTS購買清單已成功生成並下載！');
+            } catch (error) {
+                console.error('生成圖片時發生錯誤:', error);
+                showToast('❌ 圖片生成失敗，請稍後再嘗試。');
+            }
+        }
+
+        // 重新計算功能
+        function resetCalculator() {
+            // 重置配置
+            config = {
+                model: '',
+                size: '',
+                storage: '',
+                connectivity: '',
+                color: '',
+                nano: false,
+                accessory: '',
+                creditCard: 0,
+                referral: 0,
+                sellGift: false,
+                giftPrice: 0,
+                clickedPurchase: '',
+                clickedSocial: ''
+            };
+            
+            // 隱藏所有步驟（除了第一步）
+            document.querySelectorAll('.step').forEach((step, index) => {
+                if (index > 0) {
+                    step.style.display = 'none';
+                }
+            });
+            
+            // 清除所有選擇狀態
+            document.querySelectorAll('.option.selected').forEach(option => {
+                option.classList.remove('selected');
+            });
+            
+            // 清空輸入框
+            document.getElementById('creditCard').value = '';
+            document.getElementById('referral').value = '';
+            document.getElementById('sellGift').checked = false;
+            document.getElementById('giftPrice').value = '';
+            document.getElementById('giftPriceGroup').style.display = 'none';
+            
+            // 滾動到頂部
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            
+            // 記錄重新計算行為
+            recordClickAction('功能使用', '重頭計算');
+            
+            showToast('🔄 已重新開始計算！');
+        }
+
+        // 記錄購買按鈕點擊
+        function recordPurchaseClick(purchaseMethod) {
+            config.clickedPurchase = purchaseMethod;
+            recordClickAction('購買按鈕', purchaseMethod);
+        }
+
+        // 記錄社群按鈕點擊
+        function recordSocialClick(socialPlatform) {
+            config.clickedSocial = socialPlatform;
+            recordClickAction('社群平台', socialPlatform);
+        }
+
+        // 記錄點擊行為
+        function recordClickAction(actionType, actionDetail) {
+            const clickData = {
+                時間: new Date().toLocaleString('zh-TW'),
+                型號: config.model ? (config.model === 'air' ? 'iPad Air' : 'iPad Pro') : '未選擇',
+                尺寸: config.size ? `${config.size}吋` : '未選擇',
+                容量: config.storage ? `${config.storage}GB` : '未選擇',
+                連線: config.connectivity ? (config.connectivity === 'wifi' ? 'Wi-Fi' : '行動網路版') : '未選擇',
+                顏色: config.color ? getColorName(config.color) : '未選擇',
+                奈米玻璃: config.nano ? '是' : '否',
+                配件: config.accessory ? (accessories[config.accessory]?.name || '') : '未選擇',
+                信用卡回饋: config.creditCard ? `${config.creditCard}%` : '0%',
+                導購回饋: config.referral ? `${config.referral}%` : '0%',
+                賣贈品: config.sellGift ? '是' : '否',
+                贈品售價: config.giftPrice || 0,
+                最終價格: config.accessory ? Math.round(calculateFinalPrice()) : 0,
+                點擊類型: actionType,
+                點擊項目: actionDetail
+            };
+            
+            // 連接到Google Apps Script記錄點擊數據
+            if (typeof google !== 'undefined' && google.script) {
+                google.script.run
+                    .withSuccessHandler(function(result) {
+                        console.log('點擊記錄成功:', result);
+                    })
+                    .withFailureHandler(function(error) {
+                        console.error('點擊記錄失敗:', error);
+                    })
+                    .recordClickData(clickData);
+            }
+        }
+
+        // ═══ Admin 圖片面板 ═══
+        function openAdmin() {
+            document.getElementById('adminOverlay').classList.add('open');
+            renderAdminPanel();
+        }
+
+        function closeAdmin() {
+            document.getElementById('adminOverlay').classList.remove('open');
+        }
+
+        function handleOverlayClick(e) {
+            if (e.target === document.getElementById('adminOverlay')) closeAdmin();
+        }
+
+        function escA(s) { return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;'); }
+
+        function renderAdminPanel() {
+            const imgs = getImages();
+            let html = '';
+
+            html += '<p class="admin-section-title">主圖（型號選擇頁）</p>';
+            [['air','iPad Air 主圖'],['pro','iPad Pro 主圖']].forEach(([k,label]) => {
+                const url = imgs.main[k] || '';
+                html += `<div class="admin-img-row">
+                    <img class="admin-img-preview" id="adpv-main-${k}" src="${escA(url)}" onerror="this.src=''">
+                    <div class="admin-img-info">
+                        <div class="admin-img-label">${label}</div>
+                        <input class="admin-img-input" type="url" id="ad-main-${k}" value="${escA(url)}"
+                            placeholder="https://drive.google.com/thumbnail?id=..."
+                            oninput="document.getElementById('adpv-main-${k}').src=this.value">
+                    </div>
+                </div>`;
+            });
+
+            ['air','pro'].forEach(model => {
+                const modelLabel = model === 'air' ? 'iPad Air' : 'iPad Pro';
+                html += `<p class="admin-section-title">${modelLabel} 顏色圖片</p>`;
+                ADMIN_COLOR_CONFIG[model].forEach(({key, label}) => {
+                    const url = imgs.color[model][key] || '';
+                    html += `<div class="admin-img-row">
+                        <img class="admin-img-preview" id="adpv-${model}-${key}" src="${escA(url)}" onerror="this.src=''">
+                        <div class="admin-img-info">
+                            <div class="admin-img-label">${label}</div>
+                            <input class="admin-img-input" type="url" id="ad-${model}-${key}" value="${escA(url)}"
+                                placeholder="https://drive.google.com/thumbnail?id=..."
+                                oninput="document.getElementById('adpv-${model}-${key}').src=this.value">
+                        </div>
+                    </div>`;
+                });
+            });
+
+            document.getElementById('adminPanelBody').innerHTML = html;
+        }
+
+        function saveAdminImages() {
+            const imgs = getImages();
+
+            ['air','pro'].forEach(k => {
+                const v = document.getElementById(`ad-main-${k}`)?.value;
+                if (v !== undefined) imgs.main[k] = v;
+            });
+
+            ['air','pro'].forEach(model => {
+                ADMIN_COLOR_CONFIG[model].forEach(({key}) => {
+                    const v = document.getElementById(`ad-${model}-${key}`)?.value;
+                    if (v !== undefined) imgs.color[model][key] = v;
+                });
+            });
+
+            localStorage.setItem('bts_ipad_images', JSON.stringify(imgs));
+
+            // 更新頁面現有圖片
+            colorImages = getImages().color;
+            mainImages  = getImages().main;
+            const airEl = document.querySelector('[data-model="air"] img');
+            const proEl = document.querySelector('[data-model="pro"] img');
+            if (airEl) airEl.src = mainImages.air;
+            if (proEl) proEl.src = mainImages.pro;
+
+            closeAdmin();
+            showToast('✅ 圖片連結已儲存！');
+        }
+
+        function resetAdminImages() {
+            if (!confirm('確定要恢復所有圖片為預設值嗎？')) return;
+            localStorage.removeItem('bts_ipad_images');
+            colorImages = DEFAULT_IMAGES.color;
+            mainImages  = DEFAULT_IMAGES.main;
+            const airEl = document.querySelector('[data-model="air"] img');
+            const proEl = document.querySelector('[data-model="pro"] img');
+            if (airEl) airEl.src = mainImages.air;
+            if (proEl) proEl.src = mainImages.pro;
+            closeAdmin();
+            showToast('🔄 已恢復預設圖片');
+        }
+
+        // 頁面載入完成後初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('iPad BTS優惠計算機 BETA 載入完成');
+            addTouchFeedback();
+            
+            // 歡迎動畫
+            setTimeout(() => {
+                showToast('✨ 歡迎使用 iPad BTS優惠計算機 BETA！');
+            }, 1000);
+        });
+        
+        // 錯誤處理
+        window.addEventListener('error', function(e) {
+            console.error('JavaScript 錯誤:', e.error);
+        });
+        
+        // 處理未捕獲的 Promise 錯誤
+        window.addEventListener('unhandledrejection', function(e) {
+            console.error('未處理的 Promise 錯誤:', e.reason);
+        });
+    </script>
+</body>
+</html>
