@@ -198,6 +198,24 @@
     .btn-add-gift { width: 100%; margin-top: 8px; padding: 11px; border-radius: 10px; border: 1.5px dashed var(--border); background: transparent; cursor: pointer; font-size: 13px; font-weight: 600; color: var(--sub); transition: all var(--transition); display: flex; align-items: center; justify-content: center; gap: 6px; font-family: inherit; }
     .btn-add-gift:hover { border-color: var(--blue); color: var(--blue); background: rgba(0,113,227,.04); }
     .badge-locked { font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 6px; background: rgba(0,0,0,.04); color: var(--sub); border: 1px solid var(--border); white-space: nowrap; align-self: center; }
+    .combo-toolbar { display:flex; gap:10px; align-items:center; justify-content:space-between; margin-bottom:14px; flex-wrap:wrap; }
+    .combo-toolbar p { font-size:12px; color:var(--sub); font-weight:600; }
+    .combo-list { display:grid; gap:12px; }
+    .combo-row { border:1px solid var(--border); border-radius:12px; background:rgba(0,0,0,.02); padding:14px; display:grid; gap:12px; }
+    .combo-row-header { display:flex; gap:10px; align-items:center; justify-content:space-between; }
+    .combo-title-input { font-size:14px; font-weight:700; }
+    .combo-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:10px; }
+    .combo-grid.wide { grid-template-columns:2fr 1fr 1fr; }
+    .combo-field { display:flex; flex-direction:column; gap:5px; }
+    .combo-field label { font-size:11px; color:var(--sub); font-weight:700; }
+    .combo-field select,
+    .combo-field input { min-width:0; }
+    .combo-active { display:inline-flex; align-items:center; gap:8px; font-size:12px; font-weight:700; color:var(--sub); white-space:nowrap; }
+    .combo-active input { width:16px; height:16px; accent-color:var(--blue); }
+    .combo-items { display:grid; gap:8px; }
+    .combo-items-title { display:flex; align-items:center; justify-content:space-between; gap:10px; font-size:12px; font-weight:800; color:var(--text); padding-top:4px; border-top:1px solid var(--border); }
+    .combo-item-row { display:grid; grid-template-columns:2fr 1fr 1fr auto; gap:8px; align-items:end; padding:10px; border:1px solid var(--border); border-radius:10px; background:rgba(255,255,255,.55); }
+    .combo-total { display:flex; justify-content:flex-end; gap:14px; color:var(--sub); font-size:12px; font-weight:700; }
     
     /* Tab panels */
     .tab-panel { display: none; }
@@ -256,6 +274,11 @@
       .main { margin-left: 0; padding: 20px 16px; }
     }
   </style>
+  <script>
+    if (!new URLSearchParams(location.search).has('classic')) {
+      document.write('<link rel="stylesheet" href="ui-refresh.css">');
+    }
+  </script>
 </head>
 <body>
 <div class="liquid-bg">
@@ -331,7 +354,16 @@
 
     <!-- ══ Tab: BTS 贈品 ══ -->
     <div class="tab-panel" id="tab-gifts">
-      <div class="section-header"><h2>BTS 贈品設定</h2><p>可新增、編輯、刪除各套組的配件項目與價格　｜　灰色「不加購」列為固定項目不可刪除</p></div>
+      <div class="section-header"><h2>BTS 贈品設定</h2><p>管理 BTS 贈品優惠組合。建議優先使用上方「彈性組合」；下方舊版固定分類仍保留作為沒有符合組合時的 fallback。</p></div>
+
+      <div class="card">
+        <div class="card-title">BTS 贈品優惠組合</div>
+        <div class="combo-toolbar">
+          <p>例：MacBook Air 13 吋可設定「巧控滑鼠 + AirPods 4 ANC」；尺寸留空代表所有尺寸。</p>
+          <button class="btn primary" onclick="addGiftCombo()">新增組合</button>
+        </div>
+        <div class="combo-list" id="gift-combo-list"></div>
+      </div>
 
       <div class="card">
         <div class="card-title"> iPad Pencil 套組</div>
@@ -578,6 +610,194 @@ function renderGifts() {
   renderGiftList('gift-ipadAirpods',         g.ipadAirpods,            'btsGifts.ipadAirpods');
   renderGiftList('gift-macbookProductivity', g.macbookProductivity,    'btsGifts.macbookProductivity');
   renderGiftList('gift-macbookAirpods',      g.macbookAirpods,         'btsGifts.macbookAirpods');
+}
+
+// ═══════════════════════════════════════════
+//  Render: 彈性優惠組合
+// ═══════════════════════════════════════════
+function ensureGiftCombos() {
+  if (!Array.isArray(cfg.btsGiftCombos)) cfg.btsGiftCombos = [];
+}
+
+function renderGiftCombos() {
+  ensureGiftCombos();
+  const el = document.getElementById('gift-combo-list');
+  if (!el) return;
+  if (!cfg.btsGiftCombos.length) {
+    el.innerHTML = `<div style="padding:24px;text-align:center;color:var(--sub);font-size:13px;border:1px dashed var(--border);border-radius:12px">尚未建立彈性優惠組合</div>`;
+    return;
+  }
+  el.innerHTML = cfg.btsGiftCombos.map((combo, i) => renderGiftComboRow(combo, i)).join('');
+}
+
+function renderGiftComboRow(combo, i) {
+  const sizes = Array.isArray(combo.sizes) ? combo.sizes.join(',') : '';
+  const items = Array.isArray(combo.items) ? combo.items : [];
+  const btsTotal = getComboTotal(combo, 'btsPrice');
+  const originalTotal = getComboTotal(combo, 'originalPrice');
+  return `<div class="combo-row">
+    <div class="combo-row-header">
+      <input class="field-input combo-title-input" value="${escHtml(combo.name || '')}" placeholder="組合名稱"
+             oninput="setGiftComboField(${i}, 'name', this.value)">
+      <label class="combo-active">
+        <input type="checkbox" ${combo.active === false ? '' : 'checked'}
+               onchange="setGiftComboField(${i}, 'active', this.checked)">
+        啟用
+      </label>
+      <button class="btn-del" onclick="deleteGiftCombo(${i})" title="刪除組合">刪除</button>
+    </div>
+    <div class="combo-grid">
+      <div class="combo-field">
+        <label>產品線</label>
+        <select class="field-input" onchange="setGiftComboField(${i}, 'productLine', this.value)">
+          ${comboOption('all', '全部', combo.productLine)}
+          ${comboOption('ipad', 'iPad', combo.productLine)}
+          ${comboOption('macbook', 'MacBook', combo.productLine)}
+        </select>
+      </div>
+      <div class="combo-field">
+        <label>產品</label>
+        <select class="field-input" onchange="setGiftComboField(${i}, 'product', this.value)">
+          ${comboOption('all', '全部', combo.product)}
+          ${comboOption('air', 'Air', combo.product)}
+          ${comboOption('pro', 'Pro', combo.product)}
+        </select>
+      </div>
+      <div class="combo-field">
+        <label>尺寸</label>
+        <input class="field-input" value="${escHtml(sizes)}" placeholder="例：11,13 或留空"
+               oninput="setGiftComboSizes(${i}, this.value)">
+      </div>
+      <div class="combo-field">
+        <label>排序</label>
+        <input class="field-input price-input" type="number" value="${combo.sortOrder || 0}"
+               oninput="setGiftComboField(${i}, 'sortOrder', +this.value)">
+      </div>
+    </div>
+    <div class="combo-grid wide">
+      <div class="combo-field">
+        <label>顯示標籤</label>
+        <input class="field-input" value="${escHtml(combo.tag || '')}" placeholder="例：免費 / 實付 NT$1,500"
+               oninput="setGiftComboField(${i}, 'tag', this.value)">
+      </div>
+      <div class="combo-field">
+        <label>BTS 實付合計</label>
+        <input class="field-input price-input" type="number" value="${btsTotal}" readonly>
+      </div>
+      <div class="combo-field">
+        <label>原價合計</label>
+        <input class="field-input price-input" type="number" value="${originalTotal}" readonly>
+      </div>
+    </div>
+    <div class="combo-items">
+      <div class="combo-items-title">
+        <span>組合內贈品</span>
+        <button class="btn secondary" onclick="addGiftComboItem(${i})">新增贈品</button>
+      </div>
+      ${items.length ? items.map((item, itemIdx) => renderComboItemRow(item, i, itemIdx)).join('') : `<div style="font-size:12px;color:var(--sub);padding:10px;border:1px dashed var(--border);border-radius:10px">尚未新增贈品品項</div>`}
+      <div class="combo-total">
+        <span>BTS 實付合計 NT$${btsTotal.toLocaleString()}</span>
+        <span>原價合計 NT$${originalTotal.toLocaleString()}</span>
+      </div>
+    </div>
+  </div>`;
+}
+
+function renderComboItemRow(item, comboIdx, itemIdx) {
+  return `<div class="combo-item-row">
+    <div class="combo-field">
+      <label>贈品名稱</label>
+      <input class="field-input" value="${escHtml(item.name || '')}" placeholder="例：AirPods 4 主動降噪版"
+             oninput="setGiftComboItemField(${comboIdx}, ${itemIdx}, 'name', this.value)">
+    </div>
+    <div class="combo-field">
+      <label>BTS 實付 NT$</label>
+      <input class="field-input price-input" type="number" min="0" value="${item.btsPrice || 0}"
+             oninput="setGiftComboItemField(${comboIdx}, ${itemIdx}, 'btsPrice', +this.value)">
+    </div>
+    <div class="combo-field">
+      <label>原價 NT$</label>
+      <input class="field-input price-input" type="number" min="0" value="${item.originalPrice || 0}"
+             oninput="setGiftComboItemField(${comboIdx}, ${itemIdx}, 'originalPrice', +this.value)">
+    </div>
+    <button class="btn-del" onclick="deleteGiftComboItem(${comboIdx}, ${itemIdx})" title="刪除此贈品">刪除</button>
+  </div>`;
+}
+
+function getComboTotal(combo, field) {
+  return (Array.isArray(combo.items) ? combo.items : [])
+    .reduce((sum, item) => sum + (Number(item[field]) || 0), 0);
+}
+
+function comboOption(value, label, selected) {
+  return `<option value="${value}" ${selected === value ? 'selected' : ''}>${label}</option>`;
+}
+
+function setGiftComboField(idx, field, value) {
+  ensureGiftCombos();
+  if (!cfg.btsGiftCombos[idx]) return;
+  cfg.btsGiftCombos[idx][field] = value;
+}
+
+function setGiftComboItemField(comboIdx, itemIdx, field, value) {
+  ensureGiftCombos();
+  const combo = cfg.btsGiftCombos[comboIdx];
+  if (!combo || !Array.isArray(combo.items) || !combo.items[itemIdx]) return;
+  combo.items[itemIdx][field] = value;
+  if (field === 'btsPrice' || field === 'originalPrice') renderGiftCombos();
+}
+
+function setGiftComboSizes(idx, value) {
+  ensureGiftCombos();
+  if (!cfg.btsGiftCombos[idx]) return;
+  cfg.btsGiftCombos[idx].sizes = value.split(',').map(v => v.trim()).filter(Boolean);
+}
+
+function addGiftCombo() {
+  ensureGiftCombos();
+  cfg.btsGiftCombos.push({
+    id: 'combo_' + Date.now(),
+    name: '新優惠組合',
+    productLine: 'all',
+    product: 'all',
+    sizes: [],
+    btsPrice: 0,
+    originalPrice: 0,
+    tag: '免費',
+    items: [
+      { id: 'gift_' + Date.now(), name: '新贈品', btsPrice: 0, originalPrice: 0 }
+    ],
+    active: true,
+    sortOrder: cfg.btsGiftCombos.length + 1
+  });
+  renderGiftCombos();
+  toast('已新增優惠組合');
+}
+
+function addGiftComboItem(comboIdx) {
+  ensureGiftCombos();
+  const combo = cfg.btsGiftCombos[comboIdx];
+  if (!combo) return;
+  if (!Array.isArray(combo.items)) combo.items = [];
+  combo.items.push({ id: 'gift_' + Date.now(), name: '新贈品', btsPrice: 0, originalPrice: 0 });
+  renderGiftCombos();
+}
+
+function deleteGiftComboItem(comboIdx, itemIdx) {
+  ensureGiftCombos();
+  const combo = cfg.btsGiftCombos[comboIdx];
+  if (!combo || !Array.isArray(combo.items)) return;
+  combo.items.splice(itemIdx, 1);
+  renderGiftCombos();
+}
+
+function deleteGiftCombo(idx) {
+  ensureGiftCombos();
+  const name = cfg.btsGiftCombos[idx]?.name || '此組合';
+  if (!confirm(`確定要刪除「${name}」嗎？`)) return;
+  cfg.btsGiftCombos.splice(idx, 1);
+  renderGiftCombos();
+  toast(`已刪除「${name}」`);
 }
 
 // ═══════════════════════════════════════════
@@ -847,6 +1067,8 @@ function toast(msg) {
 // ═══════════════════════════════════════════
 function renderAll() {
   renderMeta();
+  ensureGiftCombos();
+  renderGiftCombos();
   renderGifts();
   renderImages();
   renderIpadPrices();

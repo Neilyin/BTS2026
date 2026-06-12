@@ -1,0 +1,584 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@400;500;700;900&display=swap');
+
+:root {
+  --blue: #2563eb;
+  --blue-dark: #1d4ed8;
+  --green: #0f9f6e;
+  --orange: #f97316;
+  --bg: #f7f8fb;
+  --card-bg: #ffffff;
+  --card: #ffffff;
+  --text: #111827;
+  --text-sub: #667085;
+  --sub: #667085;
+  --border: rgba(17, 24, 39, 0.1);
+  --sel-border: #2563eb;
+  --sel-bg: #eff6ff;
+  --radius-sm: 8px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius: 12px;
+  --shadow-sm: 0 1px 2px rgba(16, 24, 40, 0.05);
+  --shadow-md: 0 14px 34px rgba(16, 24, 40, 0.08);
+  --shadow-hover: 0 18px 44px rgba(16, 24, 40, 0.12);
+  --transition: 180ms ease;
+  --glass-bg: #ffffff;
+  --glass-blur: none;
+  --glass-border: rgba(17, 24, 39, 0.1);
+  --glass-shadow: var(--shadow-sm);
+  --glass-shadow-hover: var(--shadow-md);
+}
+
+*, *::before, *::after {
+  letter-spacing: 0 !important;
+}
+
+html,
+body {
+  background:
+    linear-gradient(180deg, #ffffff 0%, #f7f8fb 42%, #eef4ff 100%) !important;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Noto Sans TC', sans-serif !important;
+  color: var(--text) !important;
+}
+
+body {
+  min-width: 320px;
+}
+
+button,
+a,
+.opt,
+.size-opt,
+.chip-opt,
+.product-card,
+.product-line-card,
+.nav-item,
+.step-header {
+  cursor: pointer;
+}
+
+button:focus-visible,
+a:focus-visible,
+.opt:focus-visible,
+.product-card:focus-visible,
+.product-line-card:focus-visible {
+  outline: 3px solid rgba(37, 99, 235, 0.3);
+  outline-offset: 3px;
+}
+
+.liquid-bg,
+.blob {
+  display: none !important;
+}
+
+.page-wrap {
+  padding: 0 20px 28px !important;
+}
+
+.header {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: calc(28px + var(--safe-top)) 0 24px !important;
+  text-align: left !important;
+}
+
+.header-logo {
+  display: none !important;
+}
+
+.bts-pill {
+  background: #111827 !important;
+  border-radius: 999px !important;
+  box-shadow: none !important;
+  font-size: 12px !important;
+  padding: 7px 12px !important;
+  margin-bottom: 18px !important;
+  text-transform: none !important;
+}
+
+.bts-pill::before {
+  background: #22c55e !important;
+}
+
+.header h1 {
+  max-width: 760px;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Noto Sans TC', sans-serif !important;
+  font-size: clamp(34px, 6vw, 72px) !important;
+  line-height: 1.02 !important;
+  font-weight: 900 !important;
+  margin-bottom: 16px !important;
+}
+
+.header p {
+  max-width: 560px !important;
+  margin: 0 !important;
+  color: var(--text-sub) !important;
+  font-size: 17px !important;
+  line-height: 1.65 !important;
+}
+
+.screens {
+  width: 100%;
+  max-width: 1080px;
+  margin: 0 auto;
+}
+
+.screen {
+  padding: 20px 0 0 !important;
+}
+
+.product-line-grid,
+.sub-product-grid {
+  max-width: none !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 16px !important;
+}
+
+.product-line-card,
+.product-card,
+.step-card,
+.card,
+.compare-hint {
+  background: #ffffff !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 14px !important;
+  box-shadow: var(--shadow-sm) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+.product-line-card {
+  min-height: 312px;
+  padding: 24px !important;
+  text-align: left !important;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.product-line-card:hover,
+.product-card:hover,
+.step-card:hover:not(.locked),
+.card:hover {
+  transform: translateY(-2px) !important;
+  border-color: rgba(37, 99, 235, 0.32) !important;
+  box-shadow: var(--shadow-hover) !important;
+}
+
+.product-line-card .card-icon {
+  width: 100% !important;
+  max-width: 230px !important;
+  height: 148px !important;
+  margin: 0 0 20px !important;
+  object-fit: contain !important;
+  align-self: center;
+}
+
+.product-line-card h2,
+.product-card h3,
+.sub-header-title,
+.section-header h2 {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Noto Sans TC', sans-serif !important;
+  font-weight: 800 !important;
+}
+
+.product-line-card h2 {
+  font-size: 28px !important;
+}
+
+.product-line-card .card-sub,
+.product-card .product-desc,
+.footer-note,
+.screen-divider,
+.compare-hint p {
+  color: var(--text-sub) !important;
+}
+
+.card-starting-price,
+.product-card .product-price,
+.opt-price,
+.size-opt .sz-price {
+  color: var(--blue) !important;
+}
+
+.card-arrow,
+.cta-btn,
+.save-btn-sidebar {
+  background: var(--blue) !important;
+  color: #ffffff !important;
+  border-radius: 10px !important;
+  box-shadow: none !important;
+}
+
+.card-arrow svg {
+  stroke: #ffffff !important;
+}
+
+.sub-header {
+  max-width: none !important;
+  margin-bottom: 18px !important;
+}
+
+.back-btn {
+  min-height: 44px;
+  border-radius: 10px !important;
+  background: #ffffff !important;
+  border: 1px solid var(--border) !important;
+  color: var(--text) !important;
+  box-shadow: var(--shadow-sm) !important;
+}
+
+.product-card {
+  overflow: hidden;
+}
+
+.product-card-img-wrap {
+  background: #f3f6fb !important;
+  min-height: 210px !important;
+  border-bottom: 1px solid var(--border) !important;
+}
+
+.product-card-img-wrap img {
+  max-width: 220px !important;
+  height: 150px !important;
+}
+
+.product-card-body {
+  padding: 20px !important;
+}
+
+.product-card-badge,
+.feature-tag,
+.opt-tag {
+  border-radius: 999px !important;
+  border: 1px solid #dbeafe !important;
+  background: #eff6ff !important;
+  color: #1d4ed8 !important;
+}
+
+.compare-hint {
+  max-width: none !important;
+  padding: 16px !important;
+  align-items: center !important;
+}
+
+.footer-note {
+  max-width: 760px !important;
+  padding-top: 24px !important;
+}
+
+.app {
+  background: transparent !important;
+}
+
+.topbar {
+  background: rgba(255, 255, 255, 0.92) !important;
+  border-bottom: 1px solid var(--border) !important;
+  backdrop-filter: blur(14px) !important;
+  -webkit-backdrop-filter: blur(14px) !important;
+  box-shadow: 0 1px 2px rgba(16, 24, 40, 0.04);
+}
+
+.topbar-title {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Noto Sans TC', sans-serif !important;
+  font-size: 16px !important;
+  font-weight: 800 !important;
+}
+
+.product-switch {
+  background: #eef2f7 !important;
+  border-radius: 10px !important;
+}
+
+.sw-btn {
+  min-height: 34px;
+  border-radius: 8px !important;
+}
+
+.sw-btn.active {
+  background: #ffffff !important;
+  box-shadow: var(--shadow-sm) !important;
+}
+
+.progress-wrap,
+.steps-wrap {
+  max-width: 940px !important;
+}
+
+.progress-track,
+.progress-bar-track {
+  height: 6px !important;
+  background: #e5e7eb !important;
+  border-radius: 999px !important;
+  overflow: hidden !important;
+}
+
+.progress-fill,
+.progress-bar-fill {
+  background: var(--blue) !important;
+  height: 100% !important;
+}
+
+.steps-wrap {
+  display: grid;
+  gap: 12px;
+}
+
+.step-card {
+  margin-bottom: 0 !important;
+}
+
+.step-header {
+  min-height: 64px;
+}
+
+.step-num {
+  border-radius: 8px !important;
+}
+
+.step-num.done {
+  background: var(--green) !important;
+  border-color: var(--green) !important;
+}
+
+.step-num.active {
+  background: var(--blue) !important;
+  border-color: var(--blue) !important;
+}
+
+.opt,
+.size-opt,
+.chip-opt {
+  min-height: 92px;
+  border-radius: 10px !important;
+  border: 1px solid var(--border) !important;
+  background: #ffffff !important;
+}
+
+.opt:hover:not(.disabled):not(.selected),
+.size-opt:hover:not(.selected),
+.chip-opt:hover:not(.selected) {
+  border-color: rgba(37, 99, 235, 0.45) !important;
+  background: #f8fbff !important;
+}
+
+.opt.selected,
+.size-opt.selected,
+.chip-opt.selected {
+  border-color: var(--blue) !important;
+  background: var(--sel-bg) !important;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12) !important;
+}
+
+.price-bar,
+.price-summary-bar {
+  position: fixed !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  z-index: 90 !important;
+  background: rgba(17, 24, 39, 0.96) !important;
+  color: #ffffff !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.12) !important;
+  box-shadow: 0 -18px 44px rgba(16, 24, 40, 0.18) !important;
+  backdrop-filter: blur(14px) !important;
+  -webkit-backdrop-filter: blur(14px) !important;
+  padding: 14px 20px calc(14px + var(--safe-bottom)) !important;
+}
+
+.price-bar-inner,
+.price-summary-inner {
+  max-width: 940px !important;
+  margin: 0 auto !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 14px !important;
+}
+
+.price-nums,
+.price-summary-nums {
+  flex: 1 !important;
+  min-width: 0 !important;
+}
+
+.price-final {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Noto Sans TC', sans-serif !important;
+  font-size: 24px !important;
+  font-weight: 900 !important;
+  color: #ffffff !important;
+}
+
+.price-breakdown {
+  color: rgba(255, 255, 255, 0.72) !important;
+}
+
+.price-saved {
+  color: #86efac !important;
+}
+
+.gen-btn,
+.generate-btn,
+.rebate-cta-btn,
+.modal-btn.primary {
+  min-height: 44px !important;
+  border-radius: 10px !important;
+  background: var(--blue) !important;
+  color: #ffffff !important;
+  box-shadow: none !important;
+}
+
+.gen-btn:hover,
+.generate-btn:hover,
+.rebate-cta-btn:hover,
+.modal-btn.primary:hover {
+  background: var(--blue-dark) !important;
+  box-shadow: none !important;
+}
+
+.gen-btn:disabled,
+.generate-btn:disabled {
+  background: #d1d5db !important;
+  color: #6b7280 !important;
+}
+
+.modal-overlay {
+  background: rgba(17, 24, 39, 0.48) !important;
+}
+
+.modal-sheet {
+  max-width: 620px !important;
+  margin: 0 auto !important;
+  border-radius: 18px 18px 0 0 !important;
+  box-shadow: 0 -24px 60px rgba(17, 24, 39, 0.22) !important;
+}
+
+.modal-title,
+.receipt-total-value {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Noto Sans TC', sans-serif !important;
+}
+
+.modal-btn.secondary,
+.sell-opt {
+  min-height: 44px !important;
+  border-radius: 10px !important;
+  background: #ffffff !important;
+  border: 1px solid var(--border) !important;
+}
+
+.purchase-link-btn {
+  min-height: 46px !important;
+  border-radius: 10px !important;
+  box-shadow: none !important;
+}
+
+.purchase-link-btn.official {
+  background: #111827 !important;
+  color: #ffffff !important;
+}
+
+.price-preview-inline {
+  background: #eff6ff !important;
+  border-color: #bfdbfe !important;
+}
+
+.sidebar {
+  background: #ffffff !important;
+  border-right: 1px solid var(--border) !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+.main {
+  max-width: 1120px !important;
+}
+
+.field-input {
+  min-height: 40px;
+  background: #ffffff !important;
+  border-radius: 8px !important;
+}
+
+.field-input:focus {
+  border-color: var(--blue) !important;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.16) !important;
+}
+
+@media (min-width: 860px) {
+  .steps-wrap {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 720px) {
+  .page-wrap {
+    padding-inline: 16px !important;
+  }
+
+  .header {
+    padding-top: calc(22px + var(--safe-top)) !important;
+  }
+
+  .header h1 {
+    font-size: 38px !important;
+  }
+
+  .header p {
+    font-size: 16px !important;
+  }
+
+  .product-line-grid,
+  .sub-product-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .product-line-card {
+    min-height: 260px;
+  }
+
+  .product-card-img-wrap {
+    min-height: 176px !important;
+  }
+
+  .topbar {
+    flex-wrap: wrap;
+  }
+
+  .product-switch {
+    width: 100%;
+  }
+
+  .sw-btn {
+    flex: 1;
+  }
+
+  .step-value {
+    max-width: 112px !important;
+  }
+
+  .layout {
+    display: block !important;
+  }
+
+  .sidebar {
+    position: static !important;
+    width: auto !important;
+    height: auto !important;
+  }
+
+  .main {
+    margin-left: 0 !important;
+    padding: 20px 16px !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}

@@ -433,6 +433,11 @@
     @media(min-width:540px){ .opt-grid { grid-template-columns:repeat(3,1fr); } .opt-grid.cols-2 { grid-template-columns:1fr 1fr; } }
     @media(min-width:680px){ .steps-wrap,.progress-wrap { padding-left:32px; padding-right:32px; } .topbar { padding-left:32px; padding-right:32px; } }
   </style>
+  <script>
+    if (!new URLSearchParams(location.search).has('classic')) {
+      document.write('<link rel="stylesheet" href="ui-refresh.css">');
+    }
+  </script>
 </head>
 <body>
 <div class="liquid-bg">
@@ -564,7 +569,7 @@ function updateProductConfig() {
   // 重置狀態
   Object.assign(state, {
     size: null, color: null, storageId: null,
-    connectivity: 'wifi', nano: false,
+    connectivity: 'wifi', nano: productType === 'pro' ? null : false,
     gift: null,
     creditCard: 0, referral: 0, sellGift: false, giftPrice: 0
   });
@@ -602,8 +607,8 @@ function buildStepDefs(hasNano) {
     { id: 'size',          title: '選擇尺寸',       icon: '' },
     { id: 'color',         title: '選擇顏色',       icon: '' },
     { id: 'storage',       title: '選擇容量',       icon: '' },
-    { id: 'connectivity',  title: '選擇連線方式',   icon: '' },
     ...(hasNano ? [{ id: 'nano', title: '顯示器玻璃', icon: '' }] : []),
+    { id: 'connectivity',  title: '選擇連線方式',   icon: '' },
     { id: 'gifts',         title: 'BTS 配件選擇',   icon: '' },
     { id: 'rebate',        title: '回饋試算',       icon: '' }
   ];
@@ -727,6 +732,14 @@ function renderNanoStep() {
 
 // ── Gifts ──
 function buildGiftList() {
+  const combos = getMatchingGiftCombos('ipad', productType, state.size);
+  if (combos.length) {
+    return [
+      ...combos,
+      { id: 'none', name: '不加購配件', btsPrice: 0, originalPrice: 0, tag: '略過此步驟' }
+    ];
+  }
+
   const gifts = BTS_CONFIG.btsGifts;
   const sz = state.size || '11';
   const list = [];
@@ -742,6 +755,36 @@ function buildGiftList() {
   });
   list.push({ id: 'none', name: '不加購配件', btsPrice: 0, originalPrice: 0, tag: '略過此步驟' });
   return list;
+}
+
+function getMatchingGiftCombos(productLine, product, size) {
+  const combos = Array.isArray(BTS_CONFIG.btsGiftCombos) ? BTS_CONFIG.btsGiftCombos : [];
+  return combos
+    .filter(combo => combo && combo.active !== false)
+    .filter(combo => combo.productLine === 'all' || combo.productLine === productLine)
+    .filter(combo => combo.product === 'all' || combo.product === product)
+    .filter(combo => !Array.isArray(combo.sizes) || combo.sizes.length === 0 || combo.sizes.includes(String(size)))
+    .sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0))
+    .map(combo => ({
+      id: combo.id || `combo_${combo.name}`,
+      name: combo.name,
+      btsPrice: getComboTotal(combo, 'btsPrice'),
+      originalPrice: getComboTotal(combo, 'originalPrice'),
+      tag: combo.tag || buildComboTag(combo),
+      items: combo.items || []
+    }));
+}
+
+function getComboTotal(combo, field) {
+  if (Array.isArray(combo.items)) {
+    return combo.items.reduce((sum, item) => sum + (Number(item[field]) || 0), 0);
+  }
+  return Number(combo[field]) || 0;
+}
+
+function buildComboTag(combo) {
+  const names = Array.isArray(combo.items) ? combo.items.map(item => item.name).filter(Boolean) : [];
+  return names.length ? names.join(' + ') : '';
 }
 
 function renderGiftsStep() {
@@ -875,7 +918,7 @@ function getStepValue(stepId) {
 function selectSize(sz) {
   state.size = sz;
   state.storageId = null; // reset downstream
-  state.nano = false;
+  state.nano = productType === 'pro' ? null : false;
 
   selectOptUI('size-opt', sz);
   setStepValue('size', cfg.sizes[sz].label);
@@ -900,13 +943,13 @@ function selectColor(c) {
 
 function selectStorage(id) {
   state.storageId = id;
-  state.nano = false;  // reset nano when storage changes
+  state.nano = productType === 'pro' ? null : false;  // reset nano when storage changes
 
   const s = cfg.sizes[state.size].storage.find(x => x.id === id);
   selectOptUI('storage-opt', id);
   setStepValue('storage', `${s.name}${s.ram ? ' / '+s.ram : ''}`);
   showToast(`已選擇 ${s.name}`);
-  advanceToStep('connectivity');
+  advanceToStep(productType === 'pro' ? 'nano' : 'connectivity');
   updatePrice();
 }
 
@@ -914,7 +957,7 @@ function selectConnectivity(type) {
   state.connectivity = type;
   selectOptUI('conn', type);
   setStepValue('connectivity', type === 'wifi' ? 'Wi-Fi' : 'Wi-Fi + 行動網路');
-  advanceToStep(productType === 'pro' ? 'nano' : 'gifts');
+  advanceToStep('gifts');
   updatePrice();
 }
 
@@ -923,7 +966,7 @@ function selectNano(val) {
   state.nano = val;
   selectOptUI('nano-opt', val ? 'yes' : 'no');
   setStepValue('nano', val ? '奈米紋理玻璃 +NT$3,500' : '標準玻璃');
-  advanceToStep('gifts');
+  advanceToStep('connectivity');
   updatePrice();
 }
 

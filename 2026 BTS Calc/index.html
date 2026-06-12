@@ -559,6 +559,11 @@
       .product-line-card .card-icon { width: 100px; height: 100px; }
     }
   </style>
+  <script>
+    if (!new URLSearchParams(location.search).has('classic')) {
+      document.write('<link rel="stylesheet" href="ui-refresh.css">');
+    }
+  </script>
 </head>
 <body>
 <div class="liquid-bg">
@@ -646,7 +651,7 @@
                  onerror="this.src='https://drive.google.com/thumbnail?id=1aY-VmqSUABu4b23zIYssb1vVyGctzP2J&sz=w400'">
           </div>
           <div class="product-card-body">
-            <span class="product-card-badge">M3 晶片</span>
+            <span class="product-card-badge">M4 晶片</span>
             <h3>iPad Air</h3>
             <p class="product-desc">輕薄全能，兼顧效能與日常創作需求</p>
             <p class="product-price">NT$18,200 起</p>

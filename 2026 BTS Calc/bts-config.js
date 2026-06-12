@@ -94,18 +94,21 @@ const BTS_CONFIG = {
     ]
   },
 
+  // 彈性優惠組合：後台可新增。若某產品有符合的組合，前台會優先使用這裡。
+  btsGiftCombos: [],
+
   // ═══════════════════════════════════════════════
   //  產品資料
   // ═══════════════════════════════════════════════
   products: {
 
     // ─────────────────────────────────────────────
-    //  iPad Air（M3，教育商店）
+    //  iPad Air（M4，教育商店）
     //  選購流程：尺寸 → 顏色 → 儲存 → 連線能力 → BTS配件
     // ─────────────────────────────────────────────
     ipadAir: {
       name: 'iPad Air',
-      chip: 'M3',
+      chip: 'M4',
       hasNano: false,
       colors: ['太空灰色', '藍色', '紫色', '星光色'],
       // 圖片連結：依「尺寸 → 顏色」設定，後台可逐一修改
@@ -149,7 +152,7 @@ const BTS_CONFIG = {
 
     // ─────────────────────────────────────────────
     //  iPad Pro（M5，教育商店）
-    //  選購流程：尺寸 → 顏色 → 儲存（晶片自動對應）→ 連線能力 → 奈米紋理 → BTS配件
+    //  選購流程：尺寸 → 顏色 → 儲存（晶片自動對應）→ 顯示器玻璃 → 連線能力 → BTS配件
     // ─────────────────────────────────────────────
     ipadPro: {
       name: 'iPad Pro',
@@ -236,56 +239,53 @@ const BTS_CONFIG = {
               id: 'M5_10gpu',
               name: 'M5',
               detail: '10核CPU / 10核GPU',
-              priceAdj: 3000,
+              priceAdj: 3150,
               desc: '提升圖形效能，適合創意工作',
-              // ⚠️ 限制：需同時選 24GB+ 記憶體 或 1TB+ 儲存
-              requires: { minRam: '24gb', orMinStorage: '1tb' }
+              isDefault: false
             }
           ],
           // 記憶體（從 16GB 基礎加價）
           memory: [
             { id: '16gb', name: '16GB', priceAdj: 0,     isDefault: true },
-            { id: '24gb', name: '24GB', priceAdj: 6000  },
-            { id: '32gb', name: '32GB', priceAdj: 12000 }
+            { id: '24gb', name: '24GB', priceAdj: 7000  },
+            { id: '32gb', name: '32GB', priceAdj: 13300 }
           ],
           // 儲存（從 512GB 基礎加價）
           storage: [
             { id: '512gb', name: '512GB', priceAdj: 0,     isDefault: true },
-            { id: '1tb',   name: '1TB',   priceAdj: 6000  },
-            { id: '2tb',   name: '2TB',   priceAdj: 18000 },
-            { id: '4tb',   name: '4TB',   priceAdj: 36000 }
+            { id: '1tb',   name: '1TB',   priceAdj: 7000  },
+            { id: '2tb',   name: '2TB',   priceAdj: 19600 },
+            { id: '4tb',   name: '4TB',   priceAdj: 38500 }
           ],
-          // 電源轉接器規則：
-          // - 8GPU base → 只有 30W
-          // - 10GPU 且 512GB+ → 可免費選 35W 或 70W
+          // 電源轉接器規則：官網目前提供 40W / 35W / 70W
           power: [
-            { id: '30w', name: '30W USB-C',            priceAdj: 0, desc: '標準配置（8GPU 入門款）',    availableFor: 'all' },
-            { id: '35w', name: '35W 雙 USB-C（小型）', priceAdj: 0, desc: '免費升級（10GPU + 512GB+）', availableFor: 'upgraded' },
-            { id: '70w', name: '70W USB-C（快充）',    priceAdj: 0, desc: '免費升級（10GPU + 512GB+）', availableFor: 'upgraded' }
+            { id: '40w', name: '40W 動態電源（最高輸出 60W）', priceAdj: 0, desc: '標準配置', isDefault: true },
+            { id: '35w', name: '35W 雙 USB-C',                priceAdj: 0, desc: '可同時為兩部裝置充電' },
+            { id: '70w', name: '70W USB-C（快充）',           priceAdj: 0, desc: '支援快速充電' }
           ]
         },
         '15': {
           label: '15 吋',
-          basePrice: 39590,   // M5 8GPU / 16GB / 512GB
+          basePrice: 39590,   // M5 10GPU / 16GB / 512GB
           chips: [
-            { id: 'M5_8gpu',  name: 'M5', detail: '10核CPU / 8核GPU',  priceAdj: 0,    desc: '標準配置' },
-            { id: 'M5_10gpu', name: 'M5', detail: '10核CPU / 10核GPU', priceAdj: 3000, desc: '提升圖形效能', requires: { minRam: '24gb', orMinStorage: '1tb' } }
+            { id: 'M5_10gpu', name: 'M5', detail: '10核CPU / 10核GPU', priceAdj: 0, desc: '15 吋全系列標準配置' }
           ],
           memory: [
             { id: '16gb', name: '16GB', priceAdj: 0,     isDefault: true },
-            { id: '24gb', name: '24GB', priceAdj: 6000  },
-            { id: '32gb', name: '32GB', priceAdj: 12000 }
+            { id: '24gb', name: '24GB', priceAdj: 7000  },
+            { id: '32gb', name: '32GB', priceAdj: 13300 }
           ],
           storage: [
             { id: '512gb', name: '512GB', priceAdj: 0,     isDefault: true },
-            { id: '1tb',   name: '1TB',   priceAdj: 6000  },
-            { id: '2tb',   name: '2TB',   priceAdj: 18000 },
-            { id: '4tb',   name: '4TB',   priceAdj: 36000 }
+            { id: '1tb',   name: '1TB',   priceAdj: 7000  },
+            { id: '2tb',   name: '2TB',   priceAdj: 19600 },
+            { id: '4tb',   name: '4TB',   priceAdj: 38500 }
           ],
-          // 15 吋全系列皆可免費選 35W 或 70W
+          // 15 吋全系列標配 35W，70W 可免費選
           power: [
-            { id: '35w', name: '35W 雙 USB-C（小型）', priceAdj: 0, desc: '免費選項', isDefault: true },
-            { id: '70w', name: '70W USB-C（快充）',    priceAdj: 0, desc: '免費選項' }
+            { id: '40w', name: '40W 動態電源（最高輸出 60W）', priceAdj: 0, desc: '標準配置', isDefault: true },
+            { id: '35w', name: '35W 雙 USB-C',                priceAdj: 0, desc: '可同時為兩部裝置充電' },
+            { id: '70w', name: '70W USB-C（快充）',           priceAdj: 0, desc: '支援快速充電' }
           ]
         }
       }
@@ -294,7 +294,7 @@ const BTS_CONFIG = {
     // ─────────────────────────────────────────────
     //  MacBook Pro（M5 系列，教育商店）
     //
-    //  選購流程：尺寸 → 顯示器玻璃 → 晶片
+    //  選購流程：尺寸 → 顏色 → 顯示器玻璃 → 晶片
     //            → 記憶體升級 → 儲存升級
     //            → 電源轉接器（晶片自動決定）→ BTS配件
     //
@@ -304,13 +304,9 @@ const BTS_CONFIG = {
     macbookPro: {
       name: 'MacBook Pro',
       hasNano: true,
-      nanoPrice: 4500,   // 任何款式皆可加購奈米紋理顯示器
-      // 顏色依晶片 tier 不同
-      colors: {
-        base: ['銀色', '太空灰色'],
-        pro:  ['銀色', '太空黑色'],
-        max:  ['銀色', '太空黑色']
-      },
+      nanoPrice: 4725,   // 任何款式皆可加購奈米紋理顯示器
+      // 官網目前所有 MacBook Pro 尺寸皆提供太空黑色 / 銀色
+      colors: ['太空黑色', '銀色'],
       // 圖片連結：依「尺寸 → 顏色」設定，後台可逐一修改
       colorImages: {
         '14': {
@@ -354,8 +350,8 @@ const BTS_CONFIG = {
                 { id: '4tb',   name: '4TB',   priceAdj: 54000 }
               ],
               power: [
-                { id: '70w', name: '70W USB-C',              priceAdj: 0,   isDefault: true },
-                { id: '96w', name: '96W USB-C（支援快充）',  priceAdj: 500 }
+                { id: '70w',  name: '70W USB-C',  priceAdj: 0, isDefault: true },
+                { id: '140w', name: '140W USB-C', priceAdj: 0 }
               ]
             },
 
@@ -365,10 +361,10 @@ const BTS_CONFIG = {
               name: 'M5 Pro',
               detail: '12核CPU / 16核GPU',
               tier: 'pro',
-              basePrice: 63690,       // 含 24GB RAM + 512GB SSD
+              basePrice: 69790,       // 含 24GB RAM + 512GB SSD
               defaultRam: '24gb',
               defaultStorage: '512gb',
-              defaultPower: '96w',
+              defaultPower: '70w',
               desc: '專業效能，多核心大幅提升',
               memory: [
                 { id: '24gb', name: '24GB', priceAdj: 0,     isDefault: true },
@@ -376,13 +372,14 @@ const BTS_CONFIG = {
               ],
               storage: [
                 { id: '512gb', name: '512GB', priceAdj: 0,     isDefault: true },
-                { id: '1tb',   name: '1TB',   priceAdj: 6000  },
+                { id: '1tb',   name: '1TB',   priceAdj: 6100  },
                 { id: '2tb',   name: '2TB',   priceAdj: 18000 },
                 { id: '4tb',   name: '4TB',   priceAdj: 54000 },
                 { id: '8tb',   name: '8TB',   priceAdj: 126000 }
               ],
               power: [
-                { id: '96w', name: '96W USB-C（標準配置）', priceAdj: 0, isDefault: true }
+                { id: '70w',  name: '70W USB-C',  priceAdj: 0, isDefault: true },
+                { id: '140w', name: '140W USB-C', priceAdj: 0 }
               ]
             },
 
@@ -392,24 +389,24 @@ const BTS_CONFIG = {
               name: 'M5 Pro',
               detail: '14核CPU / 20核GPU',
               tier: 'pro',
-              basePrice: 69690,       // 含 24GB RAM + 512GB SSD
+              basePrice: 76390,       // 含 24GB RAM + 1TB SSD
               defaultRam: '24gb',
-              defaultStorage: '512gb',
-              defaultPower: '96w',
+              defaultStorage: '1tb',
+              defaultPower: '70w',
               desc: '旗艦 Pro，高效能影音剪輯首選',
               memory: [
                 { id: '24gb', name: '24GB', priceAdj: 0,     isDefault: true },
                 { id: '48gb', name: '48GB', priceAdj: 12000 }
               ],
               storage: [
-                { id: '512gb', name: '512GB', priceAdj: 0,     isDefault: true },
-                { id: '1tb',   name: '1TB',   priceAdj: 6000  },
-                { id: '2tb',   name: '2TB',   priceAdj: 18000 },
-                { id: '4tb',   name: '4TB',   priceAdj: 54000 },
-                { id: '8tb',   name: '8TB',   priceAdj: 126000 }
+                { id: '1tb',   name: '1TB',   priceAdj: 0,     isDefault: true },
+                { id: '2tb',   name: '2TB',   priceAdj: 11900 },
+                { id: '4tb',   name: '4TB',   priceAdj: 47900 },
+                { id: '8tb',   name: '8TB',   priceAdj: 119900 }
               ],
               power: [
-                { id: '96w', name: '96W USB-C（標準配置）', priceAdj: 0, isDefault: true }
+                { id: '70w',  name: '70W USB-C',  priceAdj: 0, isDefault: true },
+                { id: '140w', name: '140W USB-C', priceAdj: 0 }
               ]
             },
 
@@ -419,10 +416,10 @@ const BTS_CONFIG = {
               name: 'M5 Max',
               detail: '14核CPU / 32核GPU',
               tier: 'max',
-              basePrice: 93690,       // 含 36GB RAM + 1TB SSD
+              basePrice: 109890,      // 含 36GB RAM + 1TB SSD
               defaultRam: '36gb',
               defaultStorage: '1tb',
-              defaultPower: '96w',
+              defaultPower: '70w',
               desc: '極致效能，專業影片 / 3D 製作',
               memory: [
                 { id: '36gb',  name: '36GB',  priceAdj: 0,     isDefault: true },
@@ -436,7 +433,8 @@ const BTS_CONFIG = {
                 { id: '8tb',  name: '8TB',  priceAdj: 120000 }
               ],
               power: [
-                { id: '96w', name: '96W USB-C（標準配置）', priceAdj: 0, isDefault: true }
+                { id: '70w',  name: '70W USB-C',  priceAdj: 0, isDefault: true },
+                { id: '140w', name: '140W USB-C', priceAdj: 0 }
               ]
             },
 
@@ -446,10 +444,10 @@ const BTS_CONFIG = {
               name: 'M5 Max',
               detail: '16核CPU / 40核GPU',
               tier: 'max',
-              basePrice: 102690,      // 含 48GB RAM + 1TB SSD
+              basePrice: 125640,      // 含 48GB RAM + 1TB SSD
               defaultRam: '48gb',
               defaultStorage: '1tb',
-              defaultPower: '96w',
+              defaultPower: '70w',
               desc: '頂規旗艦，最高可達 128GB 記憶體',
               memory: [
                 { id: '48gb',  name: '48GB',  priceAdj: 0,     isDefault: true },
@@ -463,7 +461,8 @@ const BTS_CONFIG = {
                 { id: '8tb',  name: '8TB',  priceAdj: 120000 }
               ],
               power: [
-                { id: '96w', name: '96W USB-C（標準配置）', priceAdj: 0, isDefault: true }
+                { id: '70w',  name: '70W USB-C',  priceAdj: 0, isDefault: true },
+                { id: '140w', name: '140W USB-C', priceAdj: 0 }
               ]
             }
 
@@ -497,7 +496,8 @@ const BTS_CONFIG = {
                 { id: '8tb',   name: '8TB',   priceAdj: 131700 }
               ],
               power: [
-                { id: '140w', name: '140W USB-C（標準配置）', priceAdj: 0, isDefault: true }
+                { id: '70w',  name: '70W USB-C',  priceAdj: 0 },
+                { id: '140w', name: '140W USB-C', priceAdj: 0, isDefault: true }
               ]
             },
 
@@ -507,7 +507,7 @@ const BTS_CONFIG = {
               name: 'M5 Max',
               detail: '14核CPU / 32核GPU',
               tier: 'max',
-              basePrice: 102090,      // 16吋 M5 Pro base + 18,900 升級
+              basePrice: 119890,      // 含 36GB RAM + 1TB SSD
               defaultRam: '36gb',
               defaultStorage: '1tb',
               defaultPower: '140w',
@@ -524,7 +524,8 @@ const BTS_CONFIG = {
                 { id: '8tb',  name: '8TB',  priceAdj: 125400 }
               ],
               power: [
-                { id: '140w', name: '140W USB-C（標準配置）', priceAdj: 0, isDefault: true }
+                { id: '70w',  name: '70W USB-C',  priceAdj: 0 },
+                { id: '140w', name: '140W USB-C', priceAdj: 0, isDefault: true }
               ]
             },
 
@@ -534,7 +535,7 @@ const BTS_CONFIG = {
               name: 'M5 Max',
               detail: '16核CPU / 40核GPU',
               tier: 'max',
-              basePrice: 109390,      // 16吋 M5 Pro base + 26,200 升級
+              basePrice: 137890,      // 含 48GB RAM + 1TB SSD
               defaultRam: '48gb',
               defaultStorage: '1tb',
               defaultPower: '140w',
@@ -551,7 +552,8 @@ const BTS_CONFIG = {
                 { id: '8tb',  name: '8TB',  priceAdj: 125400 }
               ],
               power: [
-                { id: '140w', name: '140W USB-C（標準配置）', priceAdj: 0, isDefault: true }
+                { id: '70w',  name: '70W USB-C',  priceAdj: 0 },
+                { id: '140w', name: '140W USB-C', priceAdj: 0, isDefault: true }
               ]
             }
 
