@@ -594,10 +594,6 @@
         <span class="designer-chip-name">Neil尼歐</span>
       </span>
     </div>
-    <div class="product-switch">
-      <button class="sw-btn" id="sw-air" onclick="switchProduct('air')">Air</button>
-      <button class="sw-btn" id="sw-pro" onclick="switchProduct('pro')">Pro</button>
-    </div>
   </div>
 
   <div class="progress-wrap">
@@ -753,9 +749,6 @@ function switchProduct(t) {
 function renderAll() {
   document.getElementById('topbar-title').textContent =
     productType === 'air' ? 'MacBook Air 計算機' : productType === 'pro' ? 'MacBook Pro 計算機' : 'iMac 計算機';
-  document.getElementById('sw-air').classList.toggle('active', productType === 'air');
-  document.getElementById('sw-pro').classList.toggle('active', productType === 'pro');
-  document.querySelector('.product-switch').style.display = productType === 'imac' ? 'none' : '';
   renderSteps();
   updatePrice();
 }

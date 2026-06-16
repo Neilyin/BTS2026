@@ -253,15 +253,22 @@ button:focus-visible, a:focus-visible, .opt:focus-visible,
 .sub-header { max-width: none !important; margin-bottom: 18px !important; }
 
 .back-btn {
-  min-height: 44px;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  min-height: 38px !important;
+  padding: 0 15px !important;
   border-radius: 999px !important;
   background: #ffffff !important;
   border: 1px solid var(--border) !important;
   color: var(--text) !important;
   box-shadow: var(--shadow-sm) !important;
+  font-size: 14px !important;
   font-weight: 700 !important;
+  white-space: nowrap !important;
 }
-.back-btn:hover { border-color: rgba(10,102,194,.4) !important; background: var(--brand-soft) !important; }
+.back-btn svg { width: auto !important; height: 13px !important; }
+.back-btn:hover { border-color: rgba(10,102,194,.4) !important; background: var(--brand-soft) !important; transform: translateX(-1px); }
 
 .product-card { overflow: hidden; }
 .product-card-img-wrap {

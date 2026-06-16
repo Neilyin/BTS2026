@@ -533,10 +533,6 @@
         <span class="designer-chip-name">Neil尼歐</span>
       </span>
     </div>
-    <div class="topbar-product-switch">
-      <button class="product-switch-btn" id="switch-air" onclick="switchProduct('air')">Air</button>
-      <button class="product-switch-btn" id="switch-pro" onclick="switchProduct('pro')">Pro</button>
-    </div>
   </div>
 
   <!-- ── Progress ── -->
@@ -698,8 +694,9 @@ function switchProduct(type) {
 }
 
 function updateSwitchUI() {
-  document.getElementById('switch-air').classList.toggle('active', productType === 'air');
-  document.getElementById('switch-pro').classList.toggle('active', productType === 'pro');
+  // 產品切換已移除；保留 no-op 以相容既有呼叫
+  document.getElementById('switch-air')?.classList.toggle('active', productType === 'air');
+  document.getElementById('switch-pro')?.classList.toggle('active', productType === 'pro');
 }
 
 // ═══════════════════════════════════════════
