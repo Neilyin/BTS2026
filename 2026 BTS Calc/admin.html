@@ -412,13 +412,15 @@
 
     <!-- ══ Tab: MacBook 圖片 ══ -->
     <div class="tab-panel" id="tab-images-mac">
-      <div class="section-header"><h2>MacBook 圖片連結</h2><p>每個尺寸 × 顏色 的圖片 URL</p></div>
+      <div class="section-header"><h2>Mac / iMac 圖片連結</h2><p>每個尺寸 × 顏色 的圖片 URL</p></div>
       <div class="sub-tabs">
         <div class="sub-tab active" onclick="switchSubTab('img-mac','air',this)">MacBook Air</div>
         <div class="sub-tab"       onclick="switchSubTab('img-mac','pro',this)">MacBook Pro</div>
+        <div class="sub-tab"       onclick="switchSubTab('img-mac','imac',this)">iMac</div>
       </div>
       <div id="img-mac-air"><div id="img-grid-mac-air"></div></div>
       <div id="img-mac-pro" style="display:none"><div id="img-grid-mac-pro"></div></div>
+      <div id="img-mac-imac" style="display:none"><div id="img-grid-imac"></div></div>
     </div>
 
     <!-- ══ Tab: iPad 價格 ══ -->
@@ -653,6 +655,7 @@ function renderGiftComboRow(combo, i) {
           ${comboOption('all', '全部', combo.productLine)}
           ${comboOption('ipad', 'iPad', combo.productLine)}
           ${comboOption('macbook', 'MacBook', combo.productLine)}
+          ${comboOption('imac', 'iMac', combo.productLine)}
         </select>
       </div>
       <div class="combo-field">
@@ -661,6 +664,7 @@ function renderGiftComboRow(combo, i) {
           ${comboOption('all', '全部', combo.product)}
           ${comboOption('air', 'Air', combo.product)}
           ${comboOption('pro', 'Pro', combo.product)}
+          ${comboOption('imac', 'iMac', combo.product)}
         </select>
       </div>
       <div class="combo-field">
@@ -834,7 +838,8 @@ function setImgUrl(productKey, sz, color, val) {
     'ipadAir':    cfg.products.ipadAir.colorImages,
     'ipadPro':    cfg.products.ipadPro.colorImages,
     'macbookAir': cfg.products.macbookAir.colorImages,
-    'macbookPro': cfg.products.macbookPro.colorImages
+    'macbookPro': cfg.products.macbookPro.colorImages,
+    'imac':       cfg.products.imac.colorImages
   };
   const cImgs = prodMap[productKey];
   if (!cImgs) return;
@@ -847,6 +852,7 @@ function renderImages() {
   renderImgGrid('img-grid-pro',     cfg.products.ipadPro.colorImages,    'ipadPro',    cfg.products.ipadPro.sizes);
   renderImgGrid('img-grid-mac-air', cfg.products.macbookAir.colorImages, 'macbookAir', cfg.products.macbookAir.sizes);
   renderImgGrid('img-grid-mac-pro', cfg.products.macbookPro.colorImages, 'macbookPro', cfg.products.macbookPro.sizes);
+  renderImgGrid('img-grid-imac',    cfg.products.imac.colorImages,       'imac',       { '24': { label: '24 吋' } });
 }
 
 // ═══════════════════════════════════════════

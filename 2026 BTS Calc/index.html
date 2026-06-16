@@ -2,7 +2,7 @@
 <html lang="zh-TW">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>2026 Apple BTS 優惠計算機</title>
       <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap');
@@ -121,20 +121,33 @@
       fill: var(--text);
     }
 
+    .header-meta {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      background: var(--text);
+      color: #fff;
+      padding: 8px 18px;
+      border-radius: 22px;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.16);
+      margin-bottom: 18px;
+    }
+
     .bts-pill {
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      background: linear-gradient(135deg, #0071e3, #5e5ce6);
-      color: #fff;
+      background: transparent;
+      color: inherit;
       font-size: 12px;
-      font-weight: 700;
-      letter-spacing: .8px;
-      padding: 6px 16px;
-      border-radius: 20px;
-      margin-bottom: 20px;
+      font-weight: 800;
+      letter-spacing: 0;
+      padding: 0;
+      border-radius: 0;
       text-transform: uppercase;
-      box-shadow: 0 4px 12px rgba(94, 92, 230, 0.2);
+      box-shadow: none;
     }
 
     .bts-pill::before {
@@ -150,11 +163,59 @@
       50%       { opacity: .5; transform: scale(1.4); }
     }
 
+    .designer-mark {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: transparent;
+      color: rgba(255,255,255,.88);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0;
+      padding: 0;
+      border-radius: 0;
+      box-shadow: none;
+    }
+
+    .designer-avatar {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      display: inline-block;
+      background: #0071e3;
+      box-shadow: none;
+      overflow: hidden;
+      text-indent: -999px;
+    }
+
+    .designer-copy {
+      display: inline-flex;
+      align-items: flex-start;
+      gap: 3px;
+      line-height: 1;
+      text-align: left;
+    }
+
+    .designer-label {
+      font-size: inherit;
+      font-weight: inherit;
+      color: inherit;
+      text-transform: none;
+      letter-spacing: 0;
+    }
+
+    .designer-name {
+      font-size: inherit;
+      font-weight: inherit;
+      color: inherit;
+      letter-spacing: 0;
+    }
+
     .header h1 {
       font-family: 'Outfit', sans-serif;
       font-size: clamp(28px, 6vw, 42px);
       font-weight: 800;
-      letter-spacing: -.8px;
+      letter-spacing: 0;
       line-height: 1.15;
       margin-bottom: 10px;
     }
@@ -199,10 +260,14 @@
 
     .product-line-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 20px;
-      max-width: 640px;
+      max-width: 920px;
       margin: 0 auto;
+    }
+
+    @media (max-width: 720px) {
+      .product-line-grid { grid-template-columns: 1fr 1fr; }
     }
 
     @media (max-width: 400px) {
@@ -580,8 +645,17 @@
         <path d="M788.1 340.9c-5.8 4.5-108.2 62.2-108.2 190.5 0 148.4 130.3 200.9 134.2 202.2-.6 3.2-20.7 71.9-68.7 141.9-42.8 61.6-87.5 123.1-155.5 123.1s-85.5-39.5-164-39.5c-76 0-103.7 40.8-165.9 40.8s-105-37.5-161.1-100.5c-84.1-91.4-145-235.9-145-372.9 0-222.7 146.1-340.2 289.7-340.2 75.6 0 138.5 49.5 185.5 49.5 45.1 0 116.1-52.8 201.4-52.8 32.4 0 134.4 3.1 202.9 113.6zm-170.9-108c-12.8-63.2-48.9-117.8-98.8-153.8-44.8-32.9-94.9-52.8-144-52.8-2.9 0-5.9.3-8.8.6 0 2.1-.3 4.3-.3 6.7 0 69.8 36.5 140.3 89.6 185.5 47.5 41.4 104.4 67.9 163.4 67.9 0-18.3-1.1-36.5-1.1-54z"/>
       </svg>
     </div>
-    <div class="bts-pill">2026 BTS · Back to School</div>
-    <h1>Apple 教育優惠<br>計算機</h1>
+    <div class="header-meta">
+      <div class="bts-pill">2026 BTS · Back to School</div>
+      <span class="designer-mark" aria-label="Designed by Neil尼歐">
+        <span class="designer-avatar">N</span>
+        <span class="designer-copy">
+          <span class="designer-label">Designed by</span>
+          <span class="designer-name">Neil尼歐</span>
+        </span>
+      </span>
+    </div>
+    <h1>Apple BTS<br>教育優惠計算機</h1>
     <p>選擇你的產品，計算 BTS 活動實際入手價</p>
   </header>
 
@@ -595,7 +669,7 @@
         <!-- iPad -->
         <div class="product-line-card" onclick="goToSub('ipad')">
           <img class="card-icon"
-               src="https://www.apple.com/v/ipad/home/cb/images/overview/ipad-lineup__fsnmdh5n1q2e_large.png"
+               src="assets/ipad-card-50-compare-202410.jpeg"
                alt="iPad"
                onerror="this.src='https://i.imgur.com/placeholder.png'">
           <h2>iPad</h2>
@@ -609,7 +683,7 @@
         <!-- MacBook -->
         <div class="product-line-card" onclick="goToSub('macbook')">
           <img class="card-icon"
-               src="https://www.apple.com/v/mac/home/cb/images/overview/mac_lineup__fsnmdh5n1q2e_large.png"
+               src="assets/mac-card-50-edu-savings-202605.png"
                alt="MacBook"
                onerror="this.src='https://i.imgur.com/placeholder.png'">
           <h2>MacBook</h2>
@@ -620,10 +694,24 @@
           </div>
         </div>
 
+        <!-- iMac -->
+        <div class="product-line-card" onclick="navigateTo('macbook', 'imac', event)">
+          <img class="card-icon"
+               src="https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/imac-color-unselect-202601-gallery-1?wid=900&hei=620&fmt=jpeg&qlt=90&.v=1767917121718"
+               alt="iMac"
+               onerror="this.src='https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/imac-touch-id-blue-selection-hero-202410_SW_COLOR?wid=900&hei=900&fmt=jpeg&qlt=90'">
+          <h2>iMac</h2>
+          <p class="card-sub">24 吋 / M4</p>
+          <p class="card-starting-price">NT$41,150 起</p>
+          <div class="card-arrow">
+            <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+          </div>
+        </div>
+
       </div>
 
       <p class="footer-note">
-        所有售價均為 Apple 台灣教育商店定價，BTS 贈品依活動規定提供。<br>
+        所有售價均為 Apple 台灣教育商店定價，BTS 活動內容待官方公布後更新。<br>
         計算結果供參考，實際優惠以官方為準。
       </p>
     </section>
@@ -754,7 +842,7 @@
 
       </div>
 
-      <!-- BTS 配件提示 -->
+      <!-- BTS 活動提示 -->
       <div class="compare-hint" style="margin-top:20px">
         <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
           <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
@@ -766,16 +854,47 @@
 
   </div><!-- /.screens -->
 
+  <!-- ── 創作者資訊 ── -->
+  <footer class="creator-footer">
+    <div class="creator-card">
+      <div class="creator-avatar" aria-hidden="true">N</div>
+      <div class="creator-info">
+        <span class="creator-by">本工具由創作者開發</span>
+        <span class="creator-name">Neil尼歐</span>
+        <span class="creator-tagline">Apple 教育優惠分享 · BTS 代購</span>
+      </div>
+      <nav class="creator-links" aria-label="Neil尼歐 社群連結">
+        <a class="creator-link site" href="https://neil.tw" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.7 2.5 15.3 0 18M12 3c-2.5 2.7-2.5 15.3 0 18"/></svg>
+          官方網站
+        </a>
+        <a class="creator-link youtube" href="https://www.youtube.com/channel/UCUn8VlPDRSq_7K3N4zbmHsQ" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.6A3 3 0 0 0 .5 6.2 31 31 0 0 0 0 12a31 31 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.6 9.4.6 9.4.6s7.5 0 9.4-.6a3 3 0 0 0 2.1-2.1A31 31 0 0 0 24 12a31 31 0 0 0-.5-5.8zM9.6 15.6V8.4l6.2 3.6z"/></svg>
+          YouTube
+        </a>
+        <a class="creator-link instagram" href="https://www.instagram.com/neil.tw_/" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1.2" fill="currentColor" stroke="none"/></svg>
+          Instagram
+        </a>
+        <a class="creator-link threads" href="https://www.threads.net/@neil.tw_" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.5 11.2c-.1 0-.2-.1-.3-.1-.2-3-1.8-4.7-4.5-4.7-1.6 0-3 .7-3.8 2l1.4 1c.5-.8 1.4-1 2.4-1 1.5 0 2.4.9 2.6 2.5-.7-.2-1.5-.3-2.3-.2-2.4.1-3.9 1.5-3.8 3.4.1 1.8 1.6 2.9 3.4 2.8 1.4-.1 2.4-.7 3-1.7.4-.7.6-1.5.7-2.4.6.4 1 .9 1.2 1.6.3 1 .3 2.6-.9 3.8-1.1 1.1-2.4 1.5-4.4 1.5-2.2 0-3.9-.7-5-2.1C2.7 16.6 2.2 14.7 2.2 12s.5-4.6 1.6-6c1.1-1.4 2.8-2.1 5-2.1 2.2 0 3.9.7 5 2.2.6.7 1 1.7 1.3 2.8l1.8-.5c-.3-1.4-.9-2.6-1.7-3.6C13.8 3.1 11.6 2.2 8.9 2.2 4.1 2.2 1 5.6.4 11.2c0 .3 0 .5 0 .8s0 .5 0 .8C1 18.4 4.1 21.8 8.9 21.8c2.5 0 4.3-.6 5.8-2.1 1.9-1.9 1.9-4.3 1.3-5.8-.4-1.1-1.1-2-2.1-2.7zm-4.4 4.4c-1 .1-1.7-.4-1.8-1.1 0-.7.6-1.3 1.9-1.4h.4c.6 0 1.1.1 1.6.2-.2 1.6-1 2.2-2.1 2.3z"/></svg>
+          Threads
+        </a>
+      </nav>
+    </div>
+  </footer>
+
 </div><!-- /.page-wrap -->
 
 <script>
   // ── 目前所在的產品線 ──
   let currentLine = null;
 
-  // BTS 贈品提示文字
+  // BTS 活動提示文字
   const hintText = {
-    ipad: '<strong>BTS iPad 贈品：</strong>Apple Pencil Pro（免費）+ AirPods 4（免費），另可折扣加購鍵盤。',
-    macbook: '<strong>BTS MacBook 贈品：</strong>生產力套組（滑鼠/巧控板/鍵盤 擇一免費）+ AirPods 4 主動降噪版（免費）。'
+    ipad: '<strong>BTS iPad 活動：</strong>活動內容暫未套用，待開始後更新。',
+    macbook: '<strong>BTS MacBook 活動：</strong>活動內容暫未套用，待開始後更新。',
+    imac: '<strong>BTS iMac 活動：</strong>活動內容暫未套用，待開始後更新。'
   };
 
   function goToSub(line) {

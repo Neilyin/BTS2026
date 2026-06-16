@@ -4,7 +4,8 @@
  * 選購流程（無ABC款，直接依 Apple 教育商店流程逐步選規格）：
  *
  * MacBook Air：尺寸 → 顏色 → 晶片(GPU核心) → 記憶體 → 儲存 → 電源轉接器 → BTS配件 → 回饋試算
- * MacBook Pro：尺寸 → 顯示器 → 晶片 → 記憶體 → 儲存 → 電源(自動) → BTS配件 → 回饋試算
+ * MacBook Pro：尺寸 → 顏色 → 顯示器 → 晶片 → 處理能力 → 記憶體 → 儲存 → 電源轉接器 → BTS配件 → 回饋試算
+ * iMac：顏色 → 晶片 → 記憶體 → 儲存 → 底座 → 乙太網路 → 滑鼠/觸控板 → 鍵盤 → BTS配件 → 回饋試算
  * iPad Air：  尺寸 → 顏色 → 儲存 → 連線 → 奈米紋理(無) → BTS配件 → 回饋試算
  * iPad Pro：  尺寸 → 顏色 → 儲存/晶片 → 連線 → 奈米紋理 → BTS配件 → 回饋試算
  *
@@ -199,12 +200,13 @@ const BTS_CONFIG = {
 
     // ─────────────────────────────────────────────
     //  MacBook Air（M5，教育商店）
-    //  選購流程：尺寸 → 顏色 → 晶片(GPU) → 記憶體 → 儲存 → 電源轉接器 → BTS配件
+    //  官方選購流程：尺寸 → 顏色 → M5 晶片處理能力 → 自訂配置（記憶體 / 儲存 / 電源）
     // ─────────────────────────────────────────────
     macbookAir: {
       name: 'MacBook Air',
       chip: 'M5',
       hasNano: false,
+      chipImage: 'https://www.apple.com/newsroom/images/2025/10/apple-unleashes-m5-the-next-big-leap-in-ai-performance-for-apple-silicon/tile/Apple-M5-hero-251015-lp.jpg.landing-big_2x.jpg',
       colors: ['天藍色', '星光色', '銀色', '午夜色'],
       // 圖片連結：依「尺寸 → 顏色」設定
       colorImages: {
@@ -226,42 +228,43 @@ const BTS_CONFIG = {
           label: '13 吋',
           basePrice: 32590,     // M5 8GPU / 16GB / 512GB
           // 晶片（GPU核心選擇）
-          // 注意：選 10GPU 必須同時有 24GB+ 記憶體 OR 1TB+ 儲存
           chips: [
             {
               id: 'M5_8gpu',
               name: 'M5',
-              detail: '10核CPU / 8核GPU',
+              detail: '10 核心 CPU / 8 核心 GPU / 16 核心神經網路引擎',
               priceAdj: 0,
-              desc: '標準配置，適合日常文書與多工處理'
+              basePrice: 32590,
+              desc: '讓你的一切操控速度更快，有如行雲流水般流暢。'
             },
             {
               id: 'M5_10gpu',
               name: 'M5',
-              detail: '10核CPU / 10核GPU',
+              detail: '10 核心 CPU / 10 核心 GPU / 16 核心神經網路引擎',
               priceAdj: 3150,
-              desc: '提升圖形效能，適合創意工作',
+              basePrice: 35740,
+              desc: '透過提升處理與繪圖速度，為遊戲和創意工作帶來重大效能。',
               isDefault: false
             }
           ],
           // 記憶體（從 16GB 基礎加價）
           memory: [
             { id: '16gb', name: '16GB', priceAdj: 0,     isDefault: true },
-            { id: '24gb', name: '24GB', priceAdj: 7000  },
-            { id: '32gb', name: '32GB', priceAdj: 13300 }
+            { id: '24gb', name: '24GB', priceAdj: 7000,  availableChips: ['M5_10gpu'], unavailableText: '查看價格與更改項目' },
+            { id: '32gb', name: '32GB', priceAdj: 13300, availableChips: ['M5_10gpu'], unavailableText: '查看價格與更改項目' }
           ],
           // 儲存（從 512GB 基礎加價）
           storage: [
             { id: '512gb', name: '512GB', priceAdj: 0,     isDefault: true },
-            { id: '1tb',   name: '1TB',   priceAdj: 7000  },
-            { id: '2tb',   name: '2TB',   priceAdj: 19600 },
-            { id: '4tb',   name: '4TB',   priceAdj: 38500 }
+            { id: '1tb',   name: '1TB',   priceAdj: 7000,  availableChips: ['M5_10gpu'], unavailableText: '查看價格與更改項目' },
+            { id: '2tb',   name: '2TB',   priceAdj: 19600, availableChips: ['M5_10gpu'], unavailableText: '查看價格與更改項目' },
+            { id: '4tb',   name: '4TB',   priceAdj: 38500, availableChips: ['M5_10gpu'], unavailableText: '查看價格與更改項目' }
           ],
           // 電源轉接器規則：官網目前提供 40W / 35W / 70W
           power: [
-            { id: '40w', name: '40W 動態電源（最高輸出 60W）', priceAdj: 0, desc: '標準配置', isDefault: true },
-            { id: '35w', name: '35W 雙 USB-C',                priceAdj: 0, desc: '可同時為兩部裝置充電' },
-            { id: '70w', name: '70W USB-C（快充）',           priceAdj: 0, desc: '支援快速充電' }
+            { id: '40w', name: '40W 動態電源（最高輸出 60W）', priceAdj: 0, desc: '標準配置', isDefault: true, image: 'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/mac-adapter-select-202601-40w_GEO_TW?wid=5120&hei=3280&fmt=webp&qlt=90&.v=bDZYbEhmUk4wTzdIUFJSMVlSS0dHUldobHozdU9MQnV6TkIvMFlYWm5ZVHYzNmJ5OEoyYVhwazd1djRTdHpEeW5WOGRHQ3ZYRTFSbWtOcmtMWGxEbjJHUERIaThjNlYyT2ZWT2pCSitiRndxSkRZYnU4S2l4QVhRZStkR2szaWo&traceId=1' },
+            { id: '35w', name: '35W 雙 USB-C 埠',             priceAdj: 500, desc: '尺寸精巧，配備兩個連接埠，可同時為兩部裝置充電。', image: 'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/mac-adapter-select-202601-35w?wid=5120&hei=3280&fmt=webp&qlt=90&.v=bDZYbEhmUk4wTzdIUFJSMVlSS0dHVWNjejlKaFlXSWZzdEJBTWUvTnJNeVJieFVCazhaRis0ZGlmMkluWW4vaUZXZzlzM2cwVmJseGdsS3RYT09za2phUklkcnpZVGhYdDkrTUllUGFrRXArYWpGdS9XeFgvbS9ITnNYOEhYaG4&traceId=1' },
+            { id: '70w', name: '70W USB-C',                   priceAdj: 500, desc: '支援快速充電，約 30 分鐘最高可達 50% 電量。', image: 'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/mac-adapter-select-202601-70w_AV1?wid=5120&hei=3280&fmt=webp&qlt=90&.v=bDZYbEhmUk4wTzdIUFJSMVlSS0dHWUZIbTRqYnhHNWczVVhiR2V0eHVjOWxjSS9LSnJ6VHlvRXVuRWZVYmhrV3paYzZqNzJ2c05GREJ4YktTc3FTVDNaZStqMGcrcmlDQ1F3cUVTa2hnNkpQbktOZGJrM1FNVmxpdTBwQ0E4bDU&traceId=1' }
           ]
         },
         '15': {
@@ -281,11 +284,11 @@ const BTS_CONFIG = {
             { id: '2tb',   name: '2TB',   priceAdj: 19600 },
             { id: '4tb',   name: '4TB',   priceAdj: 38500 }
           ],
-          // 15 吋全系列標配 35W，70W 可免費選
+          // 電源轉接器：官方目前提供 40W / 35W / 70W
           power: [
-            { id: '40w', name: '40W 動態電源（最高輸出 60W）', priceAdj: 0, desc: '標準配置', isDefault: true },
-            { id: '35w', name: '35W 雙 USB-C',                priceAdj: 0, desc: '可同時為兩部裝置充電' },
-            { id: '70w', name: '70W USB-C（快充）',           priceAdj: 0, desc: '支援快速充電' }
+            { id: '40w', name: '40W 動態電源（最高輸出 60W）', priceAdj: 0, desc: '標準配置', isDefault: true, image: 'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/mac-adapter-select-202601-40w_GEO_TW?wid=5120&hei=3280&fmt=webp&qlt=90&.v=bDZYbEhmUk4wTzdIUFJSMVlSS0dHUldobHozdU9MQnV6TkIvMFlYWm5ZVHYzNmJ5OEoyYVhwazd1djRTdHpEeW5WOGRHQ3ZYRTFSbWtOcmtMWGxEbjJHUERIaThjNlYyT2ZWT2pCSitiRndxSkRZYnU4S2l4QVhRZStkR2szaWo&traceId=1' },
+            { id: '35w', name: '35W 雙 USB-C',                priceAdj: 500, desc: '可同時為兩部裝置充電', image: 'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/mac-adapter-select-202601-35w?wid=5120&hei=3280&fmt=webp&qlt=90&.v=bDZYbEhmUk4wTzdIUFJSMVlSS0dHVWNjejlKaFlXSWZzdEJBTWUvTnJNeVJieFVCazhaRis0ZGlmMkluWW4vaUZXZzlzM2cwVmJseGdsS3RYT09za2phUklkcnpZVGhYdDkrTUllUGFrRXArYWpGdS9XeFgvbS9ITnNYOEhYaG4&traceId=1' },
+            { id: '70w', name: '70W USB-C（快充）',           priceAdj: 500, desc: '支援快速充電', image: 'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/mac-adapter-select-202601-70w_AV1?wid=5120&hei=3280&fmt=webp&qlt=90&.v=bDZYbEhmUk4wTzdIUFJSMVlSS0dHWUZIbTRqYnhHNWczVVhiR2V0eHVjOWxjSS9LSnJ6VHlvRXVuRWZVYmhrV3paYzZqNzJ2c05GREJ4YktTc3FTVDNaZStqMGcrcmlDQ1F3cUVTa2hnNkpQbktOZGJrM1FNVmxpdTBwQ0E4bDU&traceId=1' }
           ]
         }
       }
@@ -294,9 +297,8 @@ const BTS_CONFIG = {
     // ─────────────────────────────────────────────
     //  MacBook Pro（M5 系列，教育商店）
     //
-    //  選購流程：尺寸 → 顏色 → 顯示器玻璃 → 晶片
-    //            → 記憶體升級 → 儲存升級
-    //            → 電源轉接器（晶片自動決定）→ BTS配件
+    //  官方選購流程：尺寸 → 顏色 → 顯示器 → 晶片
+    //            → 處理能力 → 自訂配置（記憶體 / SSD / 電源）
     //
     //  每個晶片選項有自己的 basePrice（含預設 RAM + 儲存）
     //  RAM / 儲存 升級價皆為「在此晶片基礎上的加價」
@@ -330,139 +332,141 @@ const BTS_CONFIG = {
             // ── M5 (10核CPU / 10核GPU) ──
             {
               id: 'M5',
+              processor: 'm5',
               name: 'M5',
               detail: '10核CPU / 10核GPU',
               tier: 'base',
-              basePrice: 51690,       // 含 16GB RAM + 512GB SSD
+              basePrice: 51690,       // 含 16GB RAM + 1TB SSD
               defaultRam: '16gb',
-              defaultStorage: '512gb',
+              defaultStorage: '1tb',
               defaultPower: '70w',
               desc: '入門款，適合大多數專業工作',
               memory: [
                 { id: '16gb', name: '16GB', priceAdj: 0,     isDefault: true },
-                { id: '24gb', name: '24GB', priceAdj: 6000  },
-                { id: '32gb', name: '32GB', priceAdj: 12000 }
+                { id: '24gb', name: '24GB', priceAdj: 7000  },
+                { id: '32gb', name: '32GB', priceAdj: 14000 }
               ],
               storage: [
-                { id: '512gb', name: '512GB', priceAdj: 0,     isDefault: true },
-                { id: '1tb',   name: '1TB',   priceAdj: 6000  },
-                { id: '2tb',   name: '2TB',   priceAdj: 18000 },
-                { id: '4tb',   name: '4TB',   priceAdj: 54000 }
+                { id: '1tb',   name: '1TB',   priceAdj: 0,     isDefault: true },
+                { id: '2tb',   name: '2TB',   priceAdj: 12600 },
+                { id: '4tb',   name: '4TB',   priceAdj: 50400 }
               ],
               power: [
-                { id: '70w',  name: '70W USB-C',  priceAdj: 0, isDefault: true },
-                { id: '140w', name: '140W USB-C', priceAdj: 0 }
+                { id: '70w',  name: '70W USB-C',  priceAdj: 0, isDefault: true, image: 'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/mac-adapter-select-202601-70w_AV1?wid=5120&hei=3280&fmt=webp&qlt=90&.v=bDZYbEhmUk4wTzdIUFJSMVlSS0dHWUZIbTRqYnhHNWczVVhiR2V0eHVjOWxjSS9LSnJ6VHlvRXVuRWZVYmhrV3paYzZqNzJ2c05GREJ4YktTc3FTVDNaZStqMGcrcmlDQ1F3cUVTa2hnNkpQbktOZGJrM1FNVmxpdTBwQ0E4bDU&traceId=1' },
+                { id: '140w', name: '140W USB-C', priceAdj: 500, image: 'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/mac-adapter-select-202601-140w_AV1?wid=5120&hei=3280&fmt=webp&qlt=90&.v=bDZYbEhmUk4wTzdIUFJSMVlSS0dHWTlEaDAwVjZaZTRyK1h3ZW5QZW9vdzJpaVhHakl1NktraHQ0cW9hbVJNUk5qdmVQUCtUeFBLKzRmNXZ0dlI4eUMyRnNXMEdqNUJBNEI1TGZVTTB5c2lCcDFhUlRneGJxMGNjRmsvTE96S3E&traceId=1' }
               ]
             },
 
-            // ── M5 Pro (12核CPU / 16核GPU) ──
+            // ── M5 Pro (15核CPU / 16核GPU) ──
             {
-              id: 'M5_Pro_12c',
+              id: 'M5_Pro_15_16',
+              processor: 'm5pro',
               name: 'M5 Pro',
-              detail: '12核CPU / 16核GPU',
+              detail: '15核CPU / 16核GPU',
               tier: 'pro',
-              basePrice: 69790,       // 含 24GB RAM + 512GB SSD
+              basePrice: 69790,       // 含 24GB RAM + 1TB SSD
               defaultRam: '24gb',
-              defaultStorage: '512gb',
+              defaultStorage: '1tb',
               defaultPower: '70w',
               desc: '專業效能，多核心大幅提升',
               memory: [
                 { id: '24gb', name: '24GB', priceAdj: 0,     isDefault: true },
-                { id: '48gb', name: '48GB', priceAdj: 12000 }
+                { id: '48gb', name: '48GB', priceAdj: 12600 },
+                { id: '64gb', name: '64GB', priceAdj: 18900, upgradeToChip: 'M5_Pro_18_20', unavailableText: '查看價格與更改項目' }
               ],
               storage: [
-                { id: '512gb', name: '512GB', priceAdj: 0,     isDefault: true },
-                { id: '1tb',   name: '1TB',   priceAdj: 6100  },
-                { id: '2tb',   name: '2TB',   priceAdj: 18000 },
-                { id: '4tb',   name: '4TB',   priceAdj: 54000 },
-                { id: '8tb',   name: '8TB',   priceAdj: 126000 }
+                { id: '1tb',   name: '1TB',   priceAdj: 0,     isDefault: true },
+                { id: '2tb',   name: '2TB',   priceAdj: 12600 },
+                { id: '4tb',   name: '4TB',   priceAdj: 31500 }
               ],
               power: [
-                { id: '70w',  name: '70W USB-C',  priceAdj: 0, isDefault: true },
-                { id: '140w', name: '140W USB-C', priceAdj: 0 }
+                { id: '70w',  name: '70W USB-C',  priceAdj: 0, isDefault: true, image: 'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/mac-adapter-select-202601-70w_AV1?wid=5120&hei=3280&fmt=webp&qlt=90&.v=bDZYbEhmUk4wTzdIUFJSMVlSS0dHWUZIbTRqYnhHNWczVVhiR2V0eHVjOWxjSS9LSnJ6VHlvRXVuRWZVYmhrV3paYzZqNzJ2c05GREJ4YktTc3FTVDNaZStqMGcrcmlDQ1F3cUVTa2hnNkpQbktOZGJrM1FNVmxpdTBwQ0E4bDU&traceId=1' },
+                { id: '140w', name: '140W USB-C', priceAdj: 500, image: 'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/mac-adapter-select-202601-140w_AV1?wid=5120&hei=3280&fmt=webp&qlt=90&.v=bDZYbEhmUk4wTzdIUFJSMVlSS0dHWTlEaDAwVjZaZTRyK1h3ZW5QZW9vdzJpaVhHakl1NktraHQ0cW9hbVJNUk5qdmVQUCtUeFBLKzRmNXZ0dlI4eUMyRnNXMEdqNUJBNEI1TGZVTTB5c2lCcDFhUlRneGJxMGNjRmsvTE96S3E&traceId=1' }
               ]
             },
 
-            // ── M5 Pro (14核CPU / 20核GPU) ──
+            // ── M5 Pro (18核CPU / 20核GPU) ──
             {
-              id: 'M5_Pro_14c',
+              id: 'M5_Pro_18_20',
+              processor: 'm5pro',
               name: 'M5 Pro',
-              detail: '14核CPU / 20核GPU',
+              detail: '18核CPU / 20核GPU',
               tier: 'pro',
               basePrice: 76390,       // 含 24GB RAM + 1TB SSD
               defaultRam: '24gb',
               defaultStorage: '1tb',
-              defaultPower: '70w',
+              defaultPower: '140w',
+              requiresPowerSelection: false,
               desc: '旗艦 Pro，高效能影音剪輯首選',
               memory: [
                 { id: '24gb', name: '24GB', priceAdj: 0,     isDefault: true },
-                { id: '48gb', name: '48GB', priceAdj: 12000 }
+                { id: '48gb', name: '48GB', priceAdj: 12600 },
+                { id: '64gb', name: '64GB', priceAdj: 18900 }
               ],
               storage: [
                 { id: '1tb',   name: '1TB',   priceAdj: 0,     isDefault: true },
-                { id: '2tb',   name: '2TB',   priceAdj: 11900 },
-                { id: '4tb',   name: '4TB',   priceAdj: 47900 },
-                { id: '8tb',   name: '8TB',   priceAdj: 119900 }
+                { id: '2tb',   name: '2TB',   priceAdj: 12600 },
+                { id: '4tb',   name: '4TB',   priceAdj: 31500 }
               ],
               power: [
-                { id: '70w',  name: '70W USB-C',  priceAdj: 0, isDefault: true },
-                { id: '140w', name: '140W USB-C', priceAdj: 0 }
+                { id: '140w', name: '140W USB-C', priceAdj: 0, isDefault: true, image: 'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/mac-adapter-select-202601-140w_AV1?wid=5120&hei=3280&fmt=webp&qlt=90&.v=bDZYbEhmUk4wTzdIUFJSMVlSS0dHWTlEaDAwVjZaZTRyK1h3ZW5QZW9vdzJpaVhHakl1NktraHQ0cW9hbVJNUk5qdmVQUCtUeFBLKzRmNXZ0dlI4eUMyRnNXMEdqNUJBNEI1TGZVTTB5c2lCcDFhUlRneGJxMGNjRmsvTE96S3E&traceId=1' }
               ]
             },
 
-            // ── M5 Max (14核CPU / 32核GPU) ──
+            // ── M5 Max (18核CPU / 32核GPU) ──
             {
-              id: 'M5_Max_14c',
+              id: 'M5_Max_18_32',
+              processor: 'm5max',
               name: 'M5 Max',
-              detail: '14核CPU / 32核GPU',
+              detail: '18核CPU / 32核GPU',
               tier: 'max',
-              basePrice: 109890,      // 含 36GB RAM + 1TB SSD
+              basePrice: 109890,      // 含 36GB RAM + 2TB SSD
               defaultRam: '36gb',
-              defaultStorage: '1tb',
-              defaultPower: '70w',
+              defaultStorage: '2tb',
+              defaultPower: '140w',
+              requiresPowerSelection: false,
               desc: '極致效能，專業影片 / 3D 製作',
               memory: [
                 { id: '36gb',  name: '36GB',  priceAdj: 0,     isDefault: true },
-                { id: '64gb',  name: '64GB',  priceAdj: 18000 },
-                { id: '128gb', name: '128GB', priceAdj: 30000 }
+                { id: '48gb',  name: '48GB',  priceAdj: 0,     upgradeToChip: 'M5_Max_18_40', unavailableText: '查看價格與更改項目' },
+                { id: '64gb',  name: '64GB',  priceAdj: 12600, upgradeToChip: 'M5_Max_18_40', unavailableText: '查看價格與更改項目' },
+                { id: '128gb', name: '128GB', priceAdj: 63000, upgradeToChip: 'M5_Max_18_40', unavailableText: '查看價格與更改項目' }
               ],
               storage: [
-                { id: '1tb',  name: '1TB',  priceAdj: 0,     isDefault: true },
-                { id: '2tb',  name: '2TB',  priceAdj: 12000 },
-                { id: '4tb',  name: '4TB',  priceAdj: 48000 },
-                { id: '8tb',  name: '8TB',  priceAdj: 120000 }
+                { id: '2tb',  name: '2TB',  priceAdj: 0,     isDefault: true },
+                { id: '4tb',  name: '4TB',  priceAdj: 18900 },
+                { id: '8tb',  name: '8TB',  priceAdj: 56700 }
               ],
               power: [
-                { id: '70w',  name: '70W USB-C',  priceAdj: 0, isDefault: true },
-                { id: '140w', name: '140W USB-C', priceAdj: 0 }
+                { id: '140w', name: '140W USB-C', priceAdj: 0, isDefault: true, image: 'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/mac-adapter-select-202601-140w_AV1?wid=5120&hei=3280&fmt=webp&qlt=90&.v=bDZYbEhmUk4wTzdIUFJSMVlSS0dHWTlEaDAwVjZaZTRyK1h3ZW5QZW9vdzJpaVhHakl1NktraHQ0cW9hbVJNUk5qdmVQUCtUeFBLKzRmNXZ0dlI4eUMyRnNXMEdqNUJBNEI1TGZVTTB5c2lCcDFhUlRneGJxMGNjRmsvTE96S3E&traceId=1' }
               ]
             },
 
-            // ── M5 Max (16核CPU / 40核GPU) ──
+            // ── M5 Max (18核CPU / 40核GPU) ──
             {
-              id: 'M5_Max_16c',
+              id: 'M5_Max_18_40',
+              processor: 'm5max',
               name: 'M5 Max',
-              detail: '16核CPU / 40核GPU',
+              detail: '18核CPU / 40核GPU',
               tier: 'max',
-              basePrice: 125640,      // 含 48GB RAM + 1TB SSD
+              basePrice: 125640,      // 含 48GB RAM + 2TB SSD
               defaultRam: '48gb',
-              defaultStorage: '1tb',
-              defaultPower: '70w',
+              defaultStorage: '2tb',
+              defaultPower: '140w',
+              requiresPowerSelection: false,
               desc: '頂規旗艦，最高可達 128GB 記憶體',
               memory: [
                 { id: '48gb',  name: '48GB',  priceAdj: 0,     isDefault: true },
-                { id: '64gb',  name: '64GB',  priceAdj: 18000 },
-                { id: '128gb', name: '128GB', priceAdj: 30000 }
+                { id: '64gb',  name: '64GB',  priceAdj: 6300 },
+                { id: '128gb', name: '128GB', priceAdj: 31500 }
               ],
               storage: [
-                { id: '1tb',  name: '1TB',  priceAdj: 0,     isDefault: true },
-                { id: '2tb',  name: '2TB',  priceAdj: 12000 },
-                { id: '4tb',  name: '4TB',  priceAdj: 48000 },
-                { id: '8tb',  name: '8TB',  priceAdj: 120000 }
+                { id: '2tb',  name: '2TB',  priceAdj: 0,     isDefault: true },
+                { id: '4tb',  name: '4TB',  priceAdj: 18900 },
+                { id: '8tb',  name: '8TB',  priceAdj: 56700 }
               ],
               power: [
-                { id: '70w',  name: '70W USB-C',  priceAdj: 0, isDefault: true },
-                { id: '140w', name: '140W USB-C', priceAdj: 0 }
+                { id: '140w', name: '140W USB-C', priceAdj: 0, isDefault: true, image: 'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/mac-adapter-select-202601-140w_AV1?wid=5120&hei=3280&fmt=webp&qlt=90&.v=bDZYbEhmUk4wTzdIUFJSMVlSS0dHWTlEaDAwVjZaZTRyK1h3ZW5QZW9vdzJpaVhHakl1NktraHQ0cW9hbVJNUk5qdmVQUCtUeFBLKzRmNXZ0dlI4eUMyRnNXMEdqNUJBNEI1TGZVTTB5c2lCcDFhUlRneGJxMGNjRmsvTE96S3E&traceId=1' }
               ]
             }
 
@@ -473,94 +477,172 @@ const BTS_CONFIG = {
           label: '16 吋',
           chips: [
 
-            // ── M5 Pro (14核CPU / 20核GPU) ──（16吋入門）
+            // ── M5 Pro (18核CPU / 20核GPU) ──（16吋入門）
             {
-              id: 'M5_Pro_14c',
+              id: 'M5_Pro_18_20',
+              processor: 'm5pro',
               name: 'M5 Pro',
-              detail: '14核CPU / 20核GPU',
+              detail: '18核CPU / 20核GPU',
               tier: 'pro',
-              basePrice: 83190,       // 含 24GB RAM + 512GB SSD
+              basePrice: 83190,       // 含 24GB RAM + 1TB SSD
               defaultRam: '24gb',
-              defaultStorage: '512gb',
+              defaultStorage: '1tb',
               defaultPower: '140w',
+              requiresPowerSelection: false,
               desc: '16吋旗艦螢幕，Pro 主力款',
               memory: [
                 { id: '24gb', name: '24GB', priceAdj: 0,     isDefault: true },
-                { id: '48gb', name: '48GB', priceAdj: 14000 }
+                { id: '48gb', name: '48GB', priceAdj: 14000 },
+                { id: '64gb', name: '64GB', priceAdj: 20300 }
               ],
               storage: [
-                { id: '512gb', name: '512GB', priceAdj: 0,     isDefault: true },
-                { id: '1tb',   name: '1TB',   priceAdj: 6300  },
-                { id: '2tb',   name: '2TB',   priceAdj: 18900 },
-                { id: '4tb',   name: '4TB',   priceAdj: 56700 },
-                { id: '8tb',   name: '8TB',   priceAdj: 131700 }
+                { id: '1tb',   name: '1TB',   priceAdj: 0,     isDefault: true },
+                { id: '2tb',   name: '2TB',   priceAdj: 12600 },
+                { id: '4tb',   name: '4TB',   priceAdj: 31500 }
               ],
               power: [
-                { id: '70w',  name: '70W USB-C',  priceAdj: 0 },
-                { id: '140w', name: '140W USB-C', priceAdj: 0, isDefault: true }
+                { id: '140w', name: '140W USB-C', priceAdj: 0, isDefault: true, image: 'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/mac-adapter-select-202601-140w_AV1?wid=5120&hei=3280&fmt=webp&qlt=90&.v=bDZYbEhmUk4wTzdIUFJSMVlSS0dHWTlEaDAwVjZaZTRyK1h3ZW5QZW9vdzJpaVhHakl1NktraHQ0cW9hbVJNUk5qdmVQUCtUeFBLKzRmNXZ0dlI4eUMyRnNXMEdqNUJBNEI1TGZVTTB5c2lCcDFhUlRneGJxMGNjRmsvTE96S3E&traceId=1' }
               ]
             },
 
-            // ── M5 Max (14核CPU / 32核GPU) ──
+            // ── M5 Max (18核CPU / 32核GPU) ──
             {
-              id: 'M5_Max_14c',
+              id: 'M5_Max_18_32',
+              processor: 'm5max',
               name: 'M5 Max',
-              detail: '14核CPU / 32核GPU',
+              detail: '18核CPU / 32核GPU',
               tier: 'max',
-              basePrice: 119890,      // 含 36GB RAM + 1TB SSD
+              basePrice: 119890,      // 含 36GB RAM + 2TB SSD
               defaultRam: '36gb',
-              defaultStorage: '1tb',
+              defaultStorage: '2tb',
               defaultPower: '140w',
+              requiresPowerSelection: false,
               desc: '16吋最強 Max，極致多核效能',
               memory: [
                 { id: '36gb',  name: '36GB',  priceAdj: 0,     isDefault: true },
-                { id: '64gb',  name: '64GB',  priceAdj: 18000 },
-                { id: '128gb', name: '128GB', priceAdj: 30000 }
+                { id: '48gb',  name: '48GB',  priceAdj: 0,     upgradeToChip: 'M5_Max_18_40', unavailableText: '查看價格與更改項目' },
+                { id: '64gb',  name: '64GB',  priceAdj: 6300,  upgradeToChip: 'M5_Max_18_40', unavailableText: '查看價格與更改項目' },
+                { id: '128gb', name: '128GB', priceAdj: 31500, upgradeToChip: 'M5_Max_18_40', unavailableText: '查看價格與更改項目' }
               ],
               storage: [
-                { id: '1tb',  name: '1TB',  priceAdj: 0,     isDefault: true },
-                { id: '2tb',  name: '2TB',  priceAdj: 12600 },
-                { id: '4tb',  name: '4TB',  priceAdj: 50400 },
-                { id: '8tb',  name: '8TB',  priceAdj: 125400 }
+                { id: '2tb',  name: '2TB',  priceAdj: 0,     isDefault: true },
+                { id: '4tb',  name: '4TB',  priceAdj: 18900 },
+                { id: '8tb',  name: '8TB',  priceAdj: 56700 }
               ],
               power: [
-                { id: '70w',  name: '70W USB-C',  priceAdj: 0 },
-                { id: '140w', name: '140W USB-C', priceAdj: 0, isDefault: true }
+                { id: '140w', name: '140W USB-C', priceAdj: 0, isDefault: true, image: 'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/mac-adapter-select-202601-140w_AV1?wid=5120&hei=3280&fmt=webp&qlt=90&.v=bDZYbEhmUk4wTzdIUFJSMVlSS0dHWTlEaDAwVjZaZTRyK1h3ZW5QZW9vdzJpaVhHakl1NktraHQ0cW9hbVJNUk5qdmVQUCtUeFBLKzRmNXZ0dlI4eUMyRnNXMEdqNUJBNEI1TGZVTTB5c2lCcDFhUlRneGJxMGNjRmsvTE96S3E&traceId=1' }
               ]
             },
 
-            // ── M5 Max (16核CPU / 40核GPU) ──
+            // ── M5 Max (18核CPU / 40核GPU) ──
             {
-              id: 'M5_Max_16c',
+              id: 'M5_Max_18_40',
+              processor: 'm5max',
               name: 'M5 Max',
-              detail: '16核CPU / 40核GPU',
+              detail: '18核CPU / 40核GPU',
               tier: 'max',
-              basePrice: 137890,      // 含 48GB RAM + 1TB SSD
+              basePrice: 137890,      // 含 48GB RAM + 2TB SSD
               defaultRam: '48gb',
-              defaultStorage: '1tb',
+              defaultStorage: '2tb',
               defaultPower: '140w',
+              requiresPowerSelection: false,
               desc: '16吋頂規旗艦，最高 128GB 記憶體',
               memory: [
                 { id: '48gb',  name: '48GB',  priceAdj: 0,     isDefault: true },
-                { id: '64gb',  name: '64GB',  priceAdj: 20300 },
-                { id: '128gb', name: '128GB', priceAdj: 45500 }
+                { id: '64gb',  name: '64GB',  priceAdj: 6300 },
+                { id: '128gb', name: '128GB', priceAdj: 31500 }
               ],
               storage: [
-                { id: '1tb',  name: '1TB',  priceAdj: 0,     isDefault: true },
-                { id: '2tb',  name: '2TB',  priceAdj: 12600 },
-                { id: '4tb',  name: '4TB',  priceAdj: 50400 },
-                { id: '8tb',  name: '8TB',  priceAdj: 125400 }
+                { id: '2tb',  name: '2TB',  priceAdj: 0,     isDefault: true },
+                { id: '4tb',  name: '4TB',  priceAdj: 18900 },
+                { id: '8tb',  name: '8TB',  priceAdj: 56700 }
               ],
               power: [
-                { id: '70w',  name: '70W USB-C',  priceAdj: 0 },
-                { id: '140w', name: '140W USB-C', priceAdj: 0, isDefault: true }
+                { id: '140w', name: '140W USB-C', priceAdj: 0, isDefault: true, image: 'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/mac-adapter-select-202601-140w_AV1?wid=5120&hei=3280&fmt=webp&qlt=90&.v=bDZYbEhmUk4wTzdIUFJSMVlSS0dHWTlEaDAwVjZaZTRyK1h3ZW5QZW9vdzJpaVhHakl1NktraHQ0cW9hbVJNUk5qdmVQUCtUeFBLKzRmNXZ0dlI4eUMyRnNXMEdqNUJBNEI1TGZVTTB5c2lCcDFhUlRneGJxMGNjRmsvTE96S3E&traceId=1' }
               ]
             }
 
           ] // end chips 16"
         } // end 16"
       }
-    } // end macbookPro
+    }, // end macbookPro
+
+    // ─────────────────────────────────────────────
+    //  iMac 24 吋（M4，教育商店）
+    //  官方選購流程：顏色 → M4 晶片 → 自訂配置 → 底座 → 乙太網路 → 滑鼠/觸控板 → 鍵盤
+    // ─────────────────────────────────────────────
+    imac: {
+      name: 'iMac',
+      chip: 'M4',
+      sizeLabel: '24 吋',
+      hasNano: true,
+      nanoPrice: 6300,
+      chipImage: 'https://www.apple.com.cn/newsroom/images/2024/05/apple-introduces-m4-chip/article/Apple-M4-chip-badge-240507_big.jpg.large.jpg',
+      colors: ['藍色', '紫色', '粉紅色', '橙色', '黃色', '綠色', '銀色'],
+      colorImages: {
+        '24': {
+          '藍色': 'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/imac-touch-id-blue-selection-hero-202410_SW_COLOR?wid=900&hei=900&fmt=jpeg&qlt=90&.v=a0tNS2JIVU5IOTRZR2NHS2ExMnFPc1drZVpPa0NDWCtnOFdlQnJOK1BwLzlVTHI4MGViOXdpd3dNRkd6YTQwTjZuaWpwSkNLVEZlN09OdlhEMDQzak5lVUN5anBMYXArdTZxQXVZNFlaRkViQ1VCSjVTSk5OaFlnRG5jUXVjdG1mbW94YnYxc1YvNXZ4emJGL0IxNFp3',
+          '紫色': 'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/imac-touch-id-purple-selection-hero-202410_SW_COLOR?wid=900&hei=900&fmt=jpeg&qlt=90&.v=Sit0QW1LSHN2S0FGTFhNRzlQTis3V3FKcVRTNUhXNXFBWGJyVHVWR0JFbHZVbWE2TmlLZWJaczVycE94Wnh1NTZZRHk0bzd5UHV2cXVVYWVUUVNPU2dnTU1qVDJZRE9RY2VRblBUT0J5NlZWblBOanQyNVJ3ZExIRURwNnRDRVVyTEhqaFJlNk5MelQyK0xzSUliR3h3',
+          '粉紅色': 'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/imac-touch-id-pink-selection-hero-202410_SW_COLOR?wid=900&hei=900&fmt=jpeg&qlt=90&.v=ajdQVlpRU3VHdjB0UDJNS2JkeUNCakRDb29DR0luODhUTDQ4R1kyQlRvTDlVTHI4MGViOXdpd3dNRkd6YTQwTjZuaWpwSkNLVEZlN09OdlhEMDQzak5lVUN5anBMYXArdTZxQXVZNFlaRkY0TnRHelYzMEU2VGdwVCtJcXF3UzVmbW94YnYxc1YvNXZ4emJGL0IxNFp3',
+          '橙色': 'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/imac-touch-id-orange-selection-hero-202410_SW_COLOR?wid=900&hei=900&fmt=jpeg&qlt=90&.v=VEV1bTh0OXY2UTFBYzdFZFhSN3VtSG11MzVybDZnMC9BMm1UOGVqTXpWbHZVbWE2TmlLZWJaczVycE94Wnh1NTZZRHk0bzd5UHV2cXVVYWVUUVNPU2dnTU1qVDJZRE9RY2VRblBUT0J5NlZKTDlSS3RJUkkxRU9UVkxHTC91eVBZZjBZUnJqWkJIMTlpTHhRVmVhcnd3',
+          '黃色': 'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/imac-vesa-yellow-selection-hero-202410_SW_COLOR?wid=900&hei=900&fmt=jpeg&qlt=90&.v=UGk3R2Vtek1JOW42ODRZbkd5VzI5OCtOK3N2T1FTOUtXQm1OeWdiMWFhbU55WDhZOWZOS1ZKa3FHbGpBV0tzbzhZZnVmZUVMbXdTa0N2Y2J5SnluRXJrNkxqcEdrM2x6OUZ3Z2JnTllhUU9QZWppK1U2MlhnY1BHbWN1VHE3N3Y',
+          '綠色': 'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/imac-vesa-green-selection-hero-202410_SW_COLOR?wid=900&hei=900&fmt=jpeg&qlt=90&.v=TTVrVDloK00wb0F2dWtlSy9VNFZEZ0syUVVrbzBMWk8zd3JPOUtEWkRIWmNnbjlPc1VnOXFpY3A2TFNaeXVpdG5QUHdwZEMwelV4UlRlaVQ5eGpEY0RNZGEwYVUyTzcvZlg1UkxwTzJQS1hmZkpNZFhhd3dMVGNXUjI2alFzVG4',
+          '銀色': 'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/imac-vesa-silver-selection-hero-202410_SW_COLOR?wid=900&hei=900&fmt=jpeg&qlt=90&.v=Q1lDOTZ0VEhuQXNUK3RNL0lZRWRycytOK3N2T1FTOUtXQm1OeWdiMWFhbU55WDhZOWZOS1ZKa3FHbGpBV0tzbzhZZnVmZUVMbXdTa0N2Y2J5SnluRXJrNkxqcEdrM2x6OUZ3Z2JnTllhUU1jZk1hbGZHNitOcE5EK3hzT3J4Nk8'
+        }
+      },
+      chips: [
+        {
+          id: 'M4_8_8',
+          name: 'M4',
+          detail: '8 核心 CPU / 8 核心 GPU / 16 核心神經網路引擎',
+          basePrice: 41150,
+          defaultMemory: '16gb',
+          defaultStorage: '256gb',
+          desc: '具備兩個 Thunderbolt 埠',
+          thunderbolt: '兩個 Thunderbolt 埠',
+          supportsNano: false
+        },
+        {
+          id: 'M4_10_10',
+          name: 'M4',
+          detail: '10 核心 CPU / 10 核心 GPU / 16 核心神經網路引擎',
+          basePrice: 46400,
+          defaultMemory: '16gb',
+          defaultStorage: '256gb',
+          desc: '具備四個 Thunderbolt 埠',
+          thunderbolt: '四個 Thunderbolt 埠',
+          supportsNano: true
+        }
+      ],
+      memory: [
+        { id: '16gb', name: '16GB', priceAdj: 0, isDefault: true },
+        { id: '24gb', name: '24GB', priceAdj: 7000, priceByChip: { M4_8_8: 6300, M4_10_10: 7000 } },
+        { id: '32gb', name: '32GB', priceAdj: 13300, priceByChip: { M4_10_10: 13300 }, availableChips: ['M4_10_10'], unavailableText: '查看價格與更改項目' }
+      ],
+      storage: [
+        { id: '256gb', name: '256GB', priceAdj: 0, isDefault: true },
+        { id: '512gb', name: '512GB', priceAdj: 7000, priceByChip: { M4_8_8: 6300, M4_10_10: 7000 } },
+        { id: '1tb', name: '1TB', priceAdj: 13300, priceByChip: { M4_8_8: 12600, M4_10_10: 13300 } },
+        { id: '2tb', name: '2TB', priceAdj: 25900, priceByChip: { M4_10_10: 25900 }, availableChips: ['M4_10_10'], unavailableText: '查看價格與更改項目' }
+      ],
+      stand: [
+        { id: 'stand', name: '立架', priceAdj: 0, isDefault: true, desc: '擺放於桌面上，可調整俯仰角度。' },
+        { id: 'vesa', name: 'VESA 吊架連接器', priceAdj: 0, desc: '內建設計，方便你固定於牆壁或可調式懸臂上。' }
+      ],
+      ethernet: [
+        { id: 'none', name: '無乙太網路', priceAdj: 0, availableChips: ['M4_8_8'], isDefault: true },
+        { id: 'gigabit', name: 'Gigabit 乙太網路埠', priceAdj: 810, priceByChip: { M4_8_8: 810, M4_10_10: 0 }, isDefaultChips: ['M4_10_10'] }
+      ],
+      pointing: [
+        { id: 'magic_mouse', name: '巧控滑鼠', priceAdj: 0, isDefault: true },
+        { id: 'magic_trackpad', name: '巧控板', priceAdj: 1500 }
+      ],
+      keyboard: [
+        { id: 'magic_keyboard', name: '巧控鍵盤', priceAdj: 0, availableChips: ['M4_8_8'], isDefault: true, desc: '極為精巧的無線設計。' },
+        { id: 'touch_id', name: '含 Touch ID 的巧控鍵盤', priceAdj: 0, availableChips: ['M4_10_10'], isDefaultChips: ['M4_10_10'], desc: '使用你的指紋，提供快速、簡單的認證方式。' },
+        { id: 'touch_id_numeric', name: '含 Touch ID 和數字鍵盤的巧控鍵盤', priceAdj: 2300, priceByChip: { M4_8_8: 2300, M4_10_10: 900 }, desc: '延伸鍵盤布局，具備導覽控制鍵。' }
+      ]
+    } // end imac
   }
 };
 

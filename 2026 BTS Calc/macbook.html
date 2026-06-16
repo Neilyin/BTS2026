@@ -2,7 +2,7 @@
 <html lang="zh-TW">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>MacBook BTS 優惠計算機</title>
       <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap');
@@ -101,6 +101,79 @@
     .back-btn:hover { transform: translateX(-2px); }
     .back-btn svg { width:10px; height:16px; fill:none; stroke:currentColor; stroke-width:2.5; stroke-linecap:round; stroke-linejoin:round; }
     .topbar-title { font-family: 'Outfit', sans-serif; font-size:17px; font-weight:700; flex:1; }
+    .designer-chip {
+      display:flex;
+      align-items:center;
+      gap:8px;
+      padding:6px 10px 6px 7px;
+      border:1px solid rgba(0,113,227,.16);
+      border-radius:999px;
+      background:rgba(255,255,255,.72);
+      box-shadow:0 6px 18px rgba(0,0,0,.05);
+      white-space:nowrap;
+    }
+    .designer-chip-avatar {
+      width:24px;
+      height:24px;
+      border-radius:50%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:#fff;
+      font-family:'Outfit', sans-serif;
+      font-size:11px;
+      font-weight:800;
+      background:linear-gradient(135deg,#111827,#0071e3);
+    }
+    .designer-chip-text {
+      display:flex;
+      flex-direction:column;
+      line-height:1.05;
+    }
+    .designer-chip-label {
+      font-size:8px;
+      font-weight:800;
+      color:var(--blue);
+      text-transform:uppercase;
+      letter-spacing:.5px;
+    }
+    .designer-chip-name {
+      font-size:13px;
+      font-weight:900;
+      color:var(--text);
+      letter-spacing:0;
+    }
+    .receipt-brand {
+      margin-top: 12px;
+      padding: 13px 14px;
+      border: 1px solid rgba(0,113,227,.14);
+      border-radius: 14px;
+      background: linear-gradient(135deg, rgba(0,113,227,.07), rgba(17,24,39,.035));
+      text-align: center;
+    }
+    .receipt-brand-kicker {
+      display:block;
+      font-size:10px;
+      font-weight:800;
+      color:var(--blue);
+      text-transform:uppercase;
+      letter-spacing:.9px;
+      margin-bottom:4px;
+    }
+    .receipt-brand-name {
+      display:block;
+      font-family:'Outfit', 'Noto Sans TC', sans-serif;
+      font-size:22px;
+      font-weight:900;
+      color:var(--text);
+      letter-spacing:0;
+    }
+    @media(max-width:520px){
+      .topbar { gap:8px; }
+      .designer-chip { padding:6px; }
+      .designer-chip-text { display:none; }
+      .topbar-title { font-size:15px; }
+    }
     
     .product-switch { display:flex; background:rgba(0,0,0,0.06); border-radius:8px; padding:2px; gap:2px; }
         .sw-btn { font-size:12px; font-weight:700; padding:4px 14px; border-radius:6px; border:none; background:none; cursor:pointer; color:var(--text-sub); transition:all var(--transition); }
@@ -170,11 +243,88 @@
     .opt.disabled { opacity:.4; pointer-events:none; }
     .opt-img { width:100%; max-width:88px; height:64px; object-fit:contain; display:block; margin:0 auto 8px; transition: transform var(--transition); }
     .opt:hover:not(.disabled) .opt-img { transform: scale(1.05); }
+    .power-img { width:100%; height:96px; object-fit:contain; display:block; margin:0 auto 10px; transition: transform var(--transition); }
+    .opt:hover:not(.disabled) .power-img { transform: scale(1.04); }
     .opt-title { font-size:13px; font-weight:700; margin-bottom:2px; }
     .opt-sub   { font-size:11px; color:var(--text-sub); line-height:1.4; font-weight: 500; }
     .opt-price { font-size:12px; font-weight:700; color:var(--blue); margin-top:4px; }
     .opt-badge { font-size:10px; font-weight:700; color:var(--green); margin-top:2px; }
     .opt-tag   { font-size:10px; background:rgba(0,0,0,0.03); border:1px solid var(--border); border-radius:4px; padding:2px 6px; display:inline-block; margin-top:4px; color:var(--text-sub); font-weight:500; }
+    .upgrade-notice {
+      border: 1.5px solid rgba(0,113,227,.16);
+      border-radius: var(--radius-md);
+      background: linear-gradient(135deg, rgba(0,113,227,.06), rgba(255,255,255,.76));
+      padding: 16px;
+      display: grid;
+      grid-template-columns: 96px 1fr;
+      gap: 14px;
+      align-items: center;
+    }
+    .upgrade-chip-img {
+      width: 96px;
+      height: 96px;
+      border-radius: 18px;
+      object-fit: cover;
+      background: #050505;
+      box-shadow: 0 12px 28px rgba(0,0,0,.16);
+    }
+    .upgrade-chip-badge {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 20px;
+      font-weight: 900;
+      line-height: 1.05;
+      text-align: center;
+    }
+    .upgrade-kicker {
+      font-size: 11px;
+      color: var(--blue);
+      font-weight: 800;
+      margin-bottom: 4px;
+    }
+    .upgrade-title {
+      font-size: 17px;
+      font-weight: 900;
+      line-height: 1.25;
+      margin-bottom: 6px;
+    }
+    .upgrade-copy {
+      font-size: 12px;
+      color: var(--text-sub);
+      line-height: 1.55;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+    .upgrade-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .upgrade-next,
+    .upgrade-back {
+      min-height: 40px;
+      border-radius: 999px;
+      border: none;
+      padding: 0 16px;
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+    .upgrade-next {
+      background: var(--blue);
+      color: #fff;
+    }
+    .upgrade-back {
+      background: rgba(0,0,0,.06);
+      color: var(--text);
+    }
+    @media(max-width:420px){
+      .upgrade-notice { grid-template-columns: 1fr; text-align:center; }
+      .upgrade-chip-img { margin:0 auto; }
+      .upgrade-actions { justify-content:center; }
+    }
     
     /* Color dot */
     .color-dot { width:28px; height:28px; border-radius:50%; margin:0 auto 6px; border:2px solid var(--border); transition:all var(--transition); }
@@ -437,6 +587,13 @@
       返回
     </button>
     <span class="topbar-title" id="topbar-title">MacBook 計算機</span>
+    <div class="designer-chip" aria-label="Designed by Neil尼歐">
+      <span class="designer-chip-avatar">N</span>
+      <span class="designer-chip-text">
+        <span class="designer-chip-label">Designed by</span>
+        <span class="designer-chip-name">Neil尼歐</span>
+      </span>
+    </div>
     <div class="product-switch">
       <button class="sw-btn" id="sw-air" onclick="switchProduct('air')">Air</button>
       <button class="sw-btn" id="sw-pro" onclick="switchProduct('pro')">Pro</button>
@@ -449,6 +606,36 @@
   </div>
 
   <div class="steps-wrap" id="steps-wrap"></div>
+
+  <!-- ── 創作者資訊 ── -->
+  <footer class="creator-footer compact">
+    <div class="creator-card">
+      <div class="creator-avatar" aria-hidden="true">N</div>
+      <div class="creator-info">
+        <span class="creator-by">本工具由創作者開發</span>
+        <span class="creator-name">Neil尼歐</span>
+        <span class="creator-tagline">Apple 教育優惠分享 · BTS 代購</span>
+      </div>
+      <nav class="creator-links" aria-label="Neil尼歐 社群連結">
+        <a class="creator-link site" href="https://neil.tw" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.7 2.5 15.3 0 18M12 3c-2.5 2.7-2.5 15.3 0 18"/></svg>
+          官方網站
+        </a>
+        <a class="creator-link youtube" href="https://www.youtube.com/channel/UCUn8VlPDRSq_7K3N4zbmHsQ" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.6A3 3 0 0 0 .5 6.2 31 31 0 0 0 0 12a31 31 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.6 9.4.6 9.4.6s7.5 0 9.4-.6a3 3 0 0 0 2.1-2.1A31 31 0 0 0 24 12a31 31 0 0 0-.5-5.8zM9.6 15.6V8.4l6.2 3.6z"/></svg>
+          YouTube
+        </a>
+        <a class="creator-link instagram" href="https://www.instagram.com/neil.tw_/" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1.2" fill="currentColor" stroke="none"/></svg>
+          Instagram
+        </a>
+        <a class="creator-link threads" href="https://www.threads.net/@neil.tw_" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.5 11.2c-.1 0-.2-.1-.3-.1-.2-3-1.8-4.7-4.5-4.7-1.6 0-3 .7-3.8 2l1.4 1c.5-.8 1.4-1 2.4-1 1.5 0 2.4.9 2.6 2.5-.7-.2-1.5-.3-2.3-.2-2.4.1-3.9 1.5-3.8 3.4.1 1.8 1.6 2.9 3.4 2.8 1.4-.1 2.4-.7 3-1.7.4-.7.6-1.5.7-2.4.6.4 1 .9 1.2 1.6.3 1 .3 2.6-.9 3.8-1.1 1.1-2.4 1.5-4.4 1.5-2.2 0-3.9-.7-5-2.1C2.7 16.6 2.2 14.7 2.2 12s.5-4.6 1.6-6c1.1-1.4 2.8-2.1 5-2.1 2.2 0 3.9.7 5 2.2.6.7 1 1.7 1.3 2.8l1.8-.5c-.3-1.4-.9-2.6-1.7-3.6C13.8 3.1 11.6 2.2 8.9 2.2 4.1 2.2 1 5.6.4 11.2c0 .3 0 .5 0 .8s0 .5 0 .8C1 18.4 4.1 21.8 8.9 21.8c2.5 0 4.3-.6 5.8-2.1 1.9-1.9 1.9-4.3 1.3-5.8-.4-1.1-1.1-2-2.1-2.7zm-4.4 4.4c-1 .1-1.7-.4-1.8-1.1 0-.7.6-1.3 1.9-1.4h.4c.6 0 1.1.1 1.6.2-.2 1.6-1 2.2-2.1 2.3z"/></svg>
+          Threads
+        </a>
+      </nav>
+    </div>
+  </footer>
 </div>
 
 <!-- Price bar -->
@@ -459,7 +646,7 @@
       <div class="price-breakdown" id="price-breakdown">尚未選擇規格</div>
       <div class="price-saved" id="price-saved" style="display:none"></div>
     </div>
-    <button class="gen-btn" id="gen-btn" onclick="openModal()" disabled>
+    <button class="gen-btn" id="gen-btn" onclick="startCalc()" disabled>
       <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
       查看清單
     </button>
@@ -475,8 +662,8 @@
     <div class="modal-actions">
       <button class="modal-btn secondary" onclick="closeModal()">關閉</button>
       <button class="modal-btn primary" onclick="generateImage()">
-        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-        儲存圖片
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+        保存購買清單
       </button>
     </div>
     <div class="purchase-links">
@@ -497,11 +684,12 @@
 
 <script src="bts-config.js"></script>
 <script src="config-override.js"></script>
+<script src="bts-ui.js"></script>
 <script>
 // ═══════════════════════════════════════
 //  State
 // ═══════════════════════════════════════
-let productType = 'air';   // 'air' | 'pro'
+let productType = 'air';   // 'air' | 'pro' | 'imac'
 
 const state = {
   size:       null,   // '13'|'15' (Air) / '14'|'16' (Pro)
@@ -512,12 +700,19 @@ const state = {
   storageId:  null,
   powerId:    null,
   // Pro specific
+  chipFamily: null,
   chipObj:    null,   // full chip object from config
   proMemAdj:  0,      // price adjustment for RAM upgrade
   proMemId:   null,
   proStorAdj: 0,
   proStorId:  null,
   nano:       null,
+  // iMac specific
+  imacChipId: null,
+  standId: null,
+  ethernetId: null,
+  pointingId: null,
+  keyboardId: null,
   // Shared
   gift:         null,  // { id, price, originalPrice, name }
   creditCard:   0,
@@ -531,7 +726,7 @@ const state = {
 // ═══════════════════════════════════════
 function init() {
   const p = new URLSearchParams(window.location.search).get('product');
-  productType = p === 'pro' ? 'pro' : 'air';
+  productType = p === 'pro' ? 'pro' : p === 'imac' ? 'imac' : 'air';
   reset();
   renderAll();
 }
@@ -540,8 +735,8 @@ function reset() {
   Object.assign(state, {
     size:null, color:null,
     chipId:null, memId:null, storageId:null, powerId:null,
-    chipObj:null, proMemAdj:0, proMemId:null, proStorAdj:0, proStorId:null,
-    nano:null, gift:null,
+    chipFamily:null, chipObj:null, proMemAdj:0, proMemId:null, proStorAdj:0, proStorId:null,
+    nano:null, imacChipId:null, standId:null, ethernetId:null, pointingId:null, keyboardId:null, gift:null,
     creditCard:0, referral:0, sellGift:false, giftPrice:0
   });
 }
@@ -555,9 +750,10 @@ function switchProduct(t) {
 
 function renderAll() {
   document.getElementById('topbar-title').textContent =
-    productType === 'air' ? 'MacBook Air 計算機' : 'MacBook Pro 計算機';
+    productType === 'air' ? 'MacBook Air 計算機' : productType === 'pro' ? 'MacBook Pro 計算機' : 'iMac 計算機';
   document.getElementById('sw-air').classList.toggle('active', productType === 'air');
   document.getElementById('sw-pro').classList.toggle('active', productType === 'pro');
+  document.querySelector('.product-switch').style.display = productType === 'imac' ? 'none' : '';
   renderSteps();
   updatePrice();
 }
@@ -573,18 +769,29 @@ function getStepDefs() {
     { id:'memory',       title:'統一記憶體',   icon:'' },
     { id:'storage',      title:'儲存裝置',     icon:'' },
     { id:'power',        title:'電源轉接器',   icon:'' },
-    { id:'gifts',        title:'BTS 配件',     icon:'' },
     { id:'rebate',       title:'回饋試算',     icon:'' }
+  ];
+  if (productType === 'imac') return [
+    { id:'color',    title:'選擇顏色',     icon:'' },
+    { id:'chip',     title:'選擇晶片',     icon:'' },
+    { id:'memory',   title:'統一記憶體',   icon:'' },
+    { id:'storage',  title:'儲存裝置',     icon:'' },
+    ...(shouldShowImacDisplay() ? [{ id:'display', title:'顯示器', icon:'' }] : []),
+    { id:'stand',    title:'底座',         icon:'' },
+    { id:'ethernet', title:'網路連接',     icon:'' },
+    { id:'pointing', title:'滑鼠/觸控板',  icon:'' },
+    { id:'keyboard', title:'鍵盤',         icon:'' },
+    { id:'rebate',   title:'回饋試算',     icon:'' }
   ];
   return [
     { id:'size',    title:'選擇尺寸',   icon:'' },
     { id:'color',   title:'選擇顏色',   icon:'' },
-    { id:'display', title:'顯示器玻璃', icon:'' },
+    { id:'display', title:'顯示器',     icon:'' },
     { id:'chip',    title:'選擇晶片',   icon:'' },
+    { id:'compute', title:'處理能力',   icon:'' },
     { id:'memory',  title:'統一記憶體', icon:'' },
     { id:'storage', title:'儲存裝置',   icon:'' },
-    { id:'power',   title:'電源轉接器', icon:'' },
-    { id:'gifts',   title:'BTS 配件',   icon:'' },
+    ...(shouldShowProPowerStep() ? [{ id:'power', title:'電源轉接器', icon:'' }] : []),
     { id:'rebate',  title:'回饋試算',   icon:'' }
   ];
 }
@@ -665,11 +872,16 @@ function stepDone(id) {
   switch(id) {
     case 'size':    return !!state.size;
     case 'color':   return !!state.color;
-    case 'chip':    return productType==='air' ? !!state.chipId : !!state.chipObj;
-    case 'memory':  return productType==='air' ? !!state.memId : state.proMemId !== null;
-    case 'storage': return productType==='air' ? !!state.storageId : state.proStorId !== null;
-    case 'power':   return !!state.powerId;
+    case 'chip':    return productType==='air' ? !!state.chipId : productType==='imac' ? !!state.imacChipId : !!state.chipFamily;
+    case 'compute': return productType==='pro' ? !!state.chipObj : true;
+    case 'memory':  return productType==='air' || productType==='imac' ? !!state.memId : state.proMemId !== null;
+    case 'storage': return productType==='air' || productType==='imac' ? !!state.storageId : state.proStorId !== null;
+    case 'power':   return productType==='imac' ? true : !!state.powerId;
     case 'display': return state.nano !== null;
+    case 'stand':   return !!state.standId;
+    case 'ethernet': return !!state.ethernetId;
+    case 'pointing': return !!state.pointingId;
+    case 'keyboard': return !!state.keyboardId;
     case 'gifts':   return !!state.gift;
     case 'rebate':  return true;
     default: return false;
@@ -680,6 +892,7 @@ function stepDone(id) {
 //  Build step HTML
 // ═══════════════════════════════════════
 function buildStepBody(id) {
+  if (productType === 'imac') return buildImacStep(id);
   if (productType === 'air') return buildAirStep(id);
   return buildProStep(id);
 }
@@ -703,7 +916,7 @@ function buildAirStep(id) {
       </div>`;
     }
     case 'color': {
-      const colorMap = { '天藍色':'#5a9fd4','星光色':'#e8e0d0','銀色':'#e5e5ea','午夜色':'#2c3040' };
+      const colorMap = { '天藍色':'#DDE5EA','星光色':'#e8e0d0','銀色':'#e5e5ea','午夜色':'#2c3040' };
       return `<div class="opt-grid" id="color-grid">
         ${cfg.colors.map(c=>`
         <div class="opt" id="color-${esc(c)}" onclick="airSelectColor('${c}')">
@@ -717,9 +930,9 @@ function buildAirStep(id) {
       const chips = BTS_CONFIG.products.macbookAir.sizes[state.size].chips;
       return chips.map(c=>`
       <div class="chip-opt" id="chip-${c.id}" onclick="airSelectChip('${c.id}')">
-        <div class="chip-name">${c.name}</div>
+        <div class="chip-name">${c.name} 晶片</div>
         <div class="chip-detail">${c.detail}</div>
-        ${c.priceAdj > 0 ? `<div class="opt-tag">+NT$${c.priceAdj.toLocaleString()}</div>` : `<div class="opt-tag">標準配置</div>`}
+        <div class="chip-price">NT$${(c.basePrice || (BTS_CONFIG.products.macbookAir.sizes[state.size].basePrice + (c.priceAdj || 0))).toLocaleString()} 起</div>
         <div class="chip-desc">${c.desc}</div>
       </div>`).join('');
     }
@@ -730,11 +943,14 @@ function buildAirStep(id) {
       let mems = BTS_CONFIG.products.macbookAir.sizes[state.size].memory;
       return `${airPricePreview()}
       <div class="opt-grid">
-        ${mems.map(m=>`
-        <div class="opt" id="mem-${m.id}" onclick="airSelectMem('${m.id}')">
+        ${mems.map(m=>{
+          const enabled = isAirOptionAvailable(m);
+          const upgrade = isAirUpgradeOption(m);
+          return `
+        <div class="opt ${enabled || upgrade ? '' : 'disabled'}" id="mem-${m.id}" ${enabled ? `onclick="airSelectMem('${m.id}')"` : upgrade ? `onclick="airShowUpgradeNotice('memory','${m.id}')"` : ''}>
           <div class="opt-title">${m.name}</div>
-          ${m.priceAdj>0 ? `<div class="opt-price">+NT$${m.priceAdj.toLocaleString()}</div>` : `<div class="opt-badge">標準</div>`}
-        </div>`).join('')}
+          ${enabled ? (m.priceAdj>0 ? `<div class="opt-price">+NT$${m.priceAdj.toLocaleString()}</div>` : `<div class="opt-badge">已配備</div>`) : `<div class="opt-tag">${m.unavailableText || '查看價格與更改項目'}</div>`}
+        </div>`}).join('')}
       </div>`;
     }
     case 'storage': {
@@ -743,11 +959,14 @@ function buildAirStep(id) {
       const chip10 = state.chipId === 'M5_10gpu';
       return `${airPricePreview()}
       <div class="opt-grid">
-        ${stores.map(s=>`
-        <div class="opt" id="stor-${s.id}" onclick="airSelectStorage('${s.id}')">
+        ${stores.map(s=>{
+          const enabled = isAirOptionAvailable(s);
+          const upgrade = isAirUpgradeOption(s);
+          return `
+        <div class="opt ${enabled || upgrade ? '' : 'disabled'}" id="stor-${s.id}" ${enabled ? `onclick="airSelectStorage('${s.id}')"` : upgrade ? `onclick="airShowUpgradeNotice('storage','${s.id}')"` : ''}>
           <div class="opt-title">${s.name}</div>
-          ${s.priceAdj>0 ? `<div class="opt-price">+NT$${s.priceAdj.toLocaleString()}</div>` : `<div class="opt-badge">標準</div>`}
-        </div>`).join('')}
+          ${enabled ? (s.priceAdj>0 ? `<div class="opt-price">+NT$${s.priceAdj.toLocaleString()}</div>` : `<div class="opt-badge">已配備</div>`) : `<div class="opt-tag">${s.unavailableText || '查看價格與更改項目'}</div>`}
+        </div>`}).join('')}
       </div>`;
     }
     case 'power': {
@@ -756,6 +975,7 @@ function buildAirStep(id) {
       return powers
         .map(p=>`
         <div class="opt" id="power-${p.id}" onclick="airSelectPower('${p.id}')">
+          ${p.image ? `<img class="power-img" src="${p.image}" alt="${p.name}" onerror="this.style.display='none'">` : ''}
           <div class="opt-title">${p.name}</div>
           <div class="opt-sub">${p.desc}</div>
           ${p.priceAdj > 0 ? `<div class="opt-price">+NT$${p.priceAdj.toLocaleString()}</div>` : `<div class="opt-badge">已配備</div>`}
@@ -773,7 +993,8 @@ function airPricePreview() {
   const chip = size.chips.find(c => c.id === state.chipId);
   const memA  = state.memId  ? (size.memory.find(m=>m.id===state.memId)?.priceAdj||0) : 0;
   const storA = state.storageId ? (size.storage.find(s=>s.id===state.storageId)?.priceAdj||0) : 0;
-  const cur   = size.basePrice + (chip?.priceAdj||0) + memA + storA;
+  const powA  = state.powerId ? (size.power.find(p=>p.id===state.powerId)?.priceAdj||0) : 0;
+  const cur   = size.basePrice + (chip?.priceAdj||0) + memA + storA + powA - getAirHiddenUpgradeDiscount();
   return `<div class="price-preview-inline">
     <span class="ppi-label">目前規格小計</span>
     <span class="ppi-val">NT$${cur.toLocaleString()}</span>
@@ -800,10 +1021,21 @@ function buildProStep(id) {
     }
     case 'chip': {
       if (!state.size) return warn('請先選擇尺寸');
-      const chips = cfg.sizes[state.size].chips;
+      const chips = getProChipFamilies();
       return chips.map(c=>`
-      <div class="chip-opt" id="chip-${c.id}" onclick="proSelectChip('${c.id}')">
-        <div class="chip-name">${c.name} <span style="font-size:12px;font-weight:400">${c.detail}</span></div>
+      <div class="chip-opt" id="chip-${c.processor}" onclick="proSelectChipFamily('${c.processor}')">
+        <div class="chip-name">${c.name}</div>
+        <div class="chip-price">NT$${c.basePrice.toLocaleString()} 起</div>
+        <div class="chip-includes">${c.summary}</div>
+        <div class="chip-desc">${c.desc}</div>
+      </div>`).join('');
+    }
+    case 'compute': {
+      if (!state.chipFamily) return warn('請先選擇晶片');
+      const chips = cfg.sizes[state.size].chips.filter(c => (c.processor || c.id) === state.chipFamily);
+      return chips.map(c=>`
+      <div class="chip-opt" id="compute-${c.id}" onclick="proSelectChip('${c.id}')">
+        <div class="chip-name">${c.detail}</div>
         <div class="chip-price">NT$${c.basePrice.toLocaleString()}</div>
         <div class="chip-includes">含 ${c.defaultRam} RAM · ${c.defaultStorage.toUpperCase()} SSD · ${c.defaultPower} 電源</div>
         <div class="chip-desc">${c.desc}</div>
@@ -814,11 +1046,13 @@ function buildProStep(id) {
       const mems = state.chipObj.memory;
       return `${proPreview()}
       <div class="opt-grid">
-        ${mems.map(m=>`
-        <div class="opt" id="mem-${m.id}" onclick="proSelectMem('${m.id}', ${m.priceAdj})">
+        ${mems.map(m=>{
+          const upgrade = isProMemoryUpgradeOption(m);
+          return `
+        <div class="opt" id="mem-${m.id}" onclick="${upgrade ? `proShowMemoryUpgradeNotice('${m.id}')` : `proSelectMem('${m.id}', ${m.priceAdj})`}">
           <div class="opt-title">${m.name}</div>
-          ${m.priceAdj>0 ? `<div class="opt-price">+NT$${m.priceAdj.toLocaleString()}</div>` : `<div class="opt-badge">標準</div>`}
-        </div>`).join('')}
+          ${upgrade ? `<div class="opt-tag">${m.unavailableText || '查看價格與更改項目'}</div>` : (m.priceAdj>0 ? `<div class="opt-price">+NT$${m.priceAdj.toLocaleString()}</div>` : `<div class="opt-badge">標準</div>`)}
+        </div>`}).join('')}
       </div>`;
     }
     case 'storage': {
@@ -840,6 +1074,7 @@ function buildProStep(id) {
       <div class="opt-grid">
         ${powers.map(p=>`
         <div class="opt" id="power-${p.id}" onclick="proSelectPower('${p.id}', ${p.priceAdj || 0})">
+          ${p.image ? `<img class="power-img" src="${p.image}" alt="${p.name}" onerror="this.style.display='none'">` : ''}
           <div class="opt-title">${p.name}</div>
           ${p.priceAdj > 0 ? `<div class="opt-price">+NT$${p.priceAdj.toLocaleString()}</div>` : `<div class="opt-badge">已配備</div>`}
         </div>`).join('')}
@@ -880,16 +1115,330 @@ function buildProStep(id) {
 
 function proPreview() {
   if (!state.chipObj) return '';
-  const total = state.chipObj.basePrice + state.proMemAdj + state.proStorAdj + (state.nano ? BTS_CONFIG.products.macbookPro.nanoPrice : 0);
+  const powA = state.powerId ? (state.chipObj.power.find(p => p.id === state.powerId)?.priceAdj || 0) : 0;
+  const total = state.chipObj.basePrice + state.proMemAdj + state.proStorAdj + powA + (state.nano ? BTS_CONFIG.products.macbookPro.nanoPrice : 0);
   return `<div class="price-preview-inline">
     <span class="ppi-label">目前規格小計</span>
     <span class="ppi-val">NT$${total.toLocaleString()}</span>
   </div>`;
 }
 
+function isProMemoryUpgradeOption(item) {
+  return productType === 'pro'
+    && !!item?.upgradeToChip
+    && item.upgradeToChip !== state.chipObj?.id;
+}
+
+function shouldShowProPowerStep() {
+  if (productType !== 'pro') return false;
+  return state.chipObj?.requiresPowerSelection !== false;
+}
+
+function proShowMemoryUpgradeNotice(memId) {
+  const body = document.getElementById('sb-memory');
+  if (!body || !state.chipObj) return;
+  const item = state.chipObj.memory.find(m => m.id === memId);
+  const target = BTS_CONFIG.products.macbookPro.sizes[state.size].chips.find(c => c.id === item?.upgradeToChip);
+  if (!item || !target) return;
+  const targetMem = target.memory.find(m => m.id === memId);
+  const chipDiff = target.basePrice - state.chipObj.basePrice;
+  body.innerHTML = `<div class="upgrade-notice">
+    <div class="upgrade-chip-img upgrade-chip-badge">M5<br>${target.name.replace('M5 ', '')}</div>
+    <div>
+      <div class="upgrade-kicker">需要更高階晶片</div>
+      <div class="upgrade-title">${item.name} 會改用 ${target.detail} 版本</div>
+      <div class="upgrade-copy">
+        接下來會切換到 ${target.name} ${target.detail} 的價格，晶片價差為 NT$${chipDiff.toLocaleString()}，${item.name} 記憶體加購為 NT$${(targetMem?.priceAdj || 0).toLocaleString()}。按下一步後會自動重新計算。
+      </div>
+      <div class="upgrade-actions">
+        <button class="upgrade-next" onclick="proUpgradeChipAndSelectMemory('${target.id}','${item.id}')">下一步</button>
+        <button class="upgrade-back" onclick="openStep(getStepDefs().findIndex(s => s.id === 'memory'))">返回選項</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function proUpgradeChipAndSelectMemory(chipId, memId) {
+  const chip = BTS_CONFIG.products.macbookPro.sizes[state.size].chips.find(c => c.id === chipId);
+  if (!chip) return;
+  const mem = chip.memory.find(m => m.id === memId);
+  state.chipFamily = chip.processor || chip.id;
+  state.chipObj = chip;
+  state.proMemId = memId;
+  state.proMemAdj = mem?.priceAdj || 0;
+  state.proStorId = chip.defaultStorage;
+  state.proStorAdj = 0;
+  state.powerId = chip.defaultPower;
+  renderSteps();
+  setSV('chip', chip.name);
+  setSV('compute', chip.detail);
+  setSV('memory', memId.toUpperCase().replace('GB',' GB'));
+  setSV('storage', chip.defaultStorage.toUpperCase().replace('TB',' TB').replace('GB',' GB'));
+  setSV('power', chip.power.find(p => p.id === state.powerId)?.name || '');
+  showToast(`已改為 ${chip.detail} 並選擇 ${mem?.name || memId}`);
+  advanceTo('storage');
+  updatePrice();
+}
+
+function getProChipFamilies() {
+  const chips = BTS_CONFIG.products.macbookPro.sizes[state.size].chips;
+  const familyInfo = {
+    m5: {
+      name: 'M5 晶片',
+      desc: '適合日常的個人、專業和創意任務。'
+    },
+    m5pro: {
+      name: 'M5 Pro 晶片',
+      desc: '提供更強悍效能和更高記憶體選項，可駕馭更繁重工作流程。'
+    },
+    m5max: {
+      name: 'M5 Max 晶片',
+      desc: '為專業級筆電打造，適合最繁重的影片、3D 與 AI 工作流程。'
+    }
+  };
+  return Object.values(chips.reduce((acc, chip) => {
+    const key = chip.processor || chip.id;
+    if (!acc[key]) {
+      const sameFamily = chips.filter(c => (c.processor || c.id) === key);
+      const minPrice = Math.min(...sameFamily.map(c => c.basePrice));
+      acc[key] = {
+        processor: key,
+        name: familyInfo[key]?.name || chip.name,
+        desc: familyInfo[key]?.desc || chip.desc,
+        basePrice: minPrice,
+        summary: sameFamily.length === 1 ? chip.detail : `${sameFamily.length} 個處理能力選項`
+      };
+    }
+    return acc;
+  }, {}));
+}
+
+/* ── iMac steps ── */
+function buildImacStep(id) {
+  const cfg = BTS_CONFIG.products.imac;
+  const chip = cfg.chips.find(c => c.id === state.imacChipId);
+  switch(id) {
+    case 'color': {
+      const colorMap = { '藍色':'#6bb6df','紫色':'#b7a4d8','粉紅色':'#f3a7b7','橙色':'#f6a35f','黃色':'#f3d45c','綠色':'#9ccf9a','銀色':'#e5e5ea' };
+      return `<div class="opt-grid">
+        ${cfg.colors.map(c=>`
+        <div class="opt" id="color-${esc(c)}" onclick="imacSelectColor('${c}')">
+          <img class="opt-img" src="${cfg.colorImages['24']?.[c] || ''}" alt="iMac ${c}" onerror="this.style.display='none'">
+          <div class="color-dot" style="background:${colorMap[c]||'#ccc'}"></div>
+          <div class="opt-title">${c}</div>
+        </div>`).join('')}
+      </div>`;
+    }
+    case 'chip': {
+      if (!state.color) return warn('請先選擇顏色');
+      const chips = cfg.chips.filter(c => !c.availableColors || c.availableColors.includes(state.color));
+      return chips.map(c=>`
+      <div class="chip-opt" id="chip-${c.id}" onclick="imacSelectChip('${c.id}')">
+        <div class="chip-name">${c.name} 晶片${c.thunderbolt ? `具備${c.thunderbolt}` : ''}</div>
+        <div class="chip-detail">${c.detail}</div>
+        <div class="chip-price">NT$${c.basePrice.toLocaleString()}</div>
+        <div class="chip-desc">${c.desc}</div>
+      </div>`).join('');
+    }
+    case 'memory': {
+      if (!state.imacChipId) return warn('請先選擇晶片');
+      return `${imacPricePreview()}<div class="opt-grid">
+        ${cfg.memory.map(m=>{
+          const enabled = isImacOptionAvailable(m);
+          const upgrade = isImacUpgradeOption(m);
+          const price = getImacOptionPrice(m);
+          return `
+        <div class="opt ${enabled || upgrade ? '' : 'disabled'}" id="mem-${m.id}" ${enabled ? `onclick="imacSelectMemory('${m.id}')"` : upgrade ? `onclick="imacShowUpgradeNotice('memory','${m.id}')"` : ''}>
+          <div class="opt-title">${m.name}</div>
+          ${enabled ? (price>0 ? `<div class="opt-price">+NT$${price.toLocaleString()}</div>` : `<div class="opt-badge">已配備</div>`) : `<div class="opt-tag">${m.unavailableText || '此機型不可選'}</div>`}
+        </div>`}).join('')}
+      </div>`;
+    }
+    case 'storage': {
+      if (!state.memId) return warn('請先選擇記憶體');
+      return `${imacPricePreview()}<div class="opt-grid">
+        ${cfg.storage.map(s=>{
+          const enabled = isImacOptionAvailable(s);
+          const upgrade = isImacUpgradeOption(s);
+          const price = getImacOptionPrice(s);
+          return `
+        <div class="opt ${enabled || upgrade ? '' : 'disabled'}" id="stor-${s.id}" ${enabled ? `onclick="imacSelectStorage('${s.id}')"` : upgrade ? `onclick="imacShowUpgradeNotice('storage','${s.id}')"` : ''}>
+          <div class="opt-title">${s.name}</div>
+          ${enabled ? (price>0 ? `<div class="opt-price">+NT$${price.toLocaleString()}</div>` : `<div class="opt-badge">已配備</div>`) : `<div class="opt-tag">${s.unavailableText || '此機型不可選'}</div>`}
+        </div>`}).join('')}
+      </div>`;
+    }
+    case 'display': {
+      if (!state.storageId) return warn('請先選擇儲存裝置');
+      const canNano = !!chip?.supportsNano;
+      return `${imacPricePreview()}<div class="opt-grid cols-2">
+        <div class="opt" id="disp-no" onclick="imacSelectDisplay(false)">
+          <div class="opt-title">標準玻璃</div>
+          <div class="opt-badge">不加價</div>
+        </div>
+        <div class="opt ${canNano ? '' : 'disabled'}" id="disp-yes" ${canNano ? 'onclick="imacSelectDisplay(true)"' : ''}>
+          <div class="opt-title">奈米紋理玻璃</div>
+          <div class="opt-sub">${canNano ? '減少眩光與反射' : '僅四個 Thunderbolt 埠機型提供'}</div>
+          <div class="opt-price">+NT$${cfg.nanoPrice.toLocaleString()}</div>
+        </div>
+      </div>`;
+    }
+    case 'stand': return buildImacOptionStep(cfg.stand, 'stand', 'imacSelectStand');
+    case 'ethernet': return buildImacOptionStep(cfg.ethernet, 'eth', 'imacSelectEthernet');
+    case 'pointing': return buildImacOptionStep(cfg.pointing, 'point', 'imacSelectPointing');
+    case 'keyboard': return buildImacOptionStep(cfg.keyboard, 'kbd', 'imacSelectKeyboard');
+    case 'gifts': return buildGiftsStep();
+    case 'rebate': return buildRebateStep();
+    default: return '';
+  }
+}
+
+function buildImacOptionStep(items, prefix, fn) {
+  const visibleItems = items.filter(isImacOptionAvailable);
+  return `${imacPricePreview()}<div class="opt-grid">
+    ${visibleItems.map(item=>{
+      const price = getImacOptionPrice(item);
+      const defaultLabel = isImacOptionDefault(item) ? '已配備' : '已包含';
+      return `
+    <div class="opt" id="${prefix}-${item.id}" onclick="${fn}('${item.id}')">
+      <div class="opt-title">${item.name}</div>
+      ${item.desc ? `<div class="opt-sub">${item.desc}</div>` : ''}
+      ${price>0 ? `<div class="opt-price">+NT$${price.toLocaleString()}</div>` : `<div class="opt-badge">${defaultLabel}</div>`}
+    </div>`}).join('')}
+  </div>`;
+}
+
+function getImacOptionPrice(item) {
+  return getImacOptionPriceForChip(item, state.imacChipId);
+}
+
+function getImacOptionPriceForChip(item, chipId) {
+  if (!item) return 0;
+  if (chipId && item.priceByChip && item.priceByChip[chipId] !== undefined) {
+    return Number(item.priceByChip[chipId]) || 0;
+  }
+  return Number(item.priceAdj) || 0;
+}
+
+function isImacOptionAvailable(item) {
+  return !Array.isArray(item.availableChips) || item.availableChips.includes(state.imacChipId);
+}
+
+function isImacUpgradeOption(item) {
+  return state.imacChipId === 'M4_8_8'
+    && Array.isArray(item?.availableChips)
+    && item.availableChips.includes('M4_10_10');
+}
+
+function isImacOptionDefault(item) {
+  if (!item || !isImacOptionAvailable(item)) return false;
+  return !!item.isDefault || (Array.isArray(item.isDefaultChips) && item.isDefaultChips.includes(state.imacChipId));
+}
+
+function getDefaultImacOptionId(items) {
+  return items.find(isImacOptionDefault)?.id || items.find(isImacOptionAvailable)?.id || null;
+}
+
+function shouldShowImacDisplay() {
+  if (productType !== 'imac') return false;
+  if (!state.imacChipId) return true;
+  const chip = BTS_CONFIG.products.imac.chips.find(c => c.id === state.imacChipId);
+  return !!chip?.supportsNano;
+}
+
+function imacPricePreview() {
+  const total = getMacBasePrice();
+  if (!total) return '';
+  return `<div class="price-preview-inline">
+    <span class="ppi-label">目前規格小計</span>
+    <span class="ppi-val">NT$${total.toLocaleString()}</span>
+  </div>`;
+}
+
+function isAirOptionAvailable(item) {
+  return !Array.isArray(item.availableChips) || item.availableChips.includes(state.chipId);
+}
+
+function isAirUpgradeOption(item) {
+  return productType === 'air'
+    && state.size === '13'
+    && state.chipId === 'M5_8gpu'
+    && Array.isArray(item?.availableChips)
+    && item.availableChips.includes('M5_10gpu');
+}
+
+function getAirHiddenUpgradeDiscount() {
+  if (productType !== 'air' || state.size !== '13' || state.chipId !== 'M5_10gpu') return 0;
+  const cfg = BTS_CONFIG.products.macbookAir.sizes[state.size];
+  const memAdj = cfg.memory.find(m => m.id === state.memId)?.priceAdj || 0;
+  const storAdj = cfg.storage.find(s => s.id === state.storageId)?.priceAdj || 0;
+  const discounts = [];
+  if (memAdj > 0) discounts.push(3150);
+  if (storAdj > 0) discounts.push(3150);
+  return discounts.length ? Math.max(...discounts) : 0;
+}
+
+function airShowUpgradeNotice(kind, id) {
+  const body = document.getElementById(`sb-${kind}`);
+  if (!body) return;
+  body.innerHTML = buildAirUpgradeNotice(kind, id);
+}
+
+function buildAirUpgradeNotice(kind, id) {
+  const cfg = BTS_CONFIG.products.macbookAir;
+  const sizeCfg = cfg.sizes[state.size];
+  const item = kind === 'memory'
+    ? sizeCfg.memory.find(x => x.id === id)
+    : sizeCfg.storage.find(x => x.id === id);
+  const stepLabel = kind === 'memory' ? '記憶體' : '儲存空間';
+  return `<div class="upgrade-notice">
+    <img class="upgrade-chip-img" src="${cfg.chipImage}" alt="Apple M5 晶片" onerror="this.style.display='none'">
+    <div>
+      <div class="upgrade-kicker">需要更高階晶片</div>
+      <div class="upgrade-title">${item.name} 會改用 M5 10 核心 GPU 版本</div>
+      <div class="upgrade-copy">
+        接下來會切換到 10 核心 CPU、10 核心 GPU 的 M5 價格，起價為 NT$35,740。${stepLabel}「${item.name}」會使用此晶片版本的計價方式，你可以在接受更改前檢視新的配置。
+      </div>
+      <div class="upgrade-actions">
+        <button class="upgrade-next" onclick="airUpgradeAndSelect('${kind}','${id}')">下一步</button>
+        <button class="upgrade-back" onclick="openStep(getStepDefs().findIndex(s => s.id === '${kind}'))">返回選項</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function airUpgradeAndSelect(kind, id) {
+  const cfg = BTS_CONFIG.products.macbookAir.sizes[state.size];
+  state.chipId = 'M5_10gpu';
+  state.powerId = null;
+  if (kind === 'memory') {
+    state.memId = id;
+    if (!cfg.storage.some(s => s.id === state.storageId && isAirOptionAvailable(s))) {
+      state.storageId = '512gb';
+    }
+  }
+  if (kind === 'storage') {
+    state.storageId = id;
+    if (!cfg.memory.some(m => m.id === state.memId && isAirOptionAvailable(m))) {
+      state.memId = '16gb';
+    }
+  }
+  renderSteps();
+  setSV('size', cfg.label);
+  setSV('color', state.color || '');
+  setSV('chip', cfg.chips.find(c => c.id === state.chipId)?.detail || '');
+  if (state.memId) setSV('memory', cfg.memory.find(m => m.id === state.memId)?.name || '');
+  if (state.storageId) setSV('storage', cfg.storage.find(s => s.id === state.storageId)?.name || '');
+  showToast('已改為 M5 10 核心 GPU 版本');
+  advanceTo(kind === 'memory' ? 'storage' : 'power');
+  updatePrice();
+}
+
 /* ── Shared: Gifts + Rebate ── */
 function buildMacGiftList() {
-  const combos = getMatchingGiftCombos('macbook', productType, state.size);
+  const giftLine = productType === 'imac' ? 'imac' : 'macbook';
+  const giftSize = productType === 'imac' ? '24' : state.size;
+  const combos = getMatchingGiftCombos(giftLine, productType, giftSize);
   if (combos.length) {
     return [
       ...combos,
@@ -985,7 +1534,7 @@ function buildRebateStep() {
       placeholder="預估轉售金額（NT$）" min="0" value="${state.giftPrice || ''}"
       oninput="setGiftPrice(this.value)" style="margin-top:10px">` : ''}
   </div>
-  <button class="rebate-cta-btn" onclick="openModal()">
+  <button class="rebate-cta-btn" onclick="startCalc()">
     查看計算結果
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
   </button>`;
@@ -999,8 +1548,10 @@ function restoreSelections(id) {
   if (id === 'color'  && state.color)  hlOpt(`color-${esc(state.color)}`);
   if (id === 'chip') {
     if (productType==='air' && state.chipId)  hlOpt(`chip-${state.chipId}`);
-    if (productType==='pro' && state.chipObj) hlOpt(`chip-${state.chipObj.id}`);
+    if (productType==='imac' && state.imacChipId) hlOpt(`chip-${state.imacChipId}`);
+    if (productType==='pro' && state.chipFamily) hlOpt(`chip-${state.chipFamily}`);
   }
+  if (id === 'compute' && state.chipObj) hlOpt(`compute-${state.chipObj.id}`);
   if (id === 'memory') {
     if (productType==='air' && state.memId)  hlOpt(`mem-${state.memId}`);
     if (productType==='pro' && state.proMemId) hlOpt(`mem-${state.proMemId}`);
@@ -1011,6 +1562,10 @@ function restoreSelections(id) {
   }
   if (id === 'power'   && state.powerId) hlOpt(`power-${state.powerId}`);
   if (id === 'display') hlOpt(`disp-${state.nano?'yes':'no'}`);
+  if (id === 'stand' && state.standId) hlOpt(`stand-${state.standId}`);
+  if (id === 'ethernet' && state.ethernetId) hlOpt(`eth-${state.ethernetId}`);
+  if (id === 'pointing' && state.pointingId) hlOpt(`point-${state.pointingId}`);
+  if (id === 'keyboard' && state.keyboardId) hlOpt(`kbd-${state.keyboardId}`);
   if (id === 'gifts') {
     if (state.gift) hlOpt(`gift-item-${state.gift.id}`);
   }
@@ -1040,8 +1595,6 @@ function airSelectChip(id) {
   state.memId = null;
   state.storageId = null;
   state.powerId = null;
-  // If switching away from 10gpu, clear constraint violation
-  if (id !== 'M5_10gpu') { /* no constraint */ }
   hlOpt(`chip-${id}`);
   setSV('chip', chip.detail);
   showToast(`已選擇 ${chip.detail}`); advanceTo('memory'); updatePrice();
@@ -1050,14 +1603,6 @@ function airSelectChip(id) {
 function airSelectMem(id) {
   state.memId = id;
   const m = BTS_CONFIG.products.macbookAir.sizes[state.size].memory.find(x=>x.id===id);
-  // validate 10GPU constraint
-  if (state.chipId === 'M5_10gpu') {
-    const storOk = state.storageId && state.storageId !== '512gb';
-    const memOk  = id !== '16gb';
-    if (!memOk && !storOk) {
-      showToast('⚠️ 10核GPU 需搭配 24GB+ 記憶體或 1TB+ 儲存');
-    }
-  }
   hlOpt(`mem-${id}`); setSV('memory', m.name);
   showToast(`已選擇 ${m.name}`); advanceTo('storage'); updatePrice();
 }
@@ -1065,10 +1610,6 @@ function airSelectMem(id) {
 function airSelectStorage(id) {
   state.storageId = id;
   const s = BTS_CONFIG.products.macbookAir.sizes[state.size].storage.find(x=>x.id===id);
-  // validate 10GPU constraint
-  if (state.chipId === 'M5_10gpu' && id === '512gb' && state.memId === '16gb') {
-    showToast('⚠️ 10核GPU 需搭配 24GB+ 記憶體或 1TB+ 儲存');
-  }
   hlOpt(`stor-${id}`); setSV('storage', s.name);
   showToast(`已選擇 ${s.name}`); advanceTo('power'); updatePrice();
 }
@@ -1077,22 +1618,40 @@ function airSelectPower(id) {
   state.powerId = id;
   const p = BTS_CONFIG.products.macbookAir.sizes[state.size].power.find(x=>x.id===id);
   hlOpt(`power-${id}`); setSV('power', p.name);
-  advanceTo('gifts'); updatePrice();
+  advanceTo('rebate'); updatePrice();
 }
 
 // ═══════════════════════════════════════
 //  Pro selectors
 // ═══════════════════════════════════════
 function proSelectSize(sz) {
-  state.size=sz; state.chipObj=null; state.proMemId=null; state.proMemAdj=0; state.proStorId=null; state.proStorAdj=0; state.color=null; state.nano=null;
+  state.size=sz; state.chipFamily=null; state.chipObj=null; state.proMemId=null; state.proMemAdj=0; state.proStorId=null; state.proStorAdj=0; state.powerId=null; state.color=null; state.nano=null;
   hlOpt(`size-${sz}`); setSV('size', BTS_CONFIG.products.macbookPro.sizes[sz].label);
   showToast(`已選擇 MacBook Pro ${sz}吋`); advanceTo('color'); updatePrice();
 }
 
+function proSelectChipFamily(family) {
+  const chips = BTS_CONFIG.products.macbookPro.sizes[state.size].chips.filter(c => (c.processor || c.id) === family);
+  state.chipFamily = family;
+  state.chipObj = null;
+  state.proMemId = null;
+  state.proMemAdj = 0;
+  state.proStorId = null;
+  state.proStorAdj = 0;
+  state.powerId = null;
+  hlOpt(`chip-${family}`);
+  setSV('chip', chips[0]?.name || family);
+  showToast(`已選擇 ${chips[0]?.name || family}`);
+  advanceTo('compute');
+  updatePrice();
+}
+
 function proSelectChip(id) {
   const chip = BTS_CONFIG.products.macbookPro.sizes[state.size].chips.find(c=>c.id===id);
+  state.chipFamily = chip.processor || chip.id;
   state.chipObj = chip; state.proMemId=chip.defaultRam; state.proMemAdj=0; state.proStorId=chip.defaultStorage; state.proStorAdj=0; state.powerId=chip.defaultPower;
-  hlOpt(`chip-${id}`); setSV('chip', `${chip.name} ${chip.detail}`);
+  renderSteps();
+  hlOpt(`compute-${id}`); setSV('compute', chip.detail);
   showToast(`已選擇 ${chip.name} ${chip.detail}`); advanceTo('memory'); updatePrice();
 }
 
@@ -1105,14 +1664,14 @@ function proSelectMem(id, adj) {
 function proSelectStorage(id, adj) {
   state.proStorId=id; state.proStorAdj=adj;
   hlOpt(`stor-${id}`); setSV('storage', id.toUpperCase().replace('TB',' TB').replace('GB',' GB'));
-  advanceTo('power'); updatePrice();
+  advanceTo(shouldShowProPowerStep() ? 'power' : 'rebate'); updatePrice();
 }
 
 function proSelectPower(id, adj) {
   state.powerId = id;
   const p = state.chipObj.power.find(x => x.id === id);
   hlOpt(`power-${id}`); setSV('power', p.name);
-  advanceTo('gifts'); updatePrice();
+  advanceTo('rebate'); updatePrice();
 }
 
 function proSelectDisplay(nano) {
@@ -1125,6 +1684,149 @@ function proSelectColor(c) {
   state.color = c;
   hlOpt(`color-${esc(c)}`); setSV('color', c);
   showToast(`已選擇 ${c}`); advanceTo('display'); updatePrice();
+}
+
+// ═══════════════════════════════════════
+//  iMac selectors
+// ═══════════════════════════════════════
+function imacSelectColor(c) {
+  state.color = c;
+  state.imacChipId = null;
+  state.memId = null;
+  state.storageId = null;
+  state.nano = null;
+  state.standId = null;
+  state.ethernetId = null;
+  state.pointingId = null;
+  state.keyboardId = null;
+  hlOpt(`color-${esc(c)}`); setSV('color', c);
+  showToast(`已選擇 ${c}`); advanceTo('chip'); updatePrice();
+}
+
+function imacSelectChip(id) {
+  const chip = BTS_CONFIG.products.imac.chips.find(c => c.id === id);
+  state.imacChipId = id;
+  state.memId = chip.defaultMemory;
+  state.storageId = chip.defaultStorage;
+  state.nano = chip.supportsNano ? null : false;
+  state.standId = null;
+  state.ethernetId = getDefaultImacOptionId(BTS_CONFIG.products.imac.ethernet);
+  state.pointingId = null;
+  state.keyboardId = getDefaultImacOptionId(BTS_CONFIG.products.imac.keyboard);
+  renderSteps();
+  hlOpt(`chip-${id}`); setSV('chip', chip.detail);
+  showToast(`已選擇 ${chip.detail}`); advanceTo('memory'); updatePrice();
+}
+
+function imacSelectMemory(id) {
+  const m = BTS_CONFIG.products.imac.memory.find(x => x.id === id);
+  state.memId = id;
+  hlOpt(`mem-${id}`); setSV('memory', m.name);
+  advanceTo('storage'); updatePrice();
+}
+
+function imacSelectStorage(id) {
+  const s = BTS_CONFIG.products.imac.storage.find(x => x.id === id);
+  state.storageId = id;
+  hlOpt(`stor-${id}`); setSV('storage', s.name);
+  advanceTo(shouldShowImacDisplay() ? 'display' : 'stand'); updatePrice();
+}
+
+function imacShowUpgradeNotice(kind, id) {
+  const body = document.getElementById(`sb-${kind}`);
+  if (!body) return;
+  body.innerHTML = buildImacUpgradeNotice(kind, id);
+}
+
+function buildImacUpgradeNotice(kind, id) {
+  const cfg = BTS_CONFIG.products.imac;
+  const item = kind === 'memory'
+    ? cfg.memory.find(x => x.id === id)
+    : cfg.storage.find(x => x.id === id);
+  const price = getImacOptionPriceForChip(item, 'M4_10_10');
+  const stepLabel = kind === 'memory' ? '記憶體' : '儲存空間';
+  return `<div class="upgrade-notice">
+    <img class="upgrade-chip-img" src="${cfg.chipImage}" alt="Apple M4 晶片" onerror="this.style.display='none'">
+    <div>
+      <div class="upgrade-kicker">需要更高階機型</div>
+      <div class="upgrade-title">${item.name} 會改用 M4 10 核心版本</div>
+      <div class="upgrade-copy">
+        接下來會切換到 M4 晶片具備四個 Thunderbolt 埠的價格，並使用 10 核心版本的計價方式。${stepLabel}「${item.name}」加價為 NT$${price.toLocaleString()}，乙太網路會變成 Gigabit 標配，鍵盤也會改為含 Touch ID 的巧控鍵盤。
+      </div>
+      <div class="upgrade-actions">
+        <button class="upgrade-next" onclick="imacUpgradeAndSelect('${kind}','${id}')">下一步</button>
+        <button class="upgrade-back" onclick="openStep(getStepDefs().findIndex(s => s.id === '${kind}'))">返回選項</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function imacUpgradeAndSelect(kind, id) {
+  const cfg = BTS_CONFIG.products.imac;
+  const chip = cfg.chips.find(c => c.id === 'M4_10_10');
+  state.imacChipId = chip.id;
+  state.nano = null;
+  state.ethernetId = getDefaultImacOptionId(cfg.ethernet);
+  state.keyboardId = getDefaultImacOptionId(cfg.keyboard);
+
+  if (kind === 'memory') {
+    state.memId = id;
+    if (!cfg.storage.some(s => s.id === state.storageId && isImacOptionAvailable(s))) {
+      state.storageId = chip.defaultStorage;
+    }
+  }
+
+  if (kind === 'storage') {
+    state.storageId = id;
+    if (!cfg.memory.some(m => m.id === state.memId && isImacOptionAvailable(m))) {
+      state.memId = chip.defaultMemory;
+    }
+  }
+
+  renderSteps();
+  setSV('color', state.color || '');
+  setSV('chip', chip.detail);
+  if (state.memId) setSV('memory', cfg.memory.find(m => m.id === state.memId)?.name || '');
+  if (state.storageId) setSV('storage', cfg.storage.find(s => s.id === state.storageId)?.name || '');
+  setSV('ethernet', cfg.ethernet.find(e => e.id === state.ethernetId)?.name || '');
+  setSV('keyboard', cfg.keyboard.find(k => k.id === state.keyboardId)?.name || '');
+  showToast('已改為 M4 10 核心版本');
+  advanceTo(kind === 'memory' ? 'storage' : 'display');
+  updatePrice();
+}
+
+function imacSelectDisplay(nano) {
+  state.nano = nano;
+  hlOpt(`disp-${nano ? 'yes' : 'no'}`); setSV('display', nano ? '奈米紋理玻璃' : '標準玻璃');
+  advanceTo('stand'); updatePrice();
+}
+
+function imacSelectStand(id) {
+  const item = BTS_CONFIG.products.imac.stand.find(x => x.id === id);
+  state.standId = id;
+  hlOpt(`stand-${id}`); setSV('stand', item.name);
+  advanceTo('ethernet'); updatePrice();
+}
+
+function imacSelectEthernet(id) {
+  const item = BTS_CONFIG.products.imac.ethernet.find(x => x.id === id);
+  state.ethernetId = id;
+  hlOpt(`eth-${id}`); setSV('ethernet', item.name);
+  advanceTo('pointing'); updatePrice();
+}
+
+function imacSelectPointing(id) {
+  const item = BTS_CONFIG.products.imac.pointing.find(x => x.id === id);
+  state.pointingId = id;
+  hlOpt(`point-${id}`); setSV('pointing', item.name);
+  advanceTo('keyboard'); updatePrice();
+}
+
+function imacSelectKeyboard(id) {
+  const item = BTS_CONFIG.products.imac.keyboard.find(x => x.id === id);
+  state.keyboardId = id;
+  hlOpt(`kbd-${id}`); setSV('keyboard', item.name);
+  advanceTo('rebate'); updatePrice();
 }
 
 // ═══════════════════════════════════════
@@ -1155,14 +1857,25 @@ function setGiftPrice(val) { state.giftPrice = parseFloat(val)||0; updatePrice()
 //  Price calc
 // ═══════════════════════════════════════
 function getMacBasePrice() {
-  if (productType === 'air') {
+  if (productType === 'imac') {
+    if (!state.imacChipId) return 0;
+    const cfg = BTS_CONFIG.products.imac;
+    const chip = cfg.chips.find(c => c.id === state.imacChipId);
+    const memA = getImacOptionPrice(cfg.memory.find(m => m.id === state.memId));
+    const stoA = getImacOptionPrice(cfg.storage.find(s => s.id === state.storageId));
+    const standA = getImacOptionPrice(cfg.stand.find(s => s.id === state.standId));
+    const ethA = getImacOptionPrice(cfg.ethernet.find(e => e.id === state.ethernetId));
+    const pointA = getImacOptionPrice(cfg.pointing.find(p => p.id === state.pointingId));
+    const keyA = getImacOptionPrice(cfg.keyboard.find(k => k.id === state.keyboardId));
+    return chip.basePrice + memA + stoA + standA + ethA + pointA + keyA + (state.nano ? cfg.nanoPrice : 0);
+  } else if (productType === 'air') {
     if (!state.size || !state.chipId) return 0;
     const sz   = BTS_CONFIG.products.macbookAir.sizes[state.size];
     const chip = sz.chips.find(c=>c.id===state.chipId);
     const memA = sz.memory.find(m=>m.id===state.memId)?.priceAdj || 0;
     const stoA = sz.storage.find(s=>s.id===state.storageId)?.priceAdj || 0;
     const powA = sz.power.find(p=>p.id===state.powerId)?.priceAdj || 0;
-    return sz.basePrice + (chip?.priceAdj||0) + memA + stoA + powA;
+    return sz.basePrice + (chip?.priceAdj||0) + memA + stoA + powA - getAirHiddenUpgradeDiscount();
   } else {
     if (!state.chipObj) return 0;
     const powA = state.chipObj.power.find(p => p.id === state.powerId)?.priceAdj || 0;
@@ -1173,19 +1886,15 @@ function getMacBasePrice() {
 function calcPrice() {
   const base = getMacBasePrice();
   if (!base) return null;
-  const giftCost = state.gift?.price || 0;
-  const subtotal = base + giftCost;
+  const subtotal = base;
   const ccR   = Math.round(subtotal           * (state.creditCard/100));
   const refR  = Math.round((subtotal / 1.05) * (state.referral/100)); // 導購以未稅價計算
-  const giftS = state.sellGift ? state.giftPrice : 0;
-  const final = subtotal - ccR - refR - giftS;
+  const giftS = 0;
+  const final = subtotal - ccR - refR;
 
-  // Savings
-  const giftOriginal = state.gift?.originalPrice || 0;
-  const giftSaved = giftOriginal - giftCost;
-  const totalSaved = ccR + refR + giftS + giftSaved;
+  const totalSaved = ccR + refR;
 
-  return { base, giftCost, subtotal, ccR, refR, giftS, final, totalSaved };
+  return { base, giftCost: 0, subtotal, ccR, refR, giftS, final, totalSaved };
 }
 
 function updatePrice() {
@@ -1198,7 +1907,6 @@ function updatePrice() {
   const parts = [];
   if (r.ccR)  parts.push(`信用卡 -NT$${r.ccR.toLocaleString()}`);
   if (r.refR) parts.push(`導購 -NT$${r.refR.toLocaleString()}`);
-  if (r.giftS) parts.push(`贈品售 -NT$${r.giftS.toLocaleString()}`);
   br.textContent = parts.length ? parts.join(' · ') : `定價 NT$${r.subtotal.toLocaleString()}`;
   if (r.totalSaved > 0) { sv.style.display=''; sv.textContent=`合計省下 NT$${r.totalSaved.toLocaleString()}`; }
   else sv.style.display='none';
@@ -1206,9 +1914,11 @@ function updatePrice() {
 }
 
 function checkComplete() {
-  const required = productType === 'air'
-    ? ['size','color','chipId','memId','storageId','powerId','gift']
-    : ['size','chipObj','proMemId','proStorId','powerId','color','gift'];
+  const required = productType === 'imac'
+    ? ['color','imacChipId','memId','storageId','nano','standId','ethernetId','pointingId','keyboardId']
+    : productType === 'air'
+    ? ['size','color','chipId','memId','storageId','powerId']
+    : ['size','color','nano','chipFamily','chipObj','proMemId','proStorId','powerId'];
   // nano for pro: always has a value (false is OK)
   const done = required.every(k => state[k] !== null && state[k] !== undefined);
   const btn  = document.getElementById('gen-btn');
@@ -1219,57 +1929,87 @@ function checkComplete() {
 // ═══════════════════════════════════════
 //  Modal
 // ═══════════════════════════════════════
+// 計算動畫（約 3 秒）→ 開啟購買清單
+function startCalc() {
+  const r = calcPrice();
+  if (!r) { showToast('請先完成所有選擇'); return; }
+  if (typeof btsCalcAnimation === 'function') {
+    btsCalcAnimation(r.final, openModal);
+  } else {
+    openModal();
+  }
+}
+
 function openModal() {
   const r = calcPrice();
   if (!r) return;
-  const giftCfg = state.gift && state.gift.id !== 'none' ? state.gift : null;
-  let name, specs;
+  let name, chipStr = '', memStr = '', storStr = '';
   if (productType === 'air') {
     const sz = BTS_CONFIG.products.macbookAir.sizes[state.size];
     const ch = sz.chips.find(c=>c.id===state.chipId);
     const me = sz.memory.find(m=>m.id===state.memId);
     const st = sz.storage.find(s=>s.id===state.storageId);
     name = `MacBook Air ${sz.label}`;
-    specs = `${ch.detail} · ${me.name} · ${st.name}`;
+    chipStr = ch?.detail || ''; memStr = me?.name || ''; storStr = st?.name || '';
+  } else if (productType === 'imac') {
+    const cfg = BTS_CONFIG.products.imac;
+    const ch = cfg.chips.find(c => c.id === state.imacChipId);
+    const me = cfg.memory.find(m => m.id === state.memId);
+    const st = cfg.storage.find(s => s.id === state.storageId);
+    name = 'iMac 24 吋';
+    chipStr = ch?.detail || ''; memStr = me?.name || ''; storStr = st?.name || '';
   } else {
     const ch = state.chipObj;
     const me = ch.memory.find(m=>m.id===state.proMemId);
     const st = ch.storage.find(s=>s.id===state.proStorId);
     name = `MacBook Pro ${BTS_CONFIG.products.macbookPro.sizes[state.size].label}`;
-    specs = `${ch.name} ${ch.detail} · ${me?.name||''} · ${st?.name||''}`;
+    chipStr = `${ch.name} ${ch.detail}`; memStr = me?.name || ''; storStr = st?.name || '';
   }
 
   let html = `
-  <div class="receipt-item"><span class="receipt-label">產品</span><span class="receipt-value">${name}</span></div>
-  <div class="receipt-item"><span class="receipt-label">規格</span><span class="receipt-value" style="font-size:12px">${specs}</span></div>
+  <div class="receipt-item"><span class="receipt-label">機型</span><span class="receipt-value">${name}</span></div>
+  <div class="receipt-item"><span class="receipt-label">晶片</span><span class="receipt-value">${chipStr || '–'}</span></div>
+  <div class="receipt-item"><span class="receipt-label">統一記憶體</span><span class="receipt-value">${memStr || '–'}</span></div>
+  <div class="receipt-item"><span class="receipt-label">儲存容量</span><span class="receipt-value">${storStr || '–'}</span></div>
   <div class="receipt-item"><span class="receipt-label">顏色</span><span class="receipt-value">${state.color||'–'}</span></div>`;
   if (productType === 'pro') {
     html += `<div class="receipt-item"><span class="receipt-label">顯示器</span><span class="receipt-value">${state.nano?'奈米紋理玻璃':'標準玻璃'}</span></div>`;
   }
+  if (productType === 'imac') {
+    const cfg = BTS_CONFIG.products.imac;
+    const eth = cfg.ethernet.find(x => x.id === state.ethernetId);
+    const stand = cfg.stand.find(x => x.id === state.standId);
+    const point = cfg.pointing.find(x => x.id === state.pointingId);
+    const keyboard = cfg.keyboard.find(x => x.id === state.keyboardId);
+    html += `<div class="receipt-item"><span class="receipt-label">顯示器</span><span class="receipt-value">${state.nano?'奈米紋理玻璃':'標準玻璃'}</span></div>`;
+    html += `<div class="receipt-item"><span class="receipt-label">底座</span><span class="receipt-value">${stand?.name || '–'}</span></div>`;
+    html += `<div class="receipt-item"><span class="receipt-label">乙太網路</span><span class="receipt-value">${eth?.name || '–'}</span></div>`;
+    html += `<div class="receipt-item"><span class="receipt-label">滑鼠/觸控板</span><span class="receipt-value">${point?.name || '–'}</span></div>`;
+    html += `<div class="receipt-item"><span class="receipt-label">鍵盤</span><span class="receipt-value">${keyboard?.name || '–'}</span></div>`;
+  }
   if (productType === 'air') {
     const pw = BTS_CONFIG.products.macbookAir.sizes[state.size].power.find(p=>p.id===state.powerId);
     html += `<div class="receipt-item"><span class="receipt-label">電源轉接器</span><span class="receipt-value">${pw?.name||'–'}</span></div>`;
-  } else {
+  } else if (productType === 'pro') {
     const pw = state.chipObj.power.find(p => p.id === state.powerId);
     html += `<div class="receipt-item"><span class="receipt-label">電源轉接器</span><span class="receipt-value">${pw?.name || '–'}</span></div>`;
   }
 
-  html += `<hr class="receipt-divider">`;
-
-  if (giftCfg) html += rcRow(giftCfg.name, giftCfg.price||0, giftCfg.originalPrice||0);
-
   html += `<hr class="receipt-divider">
   <div class="receipt-item"><span class="receipt-label">教育商店定價</span><span class="receipt-value">NT$${r.subtotal.toLocaleString()}</span></div>`;
-  if (r.ccR)  html += `<div class="receipt-item"><span class="receipt-label">信用卡回饋 (${state.creditCard}%)</span><span class="receipt-value deduct">-NT$${r.ccR.toLocaleString()}</span></div>`;
-  if (r.refR) html += `<div class="receipt-item"><span class="receipt-label">導購回饋 (${state.referral}%・未稅估算)</span><span class="receipt-value deduct">-NT$${r.refR.toLocaleString()}</span></div>`;
-  if (r.giftS) html += `<div class="receipt-item"><span class="receipt-label">贈品售出</span><span class="receipt-value deduct">-NT$${r.giftS.toLocaleString()}</span></div>`;
+  html += `<div class="receipt-item"><span class="receipt-label">信用卡回饋 (${state.creditCard || 0}%)</span><span class="receipt-value ${r.ccR ? 'deduct' : 'muted'}">${r.ccR ? '-NT$' + r.ccR.toLocaleString() : '—'}</span></div>`;
+  html += `<div class="receipt-item"><span class="receipt-label">導購回饋 (${state.referral || 0}%・未稅估算)</span><span class="receipt-value ${r.refR ? 'deduct' : 'muted'}">${r.refR ? '-NT$' + r.refR.toLocaleString() : '—'}</span></div>`;
 
   html += `<div class="receipt-total">
     <span class="receipt-total-label">實際入手價</span>
     <span class="receipt-total-value">NT$${r.final.toLocaleString()}</span>
   </div>`;
   if (r.totalSaved > 0) html += `<div class="receipt-saved-row"><span>合計省下 NT$${r.totalSaved.toLocaleString()}</span></div>`;
-  html += `<p style="font-size:11px;color:var(--text-sub);text-align:center;margin-top:4px">DESIGNED BY Neil尼歐</p>`;
+  html += `<div class="receipt-brand">
+    <span class="receipt-brand-kicker">Designed by</span>
+    <span class="receipt-brand-name">Neil尼歐</span>
+    <a class="receipt-brand-link" href="https://neil.tw" target="_blank" rel="noopener">neil.tw</a>
+  </div>`;
 
   document.getElementById('modal-content').innerHTML = html;
   document.getElementById('link-bts').href = BTS_CONFIG.meta.purchaseLinks.btsAgent;
@@ -1292,9 +2032,11 @@ function generateImage() {
   const r = calcPrice();
   if (!r) { showToast('請先完成所有選擇'); return; }
 
-  const imgUrl = productType === 'air'
-    ? BTS_CONFIG.products.macbookAir.colorImages?.[state.size]?.[state.color]
-    : BTS_CONFIG.products.macbookPro.colorImages?.[state.size]?.[state.color];
+  const imgUrl = productType === 'imac'
+    ? BTS_CONFIG.products.imac.colorImages?.['24']?.[state.color]
+    : productType === 'air'
+      ? BTS_CONFIG.products.macbookAir.colorImages?.[state.size]?.[state.color]
+      : BTS_CONFIG.products.macbookPro.colorImages?.[state.size]?.[state.color];
 
   if (!imgUrl) { _drawMacReceipt(null, r); return; }
 
@@ -1310,7 +2052,7 @@ function generateImage() {
 
 function _drawMacReceipt(productImg, r) {
   // ── Build strings ──
-  let name, specs, giftCfg;
+  let name, specs;
   if (productType === 'air') {
     const sz = BTS_CONFIG.products.macbookAir.sizes[state.size];
     const ch = sz.chips.find(c => c.id === state.chipId);
@@ -1318,6 +2060,13 @@ function _drawMacReceipt(productImg, r) {
     const st = sz.storage.find(s => s.id === state.storageId);
     name  = `MacBook Air ${sz.label}`;
     specs = `${ch.detail} · ${me.name} · ${st.name}`;
+  } else if (productType === 'imac') {
+    const cfg = BTS_CONFIG.products.imac;
+    const ch = cfg.chips.find(c => c.id === state.imacChipId);
+    const me = cfg.memory.find(m => m.id === state.memId);
+    const st = cfg.storage.find(s => s.id === state.storageId);
+    name = 'iMac 24 吋';
+    specs = `${ch?.detail || ''} · ${me?.name || ''} · ${st?.name || ''}`;
   } else {
     const ch = state.chipObj;
     const me = ch.memory.find(m => m.id === state.proMemId);
@@ -1325,147 +2074,23 @@ function _drawMacReceipt(productImg, r) {
     name  = `MacBook Pro ${BTS_CONFIG.products.macbookPro.sizes[state.size].label}`;
     specs = `${ch.name} ${ch.detail} · ${me?.name||''} · ${st?.name||''}`;
   }
-  giftCfg = state.gift && state.gift.id !== 'none' ? state.gift : null;
+  const colorLine = (state.color || '–') + ((productType === 'pro' || productType === 'imac') && state.nano ? ' · 奈米紋理玻璃' : '');
 
-  // ── Dynamic canvas height ──
-  const IMG_H      = productImg ? 220 : 0;
-  const ROWS       = 1 + (giftCfg?1:0) + (r.ccR?1:0) + (r.refR?1:0) + (r.giftS?1:0);
-  const FIXED_H    = 390;
-  const canvas     = document.createElement('canvas');
-  canvas.width     = 800;
-  canvas.height    = IMG_H + ROWS * 28 + FIXED_H;
-
-  const ctx = canvas.getContext('2d');
-
-  // Background
-  const bg = ctx.createLinearGradient(0, 0, 0, canvas.height);
-  bg.addColorStop(0, '#f0f4ff'); bg.addColorStop(1, '#e8f0fe');
-  ctx.fillStyle = bg;
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-  let y = 60;
-
-  // Title
-  ctx.fillStyle = '#1d1d1f';
-  ctx.font = 'bold 30px -apple-system, BlinkMacSystemFont, sans-serif';
-  ctx.textAlign = 'center';
-  ctx.fillText('BTS 購買清單', canvas.width/2, y);  y += 44;
-  ctx.font = '15px -apple-system, BlinkMacSystemFont, sans-serif';
-  ctx.fillStyle = '#86868b';
-  ctx.fillText(new Date().toLocaleDateString('zh-TW'), canvas.width/2, y);  y += 52;
-
-  // Card
-  const cH = canvas.height - y + 10;
-  ctx.fillStyle = 'white';
-  ctx.shadowColor = 'rgba(0,0,0,0.12)'; ctx.shadowBlur = 24; ctx.shadowOffsetY = 8;
-  const [cX, cY, cW, cR] = [40, y-24, canvas.width-80, 20];
-  ctx.beginPath();
-  ctx.moveTo(cX+cR, cY); ctx.lineTo(cX+cW-cR, cY);
-  ctx.quadraticCurveTo(cX+cW, cY, cX+cW, cY+cR);
-  ctx.lineTo(cX+cW, cY+cH-cR);
-  ctx.quadraticCurveTo(cX+cW, cY+cH, cX+cW-cR, cY+cH);
-  ctx.lineTo(cX+cR, cY+cH);
-  ctx.quadraticCurveTo(cX, cY+cH, cX, cY+cH-cR);
-  ctx.lineTo(cX, cY+cR);
-  ctx.quadraticCurveTo(cX, cY, cX+cR, cY);
-  ctx.closePath(); ctx.fill();
-  ctx.shadowColor = 'transparent'; ctx.shadowBlur = 0; ctx.shadowOffsetY = 0;
-
-  let cy = y + 28;
-
-  // Product image
-  if (productImg) {
-    try { ctx.drawImage(productImg, canvas.width/2 - 100, cy, 200, 200); cy += 220; }
-    catch(e) { cy += 10; }
-  }
-
-  // Product name + specs
-  ctx.fillStyle = '#0071e3';
-  ctx.font = 'bold 20px -apple-system, BlinkMacSystemFont, sans-serif';
-  ctx.textAlign = 'center';
-  ctx.fillText(name, canvas.width/2, cy);  cy += 30;
-
-  ctx.fillStyle = '#86868b';
-  ctx.font = '13px -apple-system, BlinkMacSystemFont, sans-serif';
-  ctx.fillText(specs, canvas.width/2, cy);  cy += 22;
-
-  const colorLine = (state.color || '–') + (productType === 'pro' && state.nano ? ' · 奈米紋理玻璃' : '');
-  ctx.fillText(colorLine, canvas.width/2, cy);  cy += 36;
-
-  // Helpers
-  const drawDiv = (col = '#e5e5e5', lw = 1) => {
-    ctx.strokeStyle = col; ctx.lineWidth = lw;
-    ctx.beginPath(); ctx.moveTo(80, cy); ctx.lineTo(canvas.width-80, cy); ctx.stroke();
-    cy += 28;
-  };
-  const drawRow = (label, value, col = '#1d1d1f', bold = false) => {
-    ctx.font = (bold?'bold ':'') + '16px -apple-system, BlinkMacSystemFont, sans-serif';
-    ctx.fillStyle = col;
-    ctx.textAlign = 'left';  ctx.fillText(label, 80, cy);
-    ctx.textAlign = 'right'; ctx.fillText(value, canvas.width-80, cy);
-    cy += 28;
-  };
-
-  // Gift row
-  if (giftCfg) {
-    const saving = (giftCfg.originalPrice||0) - (giftCfg.price||0);
-    const valStr = giftCfg.price === 0 ? '免費' : `NT$${giftCfg.price.toLocaleString()}`;
-    drawRow(giftCfg.name,
-      saving > 0 ? `${valStr} (省NT$${saving.toLocaleString()})` : valStr,
-      giftCfg.price === 0 ? '#34c759' : '#1d1d1f');
-  }
-
-  drawDiv();
-  drawRow('教育商店定價', `NT$${r.subtotal.toLocaleString()}`);
-  if (r.ccR)  drawRow(`信用卡回饋 (${state.creditCard}%)`,          `-NT$${r.ccR.toLocaleString()}`,  '#0071e3');
-  if (r.refR) drawRow(`導購回饋 (${state.referral}%・未稅估算)`,    `-NT$${r.refR.toLocaleString()}`,  '#0071e3');
-  if (r.giftS) drawRow('贈品售出',                                   `-NT$${r.giftS.toLocaleString()}`, '#0071e3');
-
-  cy += 6;
-  drawDiv('#0071e3', 2);
-
-  // Final price block
-  const fpBg = ctx.createLinearGradient(cX, cy-10, cX+cW, cy+70);
-  fpBg.addColorStop(0, 'rgba(0,113,227,0.06)'); fpBg.addColorStop(1, 'rgba(90,200,250,0.04)');
-  ctx.fillStyle = fpBg;
-  ctx.fillRect(cX+1, cy-14, cW-2, 72);
-
-  ctx.fillStyle = '#0071e3';
-  ctx.font = 'bold 20px -apple-system, BlinkMacSystemFont, sans-serif';
-  ctx.textAlign = 'left';  ctx.fillText('實際入手價', 80, cy+26);
-  ctx.font = 'bold 24px -apple-system, BlinkMacSystemFont, sans-serif';
-  ctx.textAlign = 'right'; ctx.fillText(`NT$${r.final.toLocaleString()}`, canvas.width-80, cy+28);
-  cy += 72;
-
-  if (r.totalSaved > 0) {
-    ctx.fillStyle = '#34c759';
-    ctx.font = 'bold 14px -apple-system, BlinkMacSystemFont, sans-serif';
-    ctx.textAlign = 'center';
-    ctx.fillText(`合計省下 NT$${r.totalSaved.toLocaleString()}`, canvas.width/2, cy+10);
-    cy += 30;
-  }
-
-  // Footer
-  cy += 10;
-  ctx.fillStyle = '#86868b';
-  ctx.font = 'bold 14px -apple-system, BlinkMacSystemFont, sans-serif';
-  ctx.textAlign = 'center';
-  ctx.fillText('DESIGNED BY Neil尼歐', canvas.width/2, cy);
-  cy += 20;
-  ctx.font = '12px -apple-system, BlinkMacSystemFont, sans-serif';
-  ctx.fillText('MacBook BTS優惠計算機', canvas.width/2, cy);
-
-  // Download
-  try {
-    const link = document.createElement('a');
-    link.download = `MacBook_BTS購買清單_${new Date().toLocaleDateString('zh-TW').replace(/\//g,'')}.png`;
-    link.href = canvas.toDataURL('image/png');
-    link.click();
-    showToast('📄 BTS購買清單已下載！');
-  } catch(e) {
-    console.error(e);
-    showToast('❌ 圖片生成失敗，請稍後再試');
-  }
+  btsDrawReceipt({
+    productName: name,
+    productImg: productImg,
+    specString: specs,
+    colorString: colorLine,
+    priceRows: [
+      { label: '教育商店定價', value: `NT$${r.subtotal.toLocaleString()}` },
+      { label: `信用卡回饋 (${state.creditCard || 0}%)`,       value: r.ccR  ? `-NT$${r.ccR.toLocaleString()}`  : '—', kind: r.ccR  ? 'deduct' : 'muted' },
+      { label: `導購回饋 (${state.referral || 0}%・未稅估算)`, value: r.refR ? `-NT$${r.refR.toLocaleString()}` : '—', kind: r.refR ? 'deduct' : 'muted' }
+    ],
+    finalValue: `NT$${r.final.toLocaleString()}`,
+    savedText: r.totalSaved > 0 ? `合計省下 NT$${r.totalSaved.toLocaleString()}` : null,
+    footerProduct: `${productType === 'imac' ? 'iMac' : 'MacBook'} BTS優惠計算機`,
+    filename: `${productType === 'imac' ? 'iMac' : 'MacBook'}_BTS購買清單_${new Date().toLocaleDateString('zh-TW').replace(/\//g,'')}.png`
+  });
 }
 
 // ═══════════════════════════════════════
@@ -1490,7 +2115,7 @@ function esc(s) { return s.replace(/\s/g,''); }
 
 function goBack() {
   window.location.href = typeof google!=='undefined' && google.script
-    ? '?page=macbook' : 'index.html?page=macbook';
+    ? '?' : 'index.html';
 }
 
 let toastTimer;

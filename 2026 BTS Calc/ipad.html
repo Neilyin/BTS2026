@@ -2,7 +2,7 @@
 <html lang="zh-TW">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>iPad BTS 優惠計算機</title>
       <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap');
@@ -101,6 +101,79 @@
     .back-btn:hover { transform: translateX(-2px); }
     .back-btn svg { width:10px; height:16px; fill:none; stroke:currentColor; stroke-width:2.5; stroke-linecap:round; stroke-linejoin:round; }
     .topbar-title { font-family: 'Outfit', sans-serif; font-size:17px; font-weight:700; flex:1; }
+    .designer-chip {
+      display:flex;
+      align-items:center;
+      gap:8px;
+      padding:6px 10px 6px 7px;
+      border:1px solid rgba(0,113,227,.16);
+      border-radius:999px;
+      background:rgba(255,255,255,.72);
+      box-shadow:0 6px 18px rgba(0,0,0,.05);
+      white-space:nowrap;
+    }
+    .designer-chip-avatar {
+      width:24px;
+      height:24px;
+      border-radius:50%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:#fff;
+      font-family:'Outfit', sans-serif;
+      font-size:11px;
+      font-weight:800;
+      background:linear-gradient(135deg,#111827,#0071e3);
+    }
+    .designer-chip-text {
+      display:flex;
+      flex-direction:column;
+      line-height:1.05;
+    }
+    .designer-chip-label {
+      font-size:8px;
+      font-weight:800;
+      color:var(--blue);
+      text-transform:uppercase;
+      letter-spacing:.5px;
+    }
+    .designer-chip-name {
+      font-size:13px;
+      font-weight:900;
+      color:var(--text);
+      letter-spacing:0;
+    }
+    .receipt-brand {
+      margin-top: 12px;
+      padding: 13px 14px;
+      border: 1px solid rgba(0,113,227,.14);
+      border-radius: 14px;
+      background: linear-gradient(135deg, rgba(0,113,227,.07), rgba(17,24,39,.035));
+      text-align: center;
+    }
+    .receipt-brand-kicker {
+      display:block;
+      font-size:10px;
+      font-weight:800;
+      color:var(--blue);
+      text-transform:uppercase;
+      letter-spacing:.9px;
+      margin-bottom:4px;
+    }
+    .receipt-brand-name {
+      display:block;
+      font-family:'Outfit', 'Noto Sans TC', sans-serif;
+      font-size:22px;
+      font-weight:900;
+      color:var(--text);
+      letter-spacing:0;
+    }
+    @media(max-width:520px){
+      .topbar { gap:8px; }
+      .designer-chip { padding:6px; }
+      .designer-chip-text { display:none; }
+      .topbar-title { font-size:15px; }
+    }
     
     .product-switch { display:flex; background:rgba(0,0,0,0.06); border-radius:8px; padding:2px; gap:2px; }
         .sw-btn { font-size:12px; font-weight:700; padding:4px 14px; border-radius:6px; border:none; background:none; cursor:pointer; color:var(--text-sub); transition:all var(--transition); }
@@ -453,6 +526,13 @@
       返回
     </button>
     <span class="topbar-title" id="topbar-title">iPad 計算機</span>
+    <div class="designer-chip" aria-label="Designed by Neil尼歐">
+      <span class="designer-chip-avatar">N</span>
+      <span class="designer-chip-text">
+        <span class="designer-chip-label">Designed by</span>
+        <span class="designer-chip-name">Neil尼歐</span>
+      </span>
+    </div>
     <div class="topbar-product-switch">
       <button class="product-switch-btn" id="switch-air" onclick="switchProduct('air')">Air</button>
       <button class="product-switch-btn" id="switch-pro" onclick="switchProduct('pro')">Pro</button>
@@ -470,6 +550,36 @@
   <!-- ── Steps ── -->
   <div class="steps-wrap" id="steps-wrap"></div>
 
+  <!-- ── 創作者資訊 ── -->
+  <footer class="creator-footer compact">
+    <div class="creator-card">
+      <div class="creator-avatar" aria-hidden="true">N</div>
+      <div class="creator-info">
+        <span class="creator-by">本工具由創作者開發</span>
+        <span class="creator-name">Neil尼歐</span>
+        <span class="creator-tagline">Apple 教育優惠分享 · BTS 代購</span>
+      </div>
+      <nav class="creator-links" aria-label="Neil尼歐 社群連結">
+        <a class="creator-link site" href="https://neil.tw" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.7 2.5 15.3 0 18M12 3c-2.5 2.7-2.5 15.3 0 18"/></svg>
+          官方網站
+        </a>
+        <a class="creator-link youtube" href="https://www.youtube.com/channel/UCUn8VlPDRSq_7K3N4zbmHsQ" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.6A3 3 0 0 0 .5 6.2 31 31 0 0 0 0 12a31 31 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.6 9.4.6 9.4.6s7.5 0 9.4-.6a3 3 0 0 0 2.1-2.1A31 31 0 0 0 24 12a31 31 0 0 0-.5-5.8zM9.6 15.6V8.4l6.2 3.6z"/></svg>
+          YouTube
+        </a>
+        <a class="creator-link instagram" href="https://www.instagram.com/neil.tw_/" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1.2" fill="currentColor" stroke="none"/></svg>
+          Instagram
+        </a>
+        <a class="creator-link threads" href="https://www.threads.net/@neil.tw_" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.5 11.2c-.1 0-.2-.1-.3-.1-.2-3-1.8-4.7-4.5-4.7-1.6 0-3 .7-3.8 2l1.4 1c.5-.8 1.4-1 2.4-1 1.5 0 2.4.9 2.6 2.5-.7-.2-1.5-.3-2.3-.2-2.4.1-3.9 1.5-3.8 3.4.1 1.8 1.6 2.9 3.4 2.8 1.4-.1 2.4-.7 3-1.7.4-.7.6-1.5.7-2.4.6.4 1 .9 1.2 1.6.3 1 .3 2.6-.9 3.8-1.1 1.1-2.4 1.5-4.4 1.5-2.2 0-3.9-.7-5-2.1C2.7 16.6 2.2 14.7 2.2 12s.5-4.6 1.6-6c1.1-1.4 2.8-2.1 5-2.1 2.2 0 3.9.7 5 2.2.6.7 1 1.7 1.3 2.8l1.8-.5c-.3-1.4-.9-2.6-1.7-3.6C13.8 3.1 11.6 2.2 8.9 2.2 4.1 2.2 1 5.6.4 11.2c0 .3 0 .5 0 .8s0 .5 0 .8C1 18.4 4.1 21.8 8.9 21.8c2.5 0 4.3-.6 5.8-2.1 1.9-1.9 1.9-4.3 1.3-5.8-.4-1.1-1.1-2-2.1-2.7zm-4.4 4.4c-1 .1-1.7-.4-1.8-1.1 0-.7.6-1.3 1.9-1.4h.4c.6 0 1.1.1 1.6.2-.2 1.6-1 2.2-2.1 2.3z"/></svg>
+          Threads
+        </a>
+      </nav>
+    </div>
+  </footer>
+
 </div><!-- /.app -->
 
 <!-- ── 底部價格列 ── -->
@@ -480,7 +590,7 @@
       <div class="price-breakdown" id="price-breakdown">尚未選擇規格</div>
       <div class="price-saved"  id="price-saved" style="display:none"></div>
     </div>
-    <button class="generate-btn" id="generate-btn" onclick="openModal()" disabled>
+    <button class="generate-btn" id="generate-btn" onclick="startCalc()" disabled>
       <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
       查看清單
     </button>
@@ -496,8 +606,8 @@
     <div class="modal-actions">
       <button class="modal-btn secondary" onclick="closeModal()">關閉</button>
       <button class="modal-btn primary" onclick="generateImage()">
-        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-        儲存圖片
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+        保存購買清單
       </button>
     </div>
     <div class="purchase-links">
@@ -520,6 +630,7 @@
 <!-- ── bts-config.js ── -->
 <script src="bts-config.js"></script>
 <script src="config-override.js"></script>
+<script src="bts-ui.js"></script>
 
 <script>
 // ═══════════════════════════════════════════
@@ -542,7 +653,7 @@ const state = {
 };
 
 // 步驟定義（動態生成）
-const TOTAL_STEPS = 7; // size, color, storage, connectivity, nano(pro only), gifts, rebate
+const TOTAL_STEPS = 6; // size, color, storage, connectivity, nano(pro only), rebate
 
 // ═══════════════════════════════════════════
 //  初始化
@@ -609,7 +720,6 @@ function buildStepDefs(hasNano) {
     { id: 'storage',       title: '選擇容量',       icon: '' },
     ...(hasNano ? [{ id: 'nano', title: '顯示器玻璃', icon: '' }] : []),
     { id: 'connectivity',  title: '選擇連線方式',   icon: '' },
-    { id: 'gifts',         title: 'BTS 配件選擇',   icon: '' },
     { id: 'rebate',        title: '回饋試算',       icon: '' }
   ];
 }
@@ -834,7 +944,7 @@ function renderRebateStep() {
       placeholder="預估轉售金額（NT$）" min="0" value="${state.giftPrice || ''}"
       oninput="setGiftPrice(this.value)" style="margin-top:10px">` : ''}
   </div>
-  <button class="rebate-cta-btn" onclick="openModal()">
+  <button class="rebate-cta-btn" onclick="startCalc()">
     查看計算結果
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
   </button>`;
@@ -957,7 +1067,7 @@ function selectConnectivity(type) {
   state.connectivity = type;
   selectOptUI('conn', type);
   setStepValue('connectivity', type === 'wifi' ? 'Wi-Fi' : 'Wi-Fi + 行動網路');
-  advanceToStep('gifts');
+  advanceToStep('rebate');
   updatePrice();
 }
 
@@ -1031,19 +1141,16 @@ function calcPrice() {
     base += cfg.nanoPrice;
 
   const giftCost = state.gift?.price || 0;
-
-  const subtotal = base + giftCost;
+  const subtotal = base;
 
   const ccRebate  = Math.round(subtotal              * (state.creditCard / 100));
   const refRebate = Math.round((subtotal / 1.05)     * (state.referral   / 100)); // 導購以未稅價計算
-  const giftSale  = state.sellGift ? state.giftPrice : 0;
-  const final     = subtotal - ccRebate - refRebate - giftSale;
+  const giftSale  = 0;
+  const final     = subtotal - ccRebate - refRebate;
 
-  // 省下的原價總計
-  const savedGifts = (getBtsGiftOriginalTotal()) - giftCost;
-  const totalSaved = ccRebate + refRebate + giftSale + savedGifts;
+  const totalSaved = ccRebate + refRebate;
 
-  return { base, giftCost, subtotal, ccRebate, refRebate, giftSale, final, totalSaved };
+  return { base, giftCost: 0, subtotal, ccRebate, refRebate, giftSale, final, totalSaved };
 }
 
 function getBtsGiftOriginalTotal() {
@@ -1068,7 +1175,6 @@ function updatePrice() {
   const parts = [];
   if (r.ccRebate)  parts.push(`信用卡 -NT$${r.ccRebate.toLocaleString()}`);
   if (r.refRebate) parts.push(`導購 -NT$${r.refRebate.toLocaleString()}`);
-  if (r.giftSale)  parts.push(`贈品售 -NT$${r.giftSale.toLocaleString()}`);
   breakEl.textContent = parts.length ? parts.join(' · ') : `定價 NT$${r.subtotal.toLocaleString()}`;
 
   if (r.totalSaved > 0) {
@@ -1083,7 +1189,7 @@ function updatePrice() {
 
 function checkComplete() {
   const hasNano = productType === 'pro';
-  const required = ['size','color','storageId','connectivity','gift'];
+  const required = ['size','color','storageId','connectivity'];
   if (hasNano) required.push('nano');
   const done = required.every(k => state[k] !== null && state[k] !== undefined);
   const btn  = document.getElementById('generate-btn');
@@ -1094,6 +1200,17 @@ function checkComplete() {
 // ═══════════════════════════════════════════
 //  Modal
 // ═══════════════════════════════════════════
+// 計算動畫（約 3 秒）→ 開啟購買清單
+function startCalc() {
+  const r = calcPrice();
+  if (!r) { showToast('請先完成所有選擇'); return; }
+  if (typeof btsCalcAnimation === 'function') {
+    btsCalcAnimation(r.final, openModal);
+  } else {
+    openModal();
+  }
+}
+
 function openModal() {
   const r = calcPrice();
   if (!r) return;
@@ -1130,20 +1247,17 @@ function openModal() {
 
   html += `<hr class="receipt-divider">`;
 
-  // Gift
-  if (state.gift && state.gift.id !== 'none') {
-    html += receiptGiftRow(state.gift.name, state.gift.price, state.gift.originalPrice);
-  }
-
   html += `<hr class="receipt-divider">
   <div class="receipt-item">
     <span class="receipt-label">教育商店定價</span>
     <span class="receipt-value">NT$${r.subtotal.toLocaleString()}</span>
   </div>`;
 
-  if (r.ccRebate)  html += `<div class="receipt-item"><span class="receipt-label">信用卡回饋 (${state.creditCard}%)</span><span class="receipt-value deduct">-NT$${r.ccRebate.toLocaleString()}</span></div>`;
-  if (r.refRebate) html += `<div class="receipt-item"><span class="receipt-label">導購回饋 (${state.referral}%・未稅估算)</span><span class="receipt-value deduct">-NT$${r.refRebate.toLocaleString()}</span></div>`;
-  if (r.giftSale)  html += `<div class="receipt-item"><span class="receipt-label">贈品售出</span><span class="receipt-value deduct">-NT$${r.giftSale.toLocaleString()}</span></div>`;
+  html += `<div class="receipt-item"><span class="receipt-label">信用卡回饋 (${state.creditCard || 0}%)</span><span class="receipt-value ${r.ccRebate ? 'deduct' : 'muted'}">${r.ccRebate ? '-NT$' + r.ccRebate.toLocaleString() : '—'}</span></div>`;
+  html += `<div class="receipt-item"><span class="receipt-label">導購回饋 (${state.referral || 0}%・未稅估算)</span><span class="receipt-value ${r.refRebate ? 'deduct' : 'muted'}">${r.refRebate ? '-NT$' + r.refRebate.toLocaleString() : '—'}</span></div>`;
+  if (state.sellGift && state.giftPrice > 0) {
+    html += `<div class="receipt-item"><span class="receipt-label">贈品轉售估值</span><span class="receipt-value deduct">-NT$${Number(state.giftPrice).toLocaleString()}</span></div>`;
+  }
 
   html += `<div class="receipt-total">
     <span class="receipt-total-label">實際入手價</span>
@@ -1154,7 +1268,11 @@ function openModal() {
     html += `<div class="receipt-saved-row"><span>合計省下 NT$${r.totalSaved.toLocaleString()}</span></div>`;
   }
 
-  html += `<p style="font-size:11px;color:var(--text-sub);text-align:center;margin-top:4px">DESIGNED BY Neil尼歐</p>`;
+  html += `<div class="receipt-brand">
+    <span class="receipt-brand-kicker">Designed by</span>
+    <span class="receipt-brand-name">Neil尼歐</span>
+    <a class="receipt-brand-link" href="https://neil.tw" target="_blank" rel="noopener">neil.tw</a>
+  </div>`;
 
   document.getElementById('modal-content').innerHTML = html;
   document.getElementById('link-bts-agent').href = BTS_CONFIG.meta.purchaseLinks.btsAgent;
@@ -1176,7 +1294,51 @@ function closeModal() { document.getElementById('modal-overlay').classList.remov
 function closeModalOutside(e) { if (e.target === document.getElementById('modal-overlay')) closeModal(); }
 
 function generateImage() {
-  showToast('圖片生成功能即將推出！');
+  const r = calcPrice();
+  if (!r) { showToast('請先完成所有選擇'); return; }
+
+  showToast('⏳ 正在準備購買清單...');
+  const imgUrl = cfg.colorImages?.[state.size]?.[state.color];
+
+  if (!imgUrl) { _drawIpadReceipt(null, r); return; }
+
+  const img = new Image();
+  img.crossOrigin = 'anonymous';
+  let drawn = false;
+  const doDraw = (el) => { if (!drawn) { drawn = true; _drawIpadReceipt(el, r); } };
+  img.onload  = () => doDraw(img);
+  img.onerror = () => doDraw(null);
+  setTimeout(() => doDraw(null), 4000);
+  img.src = imgUrl;
+}
+
+function _drawIpadReceipt(productImg, r) {
+  const sizeCfg    = cfg.sizes[state.size];
+  const storageCfg = sizeCfg.storage.find(s => s.id === state.storageId);
+
+  const name  = `iPad ${productType === 'air' ? 'Air' : 'Pro'} ${sizeCfg.label}`;
+  const specs = `${storageCfg?.name || ''}${storageCfg?.ram ? ' / ' + storageCfg.ram : ''} · ${state.connectivity === 'wifi' ? 'Wi-Fi' : 'Wi-Fi + 行動網路'}`;
+  const colorLine = (state.color || '–') + (productType === 'pro' && state.nano ? ' · 奈米紋理玻璃' : '');
+
+  const sellRow = (state.sellGift && state.giftPrice > 0);
+  const rows = [
+    { label: '教育商店定價', value: `NT$${r.subtotal.toLocaleString()}` },
+    { label: `信用卡回饋 (${state.creditCard || 0}%)`, value: r.ccRebate ? `-NT$${r.ccRebate.toLocaleString()}` : '—', kind: r.ccRebate ? 'deduct' : 'muted' },
+    { label: `導購回饋 (${state.referral || 0}%・未稅估算)`, value: r.refRebate ? `-NT$${r.refRebate.toLocaleString()}` : '—', kind: r.refRebate ? 'deduct' : 'muted' }
+  ];
+  if (sellRow) rows.push({ label: '贈品轉售估值', value: `-NT$${Number(state.giftPrice).toLocaleString()}`, kind: 'deduct' });
+
+  btsDrawReceipt({
+    productName: name,
+    productImg: productImg,
+    specString: specs,
+    colorString: colorLine,
+    priceRows: rows,
+    finalValue: `NT$${r.final.toLocaleString()}`,
+    savedText: r.totalSaved > 0 ? `合計省下 NT$${r.totalSaved.toLocaleString()}` : null,
+    footerProduct: 'iPad BTS優惠計算機',
+    filename: `iPad_BTS購買清單_${new Date().toLocaleDateString('zh-TW').replace(/\//g, '')}.png`
+  });
 }
 
 // ═══════════════════════════════════════════
