@@ -886,6 +886,8 @@
 
 </div><!-- /.page-wrap -->
 
+<script src="bts-analytics-config.js"></script>
+<script src="bts-analytics.js"></script>
 <script>
   // ── 目前所在的產品線 ──
   let currentLine = null;
@@ -899,6 +901,7 @@
 
   function goToSub(line) {
     currentLine = line;
+    if (window.btsTrack) btsTrack('select_product_line', { line: line });
     const s0 = document.getElementById('screen-0');
     const s1 = document.getElementById('screen-1');
 
@@ -937,6 +940,7 @@
   // Google Apps Script 環境：用 URL parameter；一般瀏覽器：直接導向
   function navigateTo(line, product, event) {
     event.preventDefault();
+    if (window.btsTrack) btsTrack('select_model', { line: line, product: product });
 
     // 偵測是否在 Google Apps Script 環境
     if (typeof google !== 'undefined' && google.script) {

@@ -685,6 +685,8 @@
 <script src="bts-config.js"></script>
 <script src="config-override.js"></script>
 <script src="bts-ui.js"></script>
+<script src="bts-analytics-config.js"></script>
+<script src="bts-analytics.js"></script>
 <script>
 // ═══════════════════════════════════════
 //  State
@@ -2014,6 +2016,26 @@ function openModal() {
   document.getElementById('modal-content').innerHTML = html;
   document.getElementById('link-bts').href = BTS_CONFIG.meta.purchaseLinks.btsAgent;
   document.getElementById('modal-overlay').classList.add('open');
+
+  // ── 分析：記錄這筆「查看計算結果」 ──
+  const rec = {
+    productLine: 'mac',
+    product: productType,                 // 'air' | 'pro' | 'imac'
+    model: name,
+    chip: chipStr, memory: memStr, storage: storStr,
+    color: state.color || null,
+    nano: !!state.nano,
+    creditCardPct: Number(state.creditCard) || 0,
+    referralPct: Number(state.referral) || 0,
+    subtotal: r.subtotal, ccRebate: r.ccR || 0, refRebate: r.refR || 0,
+    final: r.final, totalSaved: r.totalSaved || 0
+  };
+  const sig = JSON.stringify(rec);
+  if (window.__btsLastSig !== sig) {
+    window.__btsLastSig = sig;
+    if (window.btsTrack) btsTrack('view_result', { product: rec.product, model: rec.model, final: rec.final, saved: rec.totalSaved });
+    if (window.btsLogRecord) btsLogRecord(rec);
+  }
 }
 
 function rcRow(name, btsP, origP) {
@@ -2031,6 +2053,7 @@ function generateImage() {
 
   const r = calcPrice();
   if (!r) { showToast('請先完成所有選擇'); return; }
+  if (window.btsTrack) btsTrack('save_list', { product: productType, final: r.final });
 
   const imgUrl = productType === 'imac'
     ? BTS_CONFIG.products.imac.colorImages?.['24']?.[state.color]
