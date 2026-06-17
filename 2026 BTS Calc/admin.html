@@ -325,6 +325,7 @@
     <!-- Action bar -->
     <div class="action-bar">
       <p id="status-text">讀取中...</p>
+      <button class="btn secondary" onclick="runLogicCheck(true)">檢查邏輯</button>
       <button class="btn secondary" onclick="exportJSON()">匯出 JSON</button>
       <button class="btn danger"    onclick="resetAll()">清除覆蓋</button>
       <button class="btn primary"   onclick="saveAll()">儲存</button>
@@ -414,12 +415,16 @@
     <div class="tab-panel" id="tab-images-mac">
       <div class="section-header"><h2>Mac / iMac 圖片連結</h2><p>每個尺寸 × 顏色 的圖片 URL</p></div>
       <div class="sub-tabs">
+        <div class="sub-tab"       onclick="switchSubTab('img-mac','neo',this)">MacBook Neo</div>
         <div class="sub-tab active" onclick="switchSubTab('img-mac','air',this)">MacBook Air</div>
         <div class="sub-tab"       onclick="switchSubTab('img-mac','pro',this)">MacBook Pro</div>
+        <div class="sub-tab"       onclick="switchSubTab('img-mac','mini',this)">Mac mini</div>
         <div class="sub-tab"       onclick="switchSubTab('img-mac','imac',this)">iMac</div>
       </div>
+      <div id="img-mac-neo" style="display:none"><div id="img-grid-mac-neo"></div></div>
       <div id="img-mac-air"><div id="img-grid-mac-air"></div></div>
       <div id="img-mac-pro" style="display:none"><div id="img-grid-mac-pro"></div></div>
+      <div id="img-mac-mini" style="display:none"><div id="img-grid-mac-mini"></div></div>
       <div id="img-mac-imac" style="display:none"><div id="img-grid-imac"></div></div>
     </div>
 
@@ -434,15 +439,17 @@
       <div id="price-ipad-tab-pro" style="display:none"><div id="price-table-ipad-pro"></div></div>
     </div>
 
-    <!-- ══ Tab: MacBook 價格 ══ -->
+    <!-- ══ Tab: Mac / iMac 價格 ══ -->
     <div class="tab-panel" id="tab-price-mac">
-      <div class="section-header"><h2>MacBook 價格</h2><p>教育商店定價（NT$）</p></div>
+      <div class="section-header"><h2>Mac / iMac 價格</h2><p>教育商店定價與目前前台加購邏輯（NT$）</p></div>
       <div class="sub-tabs">
         <div class="sub-tab active" onclick="switchSubTab('price-mac-tab','air',this)">MacBook Air</div>
         <div class="sub-tab"       onclick="switchSubTab('price-mac-tab','pro',this)">MacBook Pro</div>
+        <div class="sub-tab"       onclick="switchSubTab('price-mac-tab','imac',this)">iMac</div>
       </div>
       <div id="price-mac-tab-air"><div id="price-table-mac-air"></div></div>
       <div id="price-mac-tab-pro" style="display:none"><div id="price-table-mac-pro"></div></div>
+      <div id="price-mac-tab-imac" style="display:none"><div id="price-table-imac"></div></div>
     </div>
 
   </main>
@@ -807,15 +814,42 @@ function deleteGiftCombo(idx) {
 // ═══════════════════════════════════════════
 //  Render: 圖片管理
 // ═══════════════════════════════════════════
+function ensureImageSlotsForProduct(productKey, sizesObj) {
+  const product = cfg.products?.[productKey];
+  if (!product) return;
+  if (!product.colorImages) product.colorImages = {};
+  const sizes = Object.keys(sizesObj || product.sizes || product.colorImages || {});
+  const colors = Array.isArray(product.colors) ? product.colors : [];
+  sizes.forEach(sz => {
+    if (!product.colorImages[sz]) product.colorImages[sz] = {};
+    colors.forEach(color => {
+      if (product.colorImages[sz][color] === undefined) product.colorImages[sz][color] = '';
+    });
+  });
+}
+
+function ensureImageSlots() {
+  ensureImageSlotsForProduct('ipadAir');
+  ensureImageSlotsForProduct('ipadPro');
+  ensureImageSlotsForProduct('macbookNeo', { '13': { label: '13 吋' } });
+  ensureImageSlotsForProduct('macbookAir');
+  ensureImageSlotsForProduct('macbookPro');
+  ensureImageSlotsForProduct('macMini', { 'mini': { label: 'Mac mini' } });
+  ensureImageSlotsForProduct('imac', { '24': { label: '24 吋' } });
+}
+
 function renderImgGrid(containerId, colorImages, productKey, sizesObj) {
   const el = document.getElementById(containerId);
   if (!el) return;
+  ensureImageSlotsForProduct(productKey, sizesObj);
   const sizes = Object.keys(sizesObj || colorImages);
   el.innerHTML = sizes.map(sz => {
     const colorMap = colorImages[sz] || {};
-    const colors   = Object.keys(colorMap);
+    const product = cfg.products?.[productKey];
+    const colors = Array.isArray(product?.colors) ? product.colors : Object.keys(colorMap);
+    const sizeLabel = sizesObj?.[sz]?.label || (productKey === 'imac' ? '24 吋' : `${sz} 吋`);
     return `<div class="card">
-      <div class="card-title">${sz} 吋</div>
+      <div class="card-title">${escHtml(sizeLabel)} 收據產品圖</div>
       <div class="img-grid">
         ${colors.map(c => {
           const inputId = `img-${productKey}-${sz}-${c.replace(/\s/g,'')}`;
@@ -824,7 +858,7 @@ function renderImgGrid(containerId, colorImages, productKey, sizesObj) {
             <img class="img-preview" id="${inputId}-preview" src="${escHtml(colorMap[c]||'')}" onerror="this.src=''">
             <input class="field-input url-input" id="${inputId}" type="url"
                    value="${escHtml(colorMap[c]||'')}"
-                   placeholder="https://drive.google.com/thumbnail?id=..."
+                   placeholder="貼上 ${escHtml(c)} 產品圖 URL，收據會使用這張圖"
                    oninput="setImgUrl('${productKey}','${sz}','${c}',this.value);updateImgPreview(this)">
           </div>`;
         }).join('')}
@@ -837,8 +871,10 @@ function setImgUrl(productKey, sz, color, val) {
   const prodMap = {
     'ipadAir':    cfg.products.ipadAir.colorImages,
     'ipadPro':    cfg.products.ipadPro.colorImages,
+    'macbookNeo': cfg.products.macbookNeo.colorImages,
     'macbookAir': cfg.products.macbookAir.colorImages,
     'macbookPro': cfg.products.macbookPro.colorImages,
+    'macMini':    cfg.products.macMini.colorImages,
     'imac':       cfg.products.imac.colorImages
   };
   const cImgs = prodMap[productKey];
@@ -848,10 +884,13 @@ function setImgUrl(productKey, sz, color, val) {
 }
 
 function renderImages() {
+  ensureImageSlots();
   renderImgGrid('img-grid-air',     cfg.products.ipadAir.colorImages,    'ipadAir',    cfg.products.ipadAir.sizes);
   renderImgGrid('img-grid-pro',     cfg.products.ipadPro.colorImages,    'ipadPro',    cfg.products.ipadPro.sizes);
+  renderImgGrid('img-grid-mac-neo', cfg.products.macbookNeo.colorImages, 'macbookNeo', { '13': { label: '13 吋' } });
   renderImgGrid('img-grid-mac-air', cfg.products.macbookAir.colorImages, 'macbookAir', cfg.products.macbookAir.sizes);
   renderImgGrid('img-grid-mac-pro', cfg.products.macbookPro.colorImages, 'macbookPro', cfg.products.macbookPro.sizes);
+  renderImgGrid('img-grid-mac-mini', cfg.products.macMini.colorImages,    'macMini',    { 'mini': { label: 'Mac mini' } });
   renderImgGrid('img-grid-imac',    cfg.products.imac.colorImages,       'imac',       { '24': { label: '24 吋' } });
 }
 
@@ -899,6 +938,99 @@ function renderIpadSizePrice(containerId, prod, prodKey) {
 function renderMacPrices() {
   renderMacAirPrices();
   renderMacProPrices();
+  renderImacPrices();
+}
+
+function csvToArray(val) {
+  return String(val || '').split(',').map(x => x.trim()).filter(Boolean);
+}
+
+function getConfigTarget(path) {
+  const lastDot = path.lastIndexOf('.');
+  if (lastDot < 0) return { target: null, key: '' };
+  const objExpr = path.slice(0, lastDot);
+  const key = path.slice(lastDot + 1);
+  try {
+    return { target: Function('cfg', `return ${objExpr}`)(cfg), key };
+  } catch (_) {
+    return { target: null, key };
+  }
+}
+
+function setOptionalCsv(path, val) {
+  const { target, key } = getConfigTarget(path);
+  if (!target) return;
+  const arr = csvToArray(val);
+  if (arr.length) target[key] = arr;
+  else delete target[key];
+}
+
+function setOptionalString(path, val) {
+  const { target, key } = getConfigTarget(path);
+  if (!target) return;
+  if (String(val || '').trim()) target[key] = String(val).trim();
+  else delete target[key];
+}
+
+function setOptionalBool(path, checked) {
+  const { target, key } = getConfigTarget(path);
+  if (!target) return;
+  target[key] = !!checked;
+}
+
+function renderLogicMetaFields(basePath, item, extras = {}) {
+  const fields = [];
+  if (extras.defaultable) {
+    fields.push(`<label class="combo-active"><input type="checkbox" ${item.isDefault ? 'checked' : ''} onchange="${basePath}.isDefault=this.checked">標配</label>`);
+  }
+  if (extras.availableChips) {
+    fields.push(`<label class="combo-field"><span>限定晶片 ID（逗號分隔）</span><input class="field-input" type="text" value="${escHtml((item.availableChips || []).join(','))}" placeholder="例：M5_10gpu" oninput="setOptionalCsv('${basePath}.availableChips',this.value)"></label>`);
+  }
+  if (extras.upgradeToChip) {
+    fields.push(`<label class="combo-field"><span>點選後切換到晶片 ID</span><input class="field-input" type="text" value="${escHtml(item.upgradeToChip || '')}" placeholder="例：M5_Max_18_40" oninput="setOptionalString('${basePath}.upgradeToChip',this.value)"></label>`);
+  }
+  if (extras.unavailableText) {
+    fields.push(`<label class="combo-field"><span>不可直接選時顯示文字</span><input class="field-input" type="text" value="${escHtml(item.unavailableText || '')}" placeholder="查看價格與更改項目" oninput="setOptionalString('${basePath}.unavailableText',this.value)"></label>`);
+  }
+  if (!fields.length) return '';
+  return `<div class="combo-grid" style="margin-top:8px">${fields.join('')}</div>`;
+}
+
+function renderUpgradeRows(items, basePath, opts = {}) {
+  return items.map((item, i) => {
+    const path = `${basePath}[${i}]`;
+    return `<div class="card" style="padding:12px;margin:10px 0">
+      <div class="field-row">
+        <span class="field-label small">${escHtml(item.name || item.id)}</span>
+        <span style="font-size:12px;color:var(--sub);flex:1">加價</span>
+        <input class="field-input price-input" type="number" value="${Number(item.priceAdj) || 0}"
+               oninput="${path}.priceAdj=+this.value">
+      </div>
+      ${renderLogicMetaFields(path, item, opts)}
+    </div>`;
+  }).join('');
+}
+
+function renderImacOptionRows(items, basePath, chips, opts = {}) {
+  return items.map((item, i) => {
+    const path = `${basePath}[${i}]`;
+    const chipFields = chips.map(chip => `
+      <label class="combo-field">
+        <span>${escHtml(chip.detail)} 覆寫加價</span>
+        <input class="field-input price-input" type="number" value="${item.priceByChip?.[chip.id] ?? ''}" placeholder="空白=用通用加價"
+               oninput="if(!${path}.priceByChip) ${path}.priceByChip={}; this.value==='' ? delete ${path}.priceByChip['${chip.id}'] : ${path}.priceByChip['${chip.id}']=+this.value">
+      </label>`).join('');
+    return `<div class="card" style="padding:12px;margin:10px 0">
+      <div class="field-row">
+        <span class="field-label small">${escHtml(item.name || item.id)}</span>
+        <span style="font-size:12px;color:var(--sub);flex:1">通用加價</span>
+        <input class="field-input price-input" type="number" value="${Number(item.priceAdj) || 0}"
+               oninput="${path}.priceAdj=+this.value">
+      </div>
+      <div class="combo-grid" style="margin-top:8px">${chipFields}</div>
+      ${renderLogicMetaFields(path, item, { defaultable:true, availableChips:opts.availableChips, unavailableText:opts.unavailableText })}
+    </div>`;
+  }).join('');
 }
 
 function renderMacAirPrices() {
@@ -907,51 +1039,60 @@ function renderMacAirPrices() {
   const air = cfg.products.macbookAir;
   el.innerHTML = Object.entries(air.sizes).map(([sz, data]) => `
   <div class="card">
-    <div class="card-title">MacBook Air ${data.label}
+    <div class="card-title">MacBook Air ${data.label} 邏輯設定
+      <span style="font-size:12px;color:var(--sub);font-weight:500">尺寸基礎價、晶片、RAM、SSD、電源</span>
+    </div>
+    <div class="field-row">
+      <span class="field-label">尺寸基礎價</span>
       <input class="field-input price-input" type="number" value="${data.basePrice}"
-             oninput="cfg.products.macbookAir.sizes['${sz}'].basePrice=+this.value" style="margin-left:auto">
-      <span style="font-size:12px;color:var(--sub)">起始價</span>
+             oninput="cfg.products.macbookAir.sizes['${sz}'].basePrice=+this.value">
     </div>
     <div class="chip-accordion">
-      <div class="chip-acc-header" onclick="toggleAcc(this)">
-        晶片升級 <span class="chip-acc-arrow">▶</span>
-      </div>
+      <div class="chip-acc-header" onclick="toggleAcc(this)">晶片選項 <span class="chip-acc-arrow">▶</span></div>
       <div class="chip-acc-body">
         ${data.chips.map((c,ci) => `
-        <div class="field-row">
-          <span class="field-label small">${c.detail}</span>
-          <span style="font-size:12px;color:var(--sub);flex:1">加價</span>
-          <input class="field-input price-input" type="number" value="${c.priceAdj}"
-                 oninput="cfg.products.macbookAir.sizes['${sz}'].chips[${ci}].priceAdj=+this.value">
+        <div class="card" style="padding:12px;margin:10px 0">
+          <div class="field-row">
+            <span class="field-label small">${escHtml(c.detail)}</span>
+            <span style="font-size:12px;color:var(--sub)">起售價</span>
+            <input class="field-input price-input" type="number" value="${c.basePrice ?? (data.basePrice + (c.priceAdj || 0))}"
+                   oninput="cfg.products.macbookAir.sizes['${sz}'].chips[${ci}].basePrice=+this.value">
+            <span style="font-size:12px;color:var(--sub)">相對加價</span>
+            <input class="field-input price-input" type="number" value="${c.priceAdj || 0}"
+                   oninput="cfg.products.macbookAir.sizes['${sz}'].chips[${ci}].priceAdj=+this.value">
+          </div>
         </div>`).join('')}
       </div>
     </div>
     <div class="chip-accordion">
-      <div class="chip-acc-header" onclick="toggleAcc(this)">
-        記憶體升級 <span class="chip-acc-arrow">▶</span>
-      </div>
+      <div class="chip-acc-header" onclick="toggleAcc(this)">記憶體升級與切晶片規則 <span class="chip-acc-arrow">▶</span></div>
       <div class="chip-acc-body">
-        ${data.memory.map((m,mi) => `
-        <div class="field-row">
-          <span class="field-label small">${m.name}</span>
-          <input class="field-input price-input" type="number" value="${m.priceAdj}"
-                 oninput="cfg.products.macbookAir.sizes['${sz}'].memory[${mi}].priceAdj=+this.value">
-        </div>`).join('')}
+        ${renderUpgradeRows(data.memory, `cfg.products.macbookAir.sizes['${sz}'].memory`, { defaultable:true, availableChips:true, unavailableText:true })}
       </div>
     </div>
     <div class="chip-accordion">
-      <div class="chip-acc-header" onclick="toggleAcc(this)">
-        儲存升級 <span class="chip-acc-arrow">▶</span>
-      </div>
+      <div class="chip-acc-header" onclick="toggleAcc(this)">儲存升級與切晶片規則 <span class="chip-acc-arrow">▶</span></div>
       <div class="chip-acc-body">
-        ${data.storage.map((s,si) => `
-        <div class="field-row">
-          <span class="field-label small">${s.name}</span>
-          <input class="field-input price-input" type="number" value="${s.priceAdj}"
-                 oninput="cfg.products.macbookAir.sizes['${sz}'].storage[${si}].priceAdj=+this.value">
+        ${renderUpgradeRows(data.storage, `cfg.products.macbookAir.sizes['${sz}'].storage`, { defaultable:true, availableChips:true, unavailableText:true })}
+      </div>
+    </div>
+    <div class="chip-accordion">
+      <div class="chip-acc-header" onclick="toggleAcc(this)">電源轉接器 <span class="chip-acc-arrow">▶</span></div>
+      <div class="chip-acc-body">
+        ${data.power.map((p,pi) => `
+        <div class="card" style="padding:12px;margin:10px 0">
+          <div class="field-row">
+            <span class="field-label small">${escHtml(p.name)}</span>
+            <span style="font-size:12px;color:var(--sub)">加價</span>
+            <input class="field-input price-input" type="number" value="${p.priceAdj || 0}"
+                   oninput="cfg.products.macbookAir.sizes['${sz}'].power[${pi}].priceAdj=+this.value">
+            <label class="combo-active"><input type="checkbox" ${p.isDefault ? 'checked' : ''} onchange="cfg.products.macbookAir.sizes['${sz}'].power[${pi}].isDefault=this.checked">標配</label>
+          </div>
+          <label class="combo-field"><span>圖片 URL</span><input class="field-input" type="url" value="${escHtml(p.image || '')}" oninput="cfg.products.macbookAir.sizes['${sz}'].power[${pi}].image=this.value"></label>
         </div>`).join('')}
       </div>
     </div>
+    ${sz === '13' ? `<div class="rebate-note">13 吋 Air 滿血 M5 的 RAM/SSD 隱藏優惠目前在前台計算邏輯：只要 RAM 或 SSD 有升級，總價折 NT$3,150，兩者都升級也只折一次。</div>` : ''}
   </div>`).join('');
 }
 
@@ -971,36 +1112,202 @@ function renderMacProPrices() {
     data.chips.map((chip, ci) => `
     <div class="card">
       <div class="card-title">
-        ${sz}吋 ${chip.name} ${chip.detail}
+        ${data.label} ${chip.name} ${chip.detail}
         <span class="badge ${tierBadge[chip.tier]||'air'}">${chip.tier?.toUpperCase()}</span>
         <input class="field-input price-input" type="number" value="${chip.basePrice}"
                oninput="cfg.products.macbookPro.sizes['${sz}'].chips[${ci}].basePrice=+this.value" style="margin-left:auto">
         <span style="font-size:12px;color:var(--sub)">基礎價</span>
       </div>
+      <div class="combo-grid" style="margin-bottom:12px">
+        <label class="combo-field"><span>預設 RAM ID</span><input class="field-input" type="text" value="${escHtml(chip.defaultRam || '')}" oninput="cfg.products.macbookPro.sizes['${sz}'].chips[${ci}].defaultRam=this.value"></label>
+        <label class="combo-field"><span>預設 SSD ID</span><input class="field-input" type="text" value="${escHtml(chip.defaultStorage || '')}" oninput="cfg.products.macbookPro.sizes['${sz}'].chips[${ci}].defaultStorage=this.value"></label>
+        <label class="combo-field"><span>預設電源 ID</span><input class="field-input" type="text" value="${escHtml(chip.defaultPower || '')}" oninput="cfg.products.macbookPro.sizes['${sz}'].chips[${ci}].defaultPower=this.value"></label>
+        <label class="combo-active"><input type="checkbox" ${chip.requiresPowerSelection === false ? 'checked' : ''} onchange="cfg.products.macbookPro.sizes['${sz}'].chips[${ci}].requiresPowerSelection=!this.checked">標配電源，不顯示電源選擇</label>
+      </div>
       <div class="chip-accordion">
-        <div class="chip-acc-header" onclick="toggleAcc(this)">記憶體升級 <span class="chip-acc-arrow">▶</span></div>
+        <div class="chip-acc-header" onclick="toggleAcc(this)">記憶體升級與跨晶片規則 <span class="chip-acc-arrow">▶</span></div>
         <div class="chip-acc-body">
-          ${chip.memory.map((m,mi) => `
-          <div class="field-row">
-            <span class="field-label small">${m.name}</span>
-            <input class="field-input price-input" type="number" value="${m.priceAdj}"
-                   oninput="cfg.products.macbookPro.sizes['${sz}'].chips[${ci}].memory[${mi}].priceAdj=+this.value">
-          </div>`).join('')}
+          ${renderUpgradeRows(chip.memory, `cfg.products.macbookPro.sizes['${sz}'].chips[${ci}].memory`, { defaultable:true, upgradeToChip:true, unavailableText:true })}
         </div>
       </div>
       <div class="chip-accordion">
         <div class="chip-acc-header" onclick="toggleAcc(this)">儲存升級 <span class="chip-acc-arrow">▶</span></div>
         <div class="chip-acc-body">
-          ${chip.storage.map((s,si) => `
-          <div class="field-row">
-            <span class="field-label small">${s.name}</span>
-            <input class="field-input price-input" type="number" value="${s.priceAdj}"
-                   oninput="cfg.products.macbookPro.sizes['${sz}'].chips[${ci}].storage[${si}].priceAdj=+this.value">
+          ${renderUpgradeRows(chip.storage, `cfg.products.macbookPro.sizes['${sz}'].chips[${ci}].storage`, { defaultable:true })}
+        </div>
+      </div>
+      <div class="chip-accordion">
+        <div class="chip-acc-header" onclick="toggleAcc(this)">電源轉接器邏輯 <span class="chip-acc-arrow">▶</span></div>
+        <div class="chip-acc-body">
+          ${(chip.power || []).map((p,pi) => `
+          <div class="card" style="padding:12px;margin:10px 0">
+            <div class="field-row">
+              <span class="field-label small">${escHtml(p.name)}</span>
+              <span style="font-size:12px;color:var(--sub)">加價</span>
+              <input class="field-input price-input" type="number" value="${p.priceAdj || 0}"
+                     oninput="cfg.products.macbookPro.sizes['${sz}'].chips[${ci}].power[${pi}].priceAdj=+this.value">
+              <label class="combo-active"><input type="checkbox" ${p.isDefault ? 'checked' : ''} onchange="cfg.products.macbookPro.sizes['${sz}'].chips[${ci}].power[${pi}].isDefault=this.checked">標配</label>
+            </div>
+            <label class="combo-field"><span>圖片 URL</span><input class="field-input" type="url" value="${escHtml(p.image || '')}" oninput="cfg.products.macbookPro.sizes['${sz}'].chips[${ci}].power[${pi}].image=this.value"></label>
           </div>`).join('')}
         </div>
       </div>
     </div>`).join('')
   ).join('')}`;
+}
+
+function renderImacPrices() {
+  const el = document.getElementById('price-table-imac');
+  if (!el) return;
+  const imac = cfg.products.imac;
+  const chips = imac.chips || [];
+  el.innerHTML = `
+  <div class="card">
+    <div class="card-title">iMac 24 吋全域設定</div>
+    <div class="field-row">
+      <span class="field-label">奈米紋理顯示器加價</span>
+      <input class="field-input price-input" type="number" value="${imac.nanoPrice || 0}"
+             oninput="cfg.products.imac.nanoPrice=+this.value">
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">晶片與基礎價</div>
+    ${chips.map((chip, ci) => `
+      <div class="card" style="padding:12px;margin:10px 0">
+        <div class="field-row">
+          <span class="field-label small">${escHtml(chip.name)} ${escHtml(chip.detail)}</span>
+          <span style="font-size:12px;color:var(--sub)">基礎價</span>
+          <input class="field-input price-input" type="number" value="${chip.basePrice || 0}"
+                 oninput="cfg.products.imac.chips[${ci}].basePrice=+this.value">
+          <label class="combo-active"><input type="checkbox" ${chip.supportsNano ? 'checked' : ''} onchange="cfg.products.imac.chips[${ci}].supportsNano=this.checked">可選奈米紋理</label>
+        </div>
+        <div class="combo-grid">
+          <label class="combo-field"><span>預設 RAM ID</span><input class="field-input" type="text" value="${escHtml(chip.defaultMemory || '')}" oninput="cfg.products.imac.chips[${ci}].defaultMemory=this.value"></label>
+          <label class="combo-field"><span>預設 SSD ID</span><input class="field-input" type="text" value="${escHtml(chip.defaultStorage || '')}" oninput="cfg.products.imac.chips[${ci}].defaultStorage=this.value"></label>
+          <label class="combo-field"><span>Thunderbolt 說明</span><input class="field-input" type="text" value="${escHtml(chip.thunderbolt || '')}" oninput="cfg.products.imac.chips[${ci}].thunderbolt=this.value"></label>
+        </div>
+      </div>`).join('')}
+  </div>
+  <div class="card">
+    <div class="card-title">記憶體升級與切晶片規則</div>
+    ${renderImacOptionRows(imac.memory || [], 'cfg.products.imac.memory', chips, { availableChips:true, unavailableText:true })}
+  </div>
+  <div class="card">
+    <div class="card-title">SSD 儲存升級與切晶片規則</div>
+    ${renderImacOptionRows(imac.storage || [], 'cfg.products.imac.storage', chips, { availableChips:true, unavailableText:true })}
+  </div>
+  <div class="card">
+    <div class="card-title">底座</div>
+    ${renderImacOptionRows(imac.stand || [], 'cfg.products.imac.stand', chips)}
+  </div>
+  <div class="card">
+    <div class="card-title">乙太網路</div>
+    ${renderImacOptionRows(imac.ethernet || [], 'cfg.products.imac.ethernet', chips, { availableChips:true, unavailableText:true })}
+  </div>
+  <div class="card">
+    <div class="card-title">滑鼠 / 觸控板</div>
+    ${renderImacOptionRows(imac.pointing || [], 'cfg.products.imac.pointing', chips)}
+  </div>
+  <div class="card">
+    <div class="card-title">鍵盤</div>
+    ${renderImacOptionRows(imac.keyboard || [], 'cfg.products.imac.keyboard', chips)}
+  </div>`;
+}
+
+function hasOption(arr, id) {
+  return Array.isArray(arr) && arr.some(x => x.id === id);
+}
+
+function validateProductImageSlots(errors) {
+  const checks = [
+    ['ipadAir'],
+    ['ipadPro'],
+    ['macbookNeo', { '13': { label: '13 吋' } }],
+    ['macbookAir'],
+    ['macbookPro'],
+    ['macMini', { 'mini': { label: 'Mac mini' } }],
+    ['imac', { '24': { label: '24 吋' } }]
+  ];
+  checks.forEach(([key, sizesObj]) => {
+    const product = cfg.products?.[key];
+    const sizes = Object.keys(sizesObj || product?.sizes || product?.colorImages || {});
+    sizes.forEach(sz => {
+      (product?.colors || []).forEach(color => {
+        if (!product.colorImages?.[sz] || !(color in product.colorImages[sz])) {
+          errors.push(`${product.name || key} ${sz} ${color} 缺少收據圖片欄位`);
+        }
+      });
+    });
+  });
+}
+
+function validateConfigLogic() {
+  ensureImageSlots();
+  const errors = [];
+  const warnings = [];
+
+  validateProductImageSlots(errors);
+
+  Object.entries(cfg.products.macbookAir.sizes).forEach(([sz, size]) => {
+    (size.memory || []).concat(size.storage || []).forEach(item => {
+      (item.availableChips || []).forEach(chipId => {
+        if (!hasOption(size.chips, chipId)) errors.push(`MacBook Air ${sz} ${item.name} 限定晶片不存在：${chipId}`);
+      });
+    });
+    if (!Array.isArray(size.power) || !size.power.length) errors.push(`MacBook Air ${sz} 缺少電源轉接器選項`);
+  });
+
+  Object.entries(cfg.products.macbookPro.sizes).forEach(([sz, size]) => {
+    (size.chips || []).forEach(chip => {
+      if (!hasOption(chip.memory, chip.defaultRam)) errors.push(`MacBook Pro ${sz} ${chip.id} 預設 RAM 不存在：${chip.defaultRam}`);
+      if (!hasOption(chip.storage, chip.defaultStorage)) errors.push(`MacBook Pro ${sz} ${chip.id} 預設 SSD 不存在：${chip.defaultStorage}`);
+      if (!hasOption(chip.power, chip.defaultPower)) errors.push(`MacBook Pro ${sz} ${chip.id} 預設電源不存在：${chip.defaultPower}`);
+      if (chip.requiresPowerSelection === false && (chip.power || []).length !== 1) {
+        warnings.push(`MacBook Pro ${sz} ${chip.id} 已設定略過電源選擇，但電源選項不是 1 個`);
+      }
+      (chip.memory || []).forEach(mem => {
+        if (!mem.upgradeToChip) return;
+        const target = (size.chips || []).find(c => c.id === mem.upgradeToChip);
+        if (!target) {
+          errors.push(`MacBook Pro ${sz} ${chip.id} ${mem.name} 升級目標不存在：${mem.upgradeToChip}`);
+        } else if (!hasOption(target.memory, mem.id)) {
+          errors.push(`MacBook Pro ${sz} ${chip.id} ${mem.name} 的目標晶片 ${target.id} 缺少同 RAM 選項`);
+        }
+      });
+    });
+  });
+
+  const imac = cfg.products.imac;
+  (imac.chips || []).forEach(chip => {
+    if (!hasOption(imac.memory, chip.defaultMemory)) errors.push(`iMac ${chip.id} 預設 RAM 不存在：${chip.defaultMemory}`);
+    if (!hasOption(imac.storage, chip.defaultStorage)) errors.push(`iMac ${chip.id} 預設 SSD 不存在：${chip.defaultStorage}`);
+  });
+  ['memory','storage','ethernet','keyboard','stand','pointing'].forEach(group => {
+    (imac[group] || []).forEach(item => {
+      (item.availableChips || []).forEach(chipId => {
+        if (!hasOption(imac.chips, chipId)) errors.push(`iMac ${group} ${item.id} 限定晶片不存在：${chipId}`);
+      });
+      Object.keys(item.priceByChip || {}).forEach(chipId => {
+        if (!hasOption(imac.chips, chipId)) errors.push(`iMac ${group} ${item.id} 依晶片覆寫加價目標不存在：${chipId}`);
+      });
+    });
+  });
+
+  return { errors, warnings };
+}
+
+function runLogicCheck(showSuccess) {
+  const result = validateConfigLogic();
+  if (result.errors.length) {
+    alert(`邏輯檢查失敗：\n\n${result.errors.join('\n')}`);
+    return false;
+  }
+  if (result.warnings.length) {
+    alert(`邏輯檢查完成，但有提醒：\n\n${result.warnings.join('\n')}`);
+    return true;
+  }
+  if (showSuccess) toast('邏輯檢查通過');
+  return true;
 }
 
 function toggleAcc(headerEl) {
@@ -1014,6 +1321,8 @@ function toggleAcc(headerEl) {
 //  Save / Export / Reset
 // ═══════════════════════════════════════════
 function saveAll() {
+  ensureImageSlots();
+  if (!runLogicCheck(false)) return;
   const ok = saveConfigOverride(cfg);
   if (ok) {
     toast('設定已儲存到本地');
@@ -1027,6 +1336,7 @@ function saveAll() {
 }
 
 function exportJSON() {
+  ensureImageSlots();
   const blob = new Blob([JSON.stringify(cfg, null, 2)], { type:'application/json' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
@@ -1072,6 +1382,7 @@ function toast(msg) {
 //  Init
 // ═══════════════════════════════════════════
 function renderAll() {
+  ensureImageSlots();
   renderMeta();
   ensureGiftCombos();
   renderGiftCombos();

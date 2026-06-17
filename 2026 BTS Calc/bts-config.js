@@ -199,6 +199,31 @@ const BTS_CONFIG = {
     },
 
     // ─────────────────────────────────────────────
+    //  MacBook Neo（教育商店）
+    //  官方選購流程：顏色 → 儲存 → 回饋試算
+    // ─────────────────────────────────────────────
+    macbookNeo: {
+      name: 'MacBook Neo',
+      chip: 'A18 Pro',
+      sizeLabel: '13 吋',
+      basePrice: 16900,
+      colors: ['胭粉色', '青橘黃色', '靛青色', '銀色'],
+      colorImages: {
+        '13': {
+          '胭粉色': '',
+          '青橘黃色': '',
+          '靛青色': '',
+          '銀色': ''
+        }
+      },
+      fixedMemory: { id: '8gb', name: '8GB', priceAdj: 0 },
+      storage: [
+        { id: '256gb', name: '256GB', priceAdj: 0, isDefault: true },
+        { id: '512gb', name: '512GB', priceAdj: 3000 }
+      ]
+    },
+
+    // ─────────────────────────────────────────────
     //  MacBook Air（M5，教育商店）
     //  官方選購流程：尺寸 → 顏色 → M5 晶片處理能力 → 自訂配置（記憶體 / 儲存 / 電源）
     // ─────────────────────────────────────────────
@@ -566,6 +591,86 @@ const BTS_CONFIG = {
         } // end 16"
       }
     }, // end macbookPro
+
+    // ─────────────────────────────────────────────
+    //  Mac mini（M4，教育商店）
+    //  官方選購流程：顏色 → 晶片 → 記憶體 → 儲存 → 乙太網路 → 回饋試算
+    // ─────────────────────────────────────────────
+    macMini: {
+      name: 'Mac mini',
+      chip: 'M4',
+      sizeLabel: 'Mac mini',
+      colors: ['銀色'],
+      colorImages: {
+        'mini': {
+          '銀色': 'https://www.apple.com/v/mac-mini/aa/images/overview/hero/hero_static__ehi2pbtt5toy_large.png'
+        }
+      },
+      chips: [
+        {
+          id: 'M4_10_10',
+          name: 'M4',
+          detail: '10 核心 CPU / 10 核心 GPU / 16 核心神經網路引擎',
+          basePrice: 23400,
+          defaultMemory: '16gb',
+          defaultStorage: '512gb',
+          desc: '小巧機身，適合日常工作、學習與外接螢幕配置。',
+          memory: [
+            { id: '16gb', name: '16GB', priceAdj: 0, isDefault: true },
+            { id: '24gb', name: '24GB', priceAdj: 6300 },
+            { id: '32gb', name: '32GB', priceAdj: 12600 }
+          ],
+          storage: [
+            { id: '512gb', name: '512GB', priceAdj: 0, isDefault: true },
+            { id: '1tb', name: '1TB', priceAdj: 6300 },
+            { id: '2tb', name: '2TB', priceAdj: 18900 }
+          ],
+          ethernet: [
+            { id: 'gigabit', name: 'Gigabit 乙太網路', priceAdj: 0, isDefault: true },
+            { id: '10gbe', name: '10Gb 乙太網路', priceAdj: 3150 }
+          ]
+        },
+        {
+          id: 'M4_Pro_12_16',
+          name: 'M4 Pro',
+          detail: '12 核心 CPU / 16 核心 GPU / 16 核心神經網路引擎',
+          basePrice: 43400,
+          defaultMemory: '24gb',
+          defaultStorage: '512gb',
+          desc: '具備更高階的 CPU 與 GPU 效能，適合大型專案、影像與開發工作。',
+          memory: [
+            { id: '24gb', name: '24GB', priceAdj: 0, isDefault: true },
+            { id: '48gb', name: '48GB', priceAdj: 12600 },
+            { id: '64gb', name: '64GB', priceAdj: 25200 }
+          ],
+          storage: [
+            { id: '512gb', name: '512GB', priceAdj: 0, isDefault: true },
+            { id: '1tb', name: '1TB', priceAdj: 6300 },
+            { id: '2tb', name: '2TB', priceAdj: 18900 },
+            { id: '4tb', name: '4TB', priceAdj: 44100 },
+            { id: '8tb', name: '8TB', priceAdj: 94500 }
+          ],
+          ethernet: [
+            { id: 'gigabit', name: 'Gigabit 乙太網路', priceAdj: 0, isDefault: true },
+            { id: '10gbe', name: '10Gb 乙太網路', priceAdj: 3150 }
+          ]
+        }
+      ],
+      memory: [
+        { id: '16gb', name: '16GB', priceAdj: 0, isDefault: true },
+        { id: '24gb', name: '24GB', priceAdj: 6300 },
+        { id: '32gb', name: '32GB', priceAdj: 12600 }
+      ],
+      storage: [
+        { id: '512gb', name: '512GB', priceAdj: 0, isDefault: true },
+        { id: '1tb', name: '1TB', priceAdj: 6300 },
+        { id: '2tb', name: '2TB', priceAdj: 18900 }
+      ],
+      ethernet: [
+        { id: 'gigabit', name: 'Gigabit 乙太網路', priceAdj: 0, isDefault: true },
+        { id: '10gbe', name: '10Gb 乙太網路', priceAdj: 3150 }
+      ]
+    },
 
     // ─────────────────────────────────────────────
     //  iMac 24 吋（M4，教育商店）

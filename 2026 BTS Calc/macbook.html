@@ -724,7 +724,7 @@ const state = {
 // ═══════════════════════════════════════
 function init() {
   const p = new URLSearchParams(window.location.search).get('product');
-  productType = p === 'pro' ? 'pro' : p === 'imac' ? 'imac' : 'air';
+  productType = ['pro', 'imac', 'neo', 'macmini'].includes(p) ? p : 'air';
   reset();
   renderAll();
 }
@@ -747,16 +747,56 @@ function switchProduct(t) {
 }
 
 function renderAll() {
-  document.getElementById('topbar-title').textContent =
-    productType === 'air' ? 'MacBook Air 計算機' : productType === 'pro' ? 'MacBook Pro 計算機' : 'iMac 計算機';
+  document.getElementById('topbar-title').textContent = getProductTitle();
   renderSteps();
   updatePrice();
+}
+
+function getProductTitle() {
+  if (productType === 'air') return 'MacBook Air 計算機';
+  if (productType === 'pro') return 'MacBook Pro 計算機';
+  if (productType === 'imac') return 'iMac 計算機';
+  if (productType === 'neo') return 'MacBook Neo 計算機';
+  if (productType === 'macmini') return 'Mac mini 計算機';
+  return 'Mac 計算機';
+}
+
+function isSimpleMac() {
+  return productType === 'neo' || productType === 'macmini';
+}
+
+function getSimpleMacConfig() {
+  return productType === 'neo' ? BTS_CONFIG.products.macbookNeo : BTS_CONFIG.products.macMini;
+}
+
+function getSelectedSimpleChip() {
+  const cfg = getSimpleMacConfig();
+  return (cfg.chips || []).find(c => c.id === state.chipId) || null;
+}
+
+function getSimpleOptionGroup(group) {
+  const cfg = getSimpleMacConfig();
+  const chip = getSelectedSimpleChip();
+  return chip?.[group] || cfg[group] || [];
 }
 
 // ═══════════════════════════════════════
 //  Step definitions
 // ═══════════════════════════════════════
 function getStepDefs() {
+  if (productType === 'neo') return [
+    { id:'color',   title:'選擇顏色',   icon:'' },
+    { id:'storage', title:'儲存裝置',   icon:'' },
+    { id:'rebate',  title:'回饋試算',   icon:'' }
+  ];
+  if (productType === 'macmini') return [
+    { id:'color',    title:'選擇顏色',   icon:'' },
+    { id:'chip',     title:'選擇晶片',   icon:'' },
+    { id:'memory',   title:'統一記憶體', icon:'' },
+    { id:'storage',  title:'儲存裝置',   icon:'' },
+    { id:'ethernet', title:'網路連接',   icon:'' },
+    { id:'rebate',   title:'回饋試算',   icon:'' }
+  ];
   if (productType === 'air') return [
     { id:'size',         title:'選擇尺寸',     icon:'' },
     { id:'color',        title:'選擇顏色',     icon:'' },
@@ -867,10 +907,10 @@ function stepDone(id) {
   switch(id) {
     case 'size':    return !!state.size;
     case 'color':   return !!state.color;
-    case 'chip':    return productType==='air' ? !!state.chipId : productType==='imac' ? !!state.imacChipId : !!state.chipFamily;
+    case 'chip':    return productType==='air' ? !!state.chipId : productType==='imac' ? !!state.imacChipId : productType==='macmini' ? !!state.chipId : productType==='neo' ? true : !!state.chipFamily;
     case 'compute': return productType==='pro' ? !!state.chipObj : true;
-    case 'memory':  return productType==='air' || productType==='imac' ? !!state.memId : state.proMemId !== null;
-    case 'storage': return productType==='air' || productType==='imac' ? !!state.storageId : state.proStorId !== null;
+    case 'memory':  return productType==='air' || productType==='imac' || isSimpleMac() ? !!state.memId : state.proMemId !== null;
+    case 'storage': return productType==='air' || productType==='imac' || isSimpleMac() ? !!state.storageId : state.proStorId !== null;
     case 'power':   return productType==='imac' ? true : !!state.powerId;
     case 'display': return state.nano !== null;
     case 'stand':   return !!state.standId;
@@ -887,9 +927,84 @@ function stepDone(id) {
 //  Build step HTML
 // ═══════════════════════════════════════
 function buildStepBody(id) {
+  if (isSimpleMac()) return buildSimpleMacStep(id);
   if (productType === 'imac') return buildImacStep(id);
   if (productType === 'air') return buildAirStep(id);
   return buildProStep(id);
+}
+
+/* ── Simple Mac steps: MacBook Neo / Mac mini ── */
+function buildSimpleMacStep(id) {
+  const cfg = getSimpleMacConfig();
+  switch(id) {
+    case 'color': {
+      const colorMap = {
+        '胭粉色':'#f3c7c8',
+        '青橘黃色':'#e7ef68',
+        '靛青色':'#40517d',
+        '銀色':'#e5e5ea'
+      };
+      return `<div class="opt-grid">
+        ${cfg.colors.map(c=>`
+        <div class="opt" id="color-${esc(c)}" onclick="simpleSelectColor('${c}')">
+          <div class="color-dot" style="background:${colorMap[c]||'#ccc'}"></div>
+          <div class="opt-title">${c}</div>
+        </div>`).join('')}
+      </div>`;
+    }
+    case 'chip': {
+      const chips = cfg.chips || [];
+      return chips.map(c=>`
+      <div class="chip-opt" id="chip-${c.id}" onclick="simpleSelectChip('${c.id}')">
+        <div class="chip-name">${c.name} 晶片</div>
+        <div class="chip-detail">${c.detail}</div>
+        <div class="chip-price">NT$${c.basePrice.toLocaleString()} 起</div>
+        <div class="chip-desc">${c.desc || ''}</div>
+      </div>`).join('');
+    }
+    case 'memory': {
+      if (productType === 'macmini' && !state.chipId) return warn('請先選擇晶片');
+      return `${simplePricePreview()}
+      <div class="opt-grid">
+        ${(productType === 'macmini' ? getSimpleOptionGroup('memory') : (cfg.memory || [cfg.fixedMemory])).map(m=>`
+        <div class="opt" id="mem-${m.id}" onclick="simpleSelectMemory('${m.id}')">
+          <div class="opt-title">${m.name}</div>
+          ${m.priceAdj>0 ? `<div class="opt-price">+NT$${m.priceAdj.toLocaleString()}</div>` : `<div class="opt-badge">已配備</div>`}
+        </div>`).join('')}
+      </div>`;
+    }
+    case 'storage': {
+      return `${simplePricePreview()}
+      <div class="opt-grid">
+        ${(productType === 'macmini' ? getSimpleOptionGroup('storage') : (cfg.storage || [])).map(s=>`
+        <div class="opt" id="stor-${s.id}" onclick="simpleSelectStorage('${s.id}')">
+          <div class="opt-title">${s.name}</div>
+          ${s.priceAdj>0 ? `<div class="opt-price">+NT$${s.priceAdj.toLocaleString()}</div>` : `<div class="opt-badge">已配備</div>`}
+        </div>`).join('')}
+      </div>`;
+    }
+    case 'ethernet': {
+      return `${simplePricePreview()}
+      <div class="opt-grid">
+        ${getSimpleOptionGroup('ethernet').map(e=>`
+        <div class="opt" id="eth-${e.id}" onclick="simpleSelectEthernet('${e.id}')">
+          <div class="opt-title">${e.name}</div>
+          ${e.priceAdj>0 ? `<div class="opt-price">+NT$${e.priceAdj.toLocaleString()}</div>` : `<div class="opt-badge">已配備</div>`}
+        </div>`).join('')}
+      </div>`;
+    }
+    case 'rebate': return buildRebateStep();
+    default: return '';
+  }
+}
+
+function simplePricePreview() {
+  const total = getSimpleMacPrice();
+  if (!total) return '';
+  return `<div class="price-preview-inline">
+    <span class="ppi-label">目前規格小計</span>
+    <span class="ppi-val">NT$${total.toLocaleString()}</span>
+  </div>`;
 }
 
 /* ── AIR steps ── */
@@ -1544,15 +1659,18 @@ function restoreSelections(id) {
   if (id === 'chip') {
     if (productType==='air' && state.chipId)  hlOpt(`chip-${state.chipId}`);
     if (productType==='imac' && state.imacChipId) hlOpt(`chip-${state.imacChipId}`);
+    if (productType==='macmini' && state.chipId) hlOpt(`chip-${state.chipId}`);
     if (productType==='pro' && state.chipFamily) hlOpt(`chip-${state.chipFamily}`);
   }
   if (id === 'compute' && state.chipObj) hlOpt(`compute-${state.chipObj.id}`);
   if (id === 'memory') {
     if (productType==='air' && state.memId)  hlOpt(`mem-${state.memId}`);
+    if (isSimpleMac() && state.memId) hlOpt(`mem-${state.memId}`);
     if (productType==='pro' && state.proMemId) hlOpt(`mem-${state.proMemId}`);
   }
   if (id === 'storage') {
     if (productType==='air' && state.storageId)  hlOpt(`stor-${state.storageId}`);
+    if (isSimpleMac() && state.storageId) hlOpt(`stor-${state.storageId}`);
     if (productType==='pro' && state.proStorId)  hlOpt(`stor-${state.proStorId}`);
   }
   if (id === 'power'   && state.powerId) hlOpt(`power-${state.powerId}`);
@@ -1569,6 +1687,71 @@ function restoreSelections(id) {
 // ═══════════════════════════════════════
 //  Air selectors
 // ═══════════════════════════════════════
+function simpleSelectColor(c) {
+  const cfg = getSimpleMacConfig();
+  state.color = c;
+  if (productType === 'neo') {
+    state.size = '13';
+    state.memId = cfg.fixedMemory?.id || '8gb';
+  } else if (productType === 'macmini') {
+    state.size = 'mini';
+    state.chipId = null;
+    state.memId = null;
+    state.storageId = null;
+    state.ethernetId = null;
+  }
+  hlOpt(`color-${esc(c)}`); setSV('color', c);
+  showToast(`已選擇 ${c}`);
+  advanceTo(productType === 'neo' ? 'storage' : 'chip');
+  updatePrice();
+}
+
+function simpleSelectChip(id) {
+  const cfg = getSimpleMacConfig();
+  const chip = cfg.chips.find(c => c.id === id);
+  state.chipId = id;
+  state.memId = chip.defaultMemory;
+  state.storageId = chip.defaultStorage;
+  state.ethernetId = getDefaultSimpleOptionId(chip.ethernet || cfg.ethernet);
+  hlOpt(`chip-${id}`); setSV('chip', chip.detail);
+  setSV('memory', '');
+  setSV('storage', '');
+  setSV('ethernet', (chip.ethernet || cfg.ethernet).find(e => e.id === state.ethernetId)?.name || '');
+  showToast(`已選擇 ${chip.detail}`);
+  advanceTo('memory');
+  updatePrice();
+}
+
+function simpleSelectMemory(id) {
+  const cfg = getSimpleMacConfig();
+  const item = (productType === 'macmini' ? getSimpleOptionGroup('memory') : (cfg.memory || [cfg.fixedMemory])).find(x => x.id === id);
+  state.memId = id;
+  hlOpt(`mem-${id}`); setSV('memory', item?.name || id);
+  advanceTo('storage');
+  updatePrice();
+}
+
+function simpleSelectStorage(id) {
+  const cfg = getSimpleMacConfig();
+  const item = (productType === 'macmini' ? getSimpleOptionGroup('storage') : cfg.storage).find(x => x.id === id);
+  state.storageId = id;
+  hlOpt(`stor-${id}`); setSV('storage', item?.name || id);
+  advanceTo(productType === 'macmini' ? 'ethernet' : 'rebate');
+  updatePrice();
+}
+
+function simpleSelectEthernet(id) {
+  const item = getSimpleOptionGroup('ethernet').find(x => x.id === id);
+  state.ethernetId = id;
+  hlOpt(`eth-${id}`); setSV('ethernet', item?.name || id);
+  advanceTo('rebate');
+  updatePrice();
+}
+
+function getDefaultSimpleOptionId(list) {
+  return (list || []).find(x => x.isDefault)?.id || (list || [])[0]?.id || null;
+}
+
 function airSelectSize(sz) {
   state.size = sz; state.chipId=null; state.memId=null; state.storageId=null; state.powerId=null;
   hlOpt(`size-${sz}`); setSV('size', BTS_CONFIG.products.macbookAir.sizes[sz].label);
@@ -1851,6 +2034,24 @@ function setGiftPrice(val) { state.giftPrice = parseFloat(val)||0; updatePrice()
 // ═══════════════════════════════════════
 //  Price calc
 // ═══════════════════════════════════════
+function getSimpleMacPrice() {
+  const cfg = getSimpleMacConfig();
+  if (productType === 'neo') {
+    if (!state.storageId) return 0;
+    const storageAdj = cfg.storage.find(s => s.id === state.storageId)?.priceAdj || 0;
+    return cfg.basePrice + storageAdj;
+  }
+  if (productType === 'macmini') {
+    if (!state.chipId) return 0;
+    const chip = cfg.chips.find(c => c.id === state.chipId);
+    const memA = (chip?.memory || cfg.memory || []).find(m => m.id === state.memId)?.priceAdj || 0;
+    const stoA = (chip?.storage || cfg.storage || []).find(s => s.id === state.storageId)?.priceAdj || 0;
+    const ethA = (chip?.ethernet || cfg.ethernet || []).find(e => e.id === state.ethernetId)?.priceAdj || 0;
+    return (chip?.basePrice || 0) + memA + stoA + ethA;
+  }
+  return 0;
+}
+
 function getMacBasePrice() {
   if (productType === 'imac') {
     if (!state.imacChipId) return 0;
@@ -1863,6 +2064,8 @@ function getMacBasePrice() {
     const pointA = getImacOptionPrice(cfg.pointing.find(p => p.id === state.pointingId));
     const keyA = getImacOptionPrice(cfg.keyboard.find(k => k.id === state.keyboardId));
     return chip.basePrice + memA + stoA + standA + ethA + pointA + keyA + (state.nano ? cfg.nanoPrice : 0);
+  } else if (isSimpleMac()) {
+    return getSimpleMacPrice();
   } else if (productType === 'air') {
     if (!state.size || !state.chipId) return 0;
     const sz   = BTS_CONFIG.products.macbookAir.sizes[state.size];
@@ -1911,6 +2114,10 @@ function updatePrice() {
 function checkComplete() {
   const required = productType === 'imac'
     ? ['color','imacChipId','memId','storageId','nano','standId','ethernetId','pointingId','keyboardId']
+    : productType === 'neo'
+    ? ['color','memId','storageId']
+    : productType === 'macmini'
+    ? ['color','chipId','memId','storageId','ethernetId']
     : productType === 'air'
     ? ['size','color','chipId','memId','storageId','powerId']
     : ['size','color','nano','chipFamily','chipObj','proMemId','proStorId','powerId'];
@@ -1953,6 +2160,22 @@ function openModal() {
     const st = cfg.storage.find(s => s.id === state.storageId);
     name = 'iMac 24 吋';
     chipStr = ch?.detail || ''; memStr = me?.name || ''; storStr = st?.name || '';
+  } else if (productType === 'neo') {
+    const cfg = BTS_CONFIG.products.macbookNeo;
+    const st = cfg.storage.find(s => s.id === state.storageId);
+    name = 'MacBook Neo 13 吋';
+    chipStr = cfg.chip || 'A18 Pro';
+    memStr = cfg.fixedMemory?.name || '';
+    storStr = st?.name || '';
+  } else if (productType === 'macmini') {
+    const cfg = BTS_CONFIG.products.macMini;
+    const ch = cfg.chips.find(c => c.id === state.chipId);
+    const me = (ch?.memory || cfg.memory || []).find(m => m.id === state.memId);
+    const st = (ch?.storage || cfg.storage || []).find(s => s.id === state.storageId);
+    name = 'Mac mini';
+    chipStr = ch?.detail || '';
+    memStr = me?.name || '';
+    storStr = st?.name || '';
   } else {
     const ch = state.chipObj;
     const me = ch.memory.find(m=>m.id===state.proMemId);
@@ -1981,6 +2204,12 @@ function openModal() {
     html += `<div class="receipt-item"><span class="receipt-label">乙太網路</span><span class="receipt-value">${eth?.name || '–'}</span></div>`;
     html += `<div class="receipt-item"><span class="receipt-label">滑鼠/觸控板</span><span class="receipt-value">${point?.name || '–'}</span></div>`;
     html += `<div class="receipt-item"><span class="receipt-label">鍵盤</span><span class="receipt-value">${keyboard?.name || '–'}</span></div>`;
+  }
+  if (productType === 'macmini') {
+    const cfg = BTS_CONFIG.products.macMini;
+    const ch = cfg.chips.find(c => c.id === state.chipId);
+    const eth = (ch?.ethernet || cfg.ethernet || []).find(x => x.id === state.ethernetId);
+    html += `<div class="receipt-item"><span class="receipt-label">乙太網路</span><span class="receipt-value">${eth?.name || '–'}</span></div>`;
   }
   if (productType === 'air') {
     const pw = BTS_CONFIG.products.macbookAir.sizes[state.size].power.find(p=>p.id===state.powerId);
@@ -2013,7 +2242,7 @@ function openModal() {
   // ── 分析：記錄這筆「查看計算結果」 ──
   const rec = {
     productLine: 'mac',
-    product: productType,                 // 'air' | 'pro' | 'imac'
+    product: productType,                 // 'air' | 'pro' | 'imac' | 'neo' | 'macmini'
     model: name,
     chip: chipStr, memory: memStr, storage: storStr,
     color: state.color || null,
@@ -2050,6 +2279,10 @@ function generateImage() {
 
   const imgUrl = productType === 'imac'
     ? BTS_CONFIG.products.imac.colorImages?.['24']?.[state.color]
+    : productType === 'neo'
+      ? BTS_CONFIG.products.macbookNeo.colorImages?.['13']?.[state.color]
+      : productType === 'macmini'
+        ? BTS_CONFIG.products.macMini.colorImages?.['mini']?.[state.color]
     : productType === 'air'
       ? BTS_CONFIG.products.macbookAir.colorImages?.[state.size]?.[state.color]
       : BTS_CONFIG.products.macbookPro.colorImages?.[state.size]?.[state.color];
@@ -2083,6 +2316,19 @@ function _drawMacReceipt(productImg, r) {
     const st = cfg.storage.find(s => s.id === state.storageId);
     name = 'iMac 24 吋';
     specs = `${ch?.detail || ''} · ${me?.name || ''} · ${st?.name || ''}`;
+  } else if (productType === 'neo') {
+    const cfg = BTS_CONFIG.products.macbookNeo;
+    const st = cfg.storage.find(s => s.id === state.storageId);
+    name = 'MacBook Neo 13 吋';
+    specs = `${cfg.chip || 'A18 Pro'} · ${cfg.fixedMemory?.name || ''} · ${st?.name || ''}`;
+  } else if (productType === 'macmini') {
+    const cfg = BTS_CONFIG.products.macMini;
+    const ch = cfg.chips.find(c => c.id === state.chipId);
+    const me = (ch?.memory || cfg.memory || []).find(m => m.id === state.memId);
+    const st = (ch?.storage || cfg.storage || []).find(s => s.id === state.storageId);
+    const eth = (ch?.ethernet || cfg.ethernet || []).find(e => e.id === state.ethernetId);
+    name = 'Mac mini';
+    specs = `${ch?.detail || ''} · ${me?.name || ''} · ${st?.name || ''} · ${eth?.name || ''}`;
   } else {
     const ch = state.chipObj;
     const me = ch.memory.find(m => m.id === state.proMemId);
@@ -2104,8 +2350,8 @@ function _drawMacReceipt(productImg, r) {
     ],
     finalValue: `NT$${r.final.toLocaleString()}`,
     savedText: r.totalSaved > 0 ? `合計省下 NT$${r.totalSaved.toLocaleString()}` : null,
-    footerProduct: `${productType === 'imac' ? 'iMac' : 'MacBook'} BTS優惠計算機`,
-    filename: `${productType === 'imac' ? 'iMac' : 'MacBook'}_BTS購買清單_${new Date().toLocaleDateString('zh-TW').replace(/\//g,'')}.png`
+    footerProduct: `${productType === 'imac' ? 'iMac' : productType === 'macmini' ? 'Mac mini' : 'MacBook'} BTS優惠計算機`,
+    filename: `${productType === 'imac' ? 'iMac' : productType === 'macmini' ? 'MacMini' : 'MacBook'}_BTS購買清單_${new Date().toLocaleDateString('zh-TW').replace(/\//g,'')}.png`
   });
 }
 

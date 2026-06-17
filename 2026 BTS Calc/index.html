@@ -687,22 +687,22 @@
                alt="MacBook"
                onerror="this.src='https://i.imgur.com/placeholder.png'">
           <h2>MacBook</h2>
-          <p class="card-sub">Air / Pro</p>
-          <p class="card-starting-price">NT$32,590 起</p>
+          <p class="card-sub">Neo / Air / Pro</p>
+          <p class="card-starting-price">NT$16,900 起</p>
           <div class="card-arrow">
             <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
           </div>
         </div>
 
-        <!-- iMac -->
-        <div class="product-line-card" onclick="navigateTo('macbook', 'imac', event)">
+        <!-- Desktop Mac -->
+        <div class="product-line-card" onclick="goToSub('desktop')">
           <img class="card-icon"
-               src="https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/imac-color-unselect-202601-gallery-1?wid=900&hei=620&fmt=jpeg&qlt=90&.v=1767917121718"
-               alt="iMac"
+               src="https://www.apple.com/v/mac-mini/aa/images/overview/hero/hero_static__ehi2pbtt5toy_large.png"
+               alt="桌上型 Mac"
                onerror="this.src='https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/imac-touch-id-blue-selection-hero-202410_SW_COLOR?wid=900&hei=900&fmt=jpeg&qlt=90'">
-          <h2>iMac</h2>
-          <p class="card-sub">24 吋 / M4</p>
-          <p class="card-starting-price">NT$41,150 起</p>
+          <h2>桌上型 Mac</h2>
+          <p class="card-sub">iMac / Mac mini</p>
+          <p class="card-starting-price">NT$23,400 起</p>
           <div class="card-arrow">
             <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
           </div>
@@ -788,6 +788,32 @@
       <!-- MacBook 子產品 -->
       <div class="sub-product-grid" id="macbook-sub" style="display:none">
 
+        <!-- MacBook Neo -->
+        <a class="product-card" href="macbook.html?product=neo" onclick="navigateTo('macbook', 'neo', event)">
+          <div class="product-card-img-wrap">
+            <img src="https://store.storeimages.cdn-apple.com/8756/as-images.apple.com/is/macbook-neo-digitalmat-gallery-1-202604?wid=900&hei=700&fmt=jpeg&qlt=90"
+                 alt="MacBook Neo"
+                 onerror="this.src='assets/mac-card-50-edu-savings-202605.png'">
+          </div>
+          <div class="product-card-body">
+            <span class="product-card-badge">A18 Pro</span>
+            <h3>MacBook Neo</h3>
+            <p class="product-desc">入門輕巧 MacBook，新色系與日常效能</p>
+            <p class="product-price">NT$16,900 起</p>
+            <div class="product-features">
+              <span class="feature-tag">13 吋</span>
+              <span class="feature-tag">256GB / 512GB</span>
+              <span class="feature-tag">4 色可選</span>
+            </div>
+            <div class="cta-row">
+              <span class="cta-btn">
+                開始計算
+                <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+              </span>
+            </div>
+          </div>
+        </a>
+
         <!-- MacBook Air -->
         <a class="product-card" href="macbook.html?product=air" onclick="navigateTo('macbook', 'air', event)">
           <div class="product-card-img-wrap">
@@ -830,6 +856,63 @@
               <span class="feature-tag">14 吋 / 16 吋</span>
               <span class="feature-tag">16–128GB RAM</span>
               <span class="feature-tag">奈米紋理可選</span>
+            </div>
+            <div class="cta-row">
+              <span class="cta-btn">
+                開始計算
+                <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+              </span>
+            </div>
+          </div>
+        </a>
+
+      </div>
+
+      <!-- 桌上型 Mac 子產品 -->
+      <div class="sub-product-grid" id="desktop-sub" style="display:none">
+
+        <!-- iMac -->
+        <a class="product-card" href="macbook.html?product=imac" onclick="navigateTo('desktop', 'imac', event)">
+          <div class="product-card-img-wrap">
+            <img src="https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/imac-color-unselect-202601-gallery-1?wid=900&hei=620&fmt=jpeg&qlt=90&.v=1767917121718"
+                 alt="iMac"
+                 onerror="this.src='https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/imac-touch-id-blue-selection-hero-202410_SW_COLOR?wid=900&hei=900&fmt=jpeg&qlt=90'">
+          </div>
+          <div class="product-card-body">
+            <span class="product-card-badge">M4 晶片</span>
+            <h3>iMac</h3>
+            <p class="product-desc">24 吋 4.5K Retina 顯示器，一體成形桌上型 Mac</p>
+            <p class="product-price">NT$41,150 起</p>
+            <div class="product-features">
+              <span class="feature-tag">24 吋</span>
+              <span class="feature-tag">16–32GB RAM</span>
+              <span class="feature-tag">7 色可選</span>
+            </div>
+            <div class="cta-row">
+              <span class="cta-btn">
+                開始計算
+                <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+              </span>
+            </div>
+          </div>
+        </a>
+
+        <!-- Mac mini -->
+        <a class="product-card" href="macbook.html?product=macmini" onclick="navigateTo('desktop', 'macmini', event)">
+          <div class="product-card-img-wrap">
+            <img src="https://www.apple.com/v/mac-mini/aa/images/overview/hero/hero_static__ehi2pbtt5toy_large.png"
+                 alt="Mac mini"
+                 onerror="this.src='assets/mac-card-50-edu-savings-202605.png'">
+          </div>
+          <div class="product-card-body">
+            <span class="product-card-badge">M4 / M4 Pro</span>
+            <h3>Mac mini</h3>
+            <p class="product-desc">小巧桌上型 Mac，適合外接螢幕與工作站配置</p>
+            <p class="product-price">NT$23,400 起</p>
+            <div class="product-features">
+              <span class="feature-tag">M4 / M4 Pro</span>
+              <span class="feature-tag">16–64GB RAM</span>
+              <span class="feature-tag">512GB–8TB</span>
             </div>
             <div class="cta-row">
               <span class="cta-btn">
@@ -896,7 +979,7 @@
   const hintText = {
     ipad: '<strong>BTS iPad 活動：</strong>活動內容暫未套用，待開始後更新。',
     macbook: '<strong>BTS MacBook 活動：</strong>活動內容暫未套用，待開始後更新。',
-    imac: '<strong>BTS iMac 活動：</strong>活動內容暫未套用，待開始後更新。'
+    desktop: '<strong>BTS 桌上型 Mac 活動：</strong>活動內容暫未套用，待開始後更新。'
   };
 
   function goToSub(line) {
@@ -907,12 +990,13 @@
 
     // 更新標題和提示
     document.getElementById('sub-header-title').textContent =
-      line === 'ipad' ? '選擇 iPad 機型' : '選擇 MacBook 機型';
+      line === 'ipad' ? '選擇 iPad 機型' : line === 'desktop' ? '選擇桌上型 Mac' : '選擇 MacBook 機型';
     document.getElementById('compare-hint-text').innerHTML = hintText[line];
 
     // 顯示對應子產品清單
     document.getElementById('ipad-sub').style.display    = line === 'ipad'    ? 'grid' : 'none';
     document.getElementById('macbook-sub').style.display = line === 'macbook' ? 'grid' : 'none';
+    document.getElementById('desktop-sub').style.display = line === 'desktop' ? 'grid' : 'none';
 
     // 切換畫面
     s0.classList.add('slide-out');
@@ -945,11 +1029,13 @@
     // 偵測是否在 Google Apps Script 環境
     if (typeof google !== 'undefined' && google.script) {
       // GAS 環境：透過 window.location 或 parent frame 導向
-      const url = `?page=${line}&product=${product}`;
+      const page = line === 'desktop' ? 'macbook' : line;
+      const url = `?page=${page}&product=${product}`;
       window.top.location.href = url;
     } else {
       // 一般瀏覽器 / 本地開發
-      window.location.href = `${line}.html?product=${product}`;
+      const page = line === 'desktop' ? 'macbook' : line;
+      window.location.href = `${page}.html?product=${product}`;
     }
   }
 
@@ -957,7 +1043,7 @@
   (function init() {
     const params = new URLSearchParams(window.location.search);
     const page = params.get('page');
-    if (page === 'ipad' || page === 'macbook') {
+    if (page === 'ipad' || page === 'macbook' || page === 'desktop') {
       goToSub(page);
     }
   })();
