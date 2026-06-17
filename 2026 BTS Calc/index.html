@@ -408,111 +408,178 @@
 
     .sub-product-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 20px;
-      max-width: 640px;
+      grid-template-columns: repeat(2, minmax(0, 320px));
+      justify-content: center;
+      justify-items: center;
+      gap: 18px;
+      max-width: 700px;
       margin: 0 auto;
     }
 
-    @media (max-width: 400px) {
-      .sub-product-grid { grid-template-columns: 1fr; }
+    @media (max-width: 760px) {
+      .sub-product-grid {
+        grid-template-columns: minmax(0, min(300px, calc(100vw - 48px)));
+        justify-content: center;
+        justify-items: center;
+        max-width: none;
+        gap: 16px;
+      }
     }
 
     .product-card {
-      background: var(--glass-bg);
-      backdrop-filter: var(--glass-blur);
-      -webkit-backdrop-filter: var(--glass-blur);
-      border: 1px solid var(--glass-border);
-      box-shadow: var(--glass-shadow);
-      border-radius: var(--radius-lg);
+      --poster-text: #1d1d1f;
+      --poster-muted: #313136;
+      --poster-accent: #008577;
+      background-color: #fff;
+      background-image: none;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      border: 1px solid rgba(0,0,0,.06);
+      box-shadow: 0 16px 34px rgba(0,0,0,.08);
+      border-radius: 18px;
       cursor: pointer;
       overflow: hidden;
       transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
       text-decoration: none;
-      color: inherit;
+      color: var(--poster-text);
       display: flex;
       flex-direction: column;
+      min-height: 0;
+      aspect-ratio: 4 / 5;
+      width: 100%;
+      max-width: 320px;
+      position: relative;
       user-select: none;
+    }
+
+    .product-card::after {
+      content: '';
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      width: 21px;
+      height: 21px;
+      background: var(--poster-accent);
+      -webkit-mask: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M12 3 1.8 8.1 12 13.2l8.2-4.1V15h1.8V8.1L12 3Zm-6 8.9v4.2c0 1.5 2.7 3.2 6 3.2s6-1.7 6-3.2v-4.2l-6 3-6-3Z'/%3E%3C/svg%3E") center / contain no-repeat;
+      mask: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M12 3 1.8 8.1 12 13.2l8.2-4.1V15h1.8V8.1L12 3Zm-6 8.9v4.2c0 1.5 2.7 3.2 6 3.2s6-1.7 6-3.2v-4.2l-6 3-6-3Z'/%3E%3C/svg%3E") center / contain no-repeat;
+      z-index: 2;
+    }
+
+    .product-card.dark {
+      --poster-text: #f5f5f7;
+      --poster-muted: rgba(255,255,255,.86);
+      background-color: #000;
+      border-color: rgba(255,255,255,.1);
+      box-shadow: 0 18px 38px rgba(0,0,0,.18);
+    }
+
+    .ipad-air-card {
+      background-color: #d9f3fb;
+      background-image: url('assets/card-ipad-air.png?v=20260618');
+    }
+    .ipad-pro-card {
+      background-color: #000;
+      background-image: url('assets/card-ipad-pro.png?v=20260618');
+    }
+    .neo-card {
+      background-color: #fff;
+      background-image: url('assets/card-macbook-neo.png?v=20260618');
+    }
+    .macbook-air-card {
+      background-color: #d9f2fb;
+      background-image: url('assets/card-macbook-air.png?v=20260618');
+    }
+    .macbook-pro-card {
+      background-color: #000;
+      background-image: url('assets/card-macbook-pro.png?v=20260618');
+    }
+    .imac-card {
+      background-color: #fff;
+      background-image: url('assets/card-imac.png?v=20260618');
+    }
+    .mac-mini-card {
+      background-color: #fff;
+      background-image: url('assets/card-mac-mini.png?v=20260618');
     }
 
     .product-card:hover {
       transform: translateY(-6px);
-      box-shadow: var(--glass-shadow-hover);
-      border-color: rgba(0, 113, 227, 0.3);
+      box-shadow: 0 24px 52px rgba(0,0,0,.13);
+      border-color: rgba(0, 113, 227, 0.18);
     }
 
     .product-card:active { transform: scale(.97); }
 
     .product-card-img-wrap {
-      background: linear-gradient(160deg, rgba(240,240,245,0.4) 0%, rgba(232,232,239,0.4) 100%);
-      padding: 32px 20px 20px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 160px;
-      border-bottom: 1px solid var(--border);
+      display: none;
     }
 
     .product-card-img-wrap img {
       width: 100%;
-      max-width: 130px;
-      height: 110px;
-      object-fit: contain;
+      max-width: none;
+      height: 100%;
+      object-fit: cover;
       display: block;
       transition: transform var(--transition);
     }
     .product-card:hover .product-card-img-wrap img {
-      transform: scale(1.06);
+      transform: scale(1.025);
     }
 
     .product-card-body {
-      padding: 18px 20px 24px;
-      flex: 1;
+      order: 1;
+      padding: 22px 22px 4px;
+      min-height: 124px;
       display: flex;
       flex-direction: column;
+      position: relative;
+      z-index: 1;
     }
 
     .product-card-badge {
+      display: none;
+    }
+
+    .neo-card .product-card-badge {
       display: inline-flex;
-      align-items: center;
-      background: var(--sel-bg);
-      color: var(--blue);
-      font-size: 11px;
-      font-weight: 700;
-      padding: 4px 10px;
-      border-radius: 6px;
+      color: #b05a00;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0;
       margin-bottom: 10px;
       width: fit-content;
-      border: 1px solid rgba(0, 113, 227, 0.15);
     }
 
     .product-card h3 {
-      font-size: 19px;
-      font-weight: 700;
-      margin-bottom: 6px;
+      font-family: 'Outfit', 'Noto Sans TC', sans-serif;
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: 0;
+      line-height: 1.06;
+      margin-bottom: 8px;
+      padding-right: 40px;
     }
 
     .product-card .product-desc {
       font-size: 12.5px;
-      color: var(--text-sub);
-      line-height: 1.5;
-      margin-bottom: 14px;
-      flex: 1;
-      font-weight: 500;
+      color: var(--poster-muted);
+      line-height: 1.35;
+      margin-bottom: 6px;
+      font-weight: 700;
     }
 
     .product-card .product-price {
-      font-size: 13.5px;
-      font-weight: 700;
-      color: var(--blue);
-      margin-bottom: 14px;
+      font-size: 12.5px;
+      font-weight: 500;
+      line-height: 1.35;
+      color: var(--poster-muted);
+      margin-bottom: 0;
+      max-width: 260px;
     }
 
     .product-card .product-features {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      margin-bottom: 16px;
+      display: none;
     }
 
     .feature-tag {
@@ -526,9 +593,7 @@
     }
     
     .product-card .cta-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+      display: none;
     }
 
     .cta-btn {
@@ -557,6 +622,32 @@
       stroke-width: 2.5;
       stroke-linecap: round;
       stroke-linejoin: round;
+    }
+
+    @media (max-width: 480px) {
+      .sub-product-grid {
+        grid-template-columns: minmax(0, min(292px, calc(100vw - 40px)));
+        gap: 16px;
+      }
+      .product-card {
+        max-width: 292px;
+        min-height: 0;
+        aspect-ratio: 4 / 5;
+      }
+      .product-card-body {
+        padding: 20px 20px 0;
+        min-height: 116px;
+      }
+      .product-card h3 {
+        font-size: 23px;
+      }
+      .product-card .product-desc,
+      .product-card .product-price {
+        font-size: 12px;
+      }
+      .product-card-img-wrap {
+        display: none;
+      }
     }
 
     .footer-note {
@@ -626,7 +717,7 @@
   </style>
   <script>
     if (!new URLSearchParams(location.search).has('classic')) {
-      document.write('<link rel="stylesheet" href="ui-refresh.css">');
+      document.write('<link rel="stylesheet" href="ui-refresh.css?v=20260618-cardfix3">');
     }
   </script>
 </head>
@@ -732,17 +823,17 @@
       <div class="sub-product-grid" id="ipad-sub" style="display:none">
 
         <!-- iPad Air -->
-        <a class="product-card" href="ipad.html?product=air" onclick="navigateTo('ipad', 'air', event)">
+        <a class="product-card soft-blue ipad-air-card" href="ipad.html?product=air" onclick="navigateTo('ipad', 'air', event)">
           <div class="product-card-img-wrap">
-            <img src="https://www.apple.com/v/ipad-air/m/images/overview/hero/hero_ipad_air__bpkbomklxqyq_large.png"
+            <img src="assets/card-ipad-air.png"
                  alt="iPad Air"
                  onerror="this.src='https://drive.google.com/thumbnail?id=1aY-VmqSUABu4b23zIYssb1vVyGctzP2J&sz=w400'">
           </div>
           <div class="product-card-body">
             <span class="product-card-badge">M4 晶片</span>
             <h3>iPad Air</h3>
-            <p class="product-desc">輕薄全能，兼顧效能與日常創作需求</p>
-            <p class="product-price">NT$18,200 起</p>
+            <p class="product-desc">M4 加速，輕薄全能。</p>
+            <p class="product-price">教育價 NT$18,200 起，BTS 活動待更新。</p>
             <div class="product-features">
               <span class="feature-tag">11 吋 / 13 吋</span>
               <span class="feature-tag">128GB–1TB</span>
@@ -758,17 +849,17 @@
         </a>
 
         <!-- iPad Pro -->
-        <a class="product-card" href="ipad.html?product=pro" onclick="navigateTo('ipad', 'pro', event)">
+        <a class="product-card dark ipad-pro-card" href="ipad.html?product=pro" onclick="navigateTo('ipad', 'pro', event)">
           <div class="product-card-img-wrap">
-            <img src="https://www.apple.com/v/ipad-pro/ak/images/overview/hero/hero_ipad_pro__fsnmdh5n1q2e_large.png"
+            <img src="assets/card-ipad-pro.png"
                  alt="iPad Pro"
                  onerror="this.src='https://drive.google.com/thumbnail?id=1KMfy_wW3p-0YM1jcgCbBZUYSVIBHBCyn&sz=w400'">
           </div>
           <div class="product-card-body">
             <span class="product-card-badge">M5 晶片</span>
             <h3>iPad Pro</h3>
-            <p class="product-desc">專業旗艦，Ultra Retina XDR 顯示器</p>
-            <p class="product-price">NT$29,400 起</p>
+            <p class="product-desc">Mmmmm. Power.</p>
+            <p class="product-price">教育價 NT$29,400 起，BTS 活動待更新。</p>
             <div class="product-features">
               <span class="feature-tag">11 吋 / 13 吋</span>
               <span class="feature-tag">256GB–2TB</span>
@@ -789,17 +880,17 @@
       <div class="sub-product-grid" id="macbook-sub" style="display:none">
 
         <!-- MacBook Neo -->
-        <a class="product-card" href="macbook.html?product=neo" onclick="navigateTo('macbook', 'neo', event)">
+        <a class="product-card neo-card" href="macbook.html?product=neo" onclick="navigateTo('macbook', 'neo', event)">
           <div class="product-card-img-wrap">
-            <img src="https://store.storeimages.cdn-apple.com/8756/as-images.apple.com/is/macbook-neo-digitalmat-gallery-1-202604?wid=900&hei=700&fmt=jpeg&qlt=90"
+            <img src="assets/card-macbook-neo.png"
                  alt="MacBook Neo"
                  onerror="this.src='assets/mac-card-50-edu-savings-202605.png'">
           </div>
           <div class="product-card-body">
-            <span class="product-card-badge">A18 Pro</span>
+            <span class="product-card-badge">NEW</span>
             <h3>MacBook Neo</h3>
-            <p class="product-desc">入門輕巧 MacBook，新色系與日常效能</p>
-            <p class="product-price">NT$16,900 起</p>
+            <p class="product-desc">驚喜價格，入手 Mac 魔法。</p>
+            <p class="product-price">教育價 NT$16,900 起，BTS 活動待更新。</p>
             <div class="product-features">
               <span class="feature-tag">13 吋</span>
               <span class="feature-tag">256GB / 512GB</span>
@@ -815,17 +906,17 @@
         </a>
 
         <!-- MacBook Air -->
-        <a class="product-card" href="macbook.html?product=air" onclick="navigateTo('macbook', 'air', event)">
+        <a class="product-card sky macbook-air-card" href="macbook.html?product=air" onclick="navigateTo('macbook', 'air', event)">
           <div class="product-card-img-wrap">
-            <img src="https://www.apple.com/v/macbook-air/s/images/overview/hero/hero_macbook_air__fsnmdh5n1q2e_large.png"
+            <img src="assets/card-macbook-air.png"
                  alt="MacBook Air"
                  onerror="this.src='https://i.imgur.com/flZ0QDT.png'">
           </div>
           <div class="product-card-body">
             <span class="product-card-badge">M5 晶片</span>
             <h3>MacBook Air</h3>
-            <p class="product-desc">輕薄全能筆電首選，全新天藍色</p>
-            <p class="product-price">NT$32,590 起</p>
+            <p class="product-desc">M5 加持，輕巧更超能。</p>
+            <p class="product-price">教育價 NT$32,590 起，BTS 活動待更新。</p>
             <div class="product-features">
               <span class="feature-tag">13 吋 / 15 吋</span>
               <span class="feature-tag">16–32GB RAM</span>
@@ -841,17 +932,17 @@
         </a>
 
         <!-- MacBook Pro -->
-        <a class="product-card" href="macbook.html?product=pro" onclick="navigateTo('macbook', 'pro', event)">
+        <a class="product-card dark macbook-pro-card" href="macbook.html?product=pro" onclick="navigateTo('macbook', 'pro', event)">
           <div class="product-card-img-wrap">
-            <img src="https://www.apple.com/v/macbook-pro/ak/images/overview/hero/hero_macbook_pro__fsnmdh5n1q2e_large.png"
+            <img src="assets/card-macbook-pro.png"
                  alt="MacBook Pro"
                  onerror="this.src='https://i.imgur.com/JojwwD1.png'">
           </div>
           <div class="product-card-body">
             <span class="product-card-badge">M5 系列</span>
             <h3>MacBook Pro</h3>
-            <p class="product-desc">專業旗艦，M5 / M5 Pro / M5 Max</p>
-            <p class="product-price">NT$51,690 起</p>
+            <p class="product-desc">M5、M5 Pro、M5 Max 全到位。</p>
+            <p class="product-price">教育價 NT$51,690 起，BTS 活動待更新。</p>
             <div class="product-features">
               <span class="feature-tag">14 吋 / 16 吋</span>
               <span class="feature-tag">16–128GB RAM</span>
@@ -872,17 +963,17 @@
       <div class="sub-product-grid" id="desktop-sub" style="display:none">
 
         <!-- iMac -->
-        <a class="product-card" href="macbook.html?product=imac" onclick="navigateTo('desktop', 'imac', event)">
+        <a class="product-card imac-card" href="macbook.html?product=imac" onclick="navigateTo('desktop', 'imac', event)">
           <div class="product-card-img-wrap">
-            <img src="https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/imac-color-unselect-202601-gallery-1?wid=900&hei=620&fmt=jpeg&qlt=90&.v=1767917121718"
+            <img src="assets/card-imac.png"
                  alt="iMac"
                  onerror="this.src='https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/imac-touch-id-blue-selection-hero-202410_SW_COLOR?wid=900&hei=900&fmt=jpeg&qlt=90'">
           </div>
           <div class="product-card-body">
             <span class="product-card-badge">M4 晶片</span>
             <h3>iMac</h3>
-            <p class="product-desc">24 吋 4.5K Retina 顯示器，一體成形桌上型 Mac</p>
-            <p class="product-price">NT$41,150 起</p>
+            <p class="product-desc">Brilllllliant.</p>
+            <p class="product-price">教育價 NT$41,150 起，BTS 活動待更新。</p>
             <div class="product-features">
               <span class="feature-tag">24 吋</span>
               <span class="feature-tag">16–32GB RAM</span>
@@ -898,17 +989,17 @@
         </a>
 
         <!-- Mac mini -->
-        <a class="product-card" href="macbook.html?product=macmini" onclick="navigateTo('desktop', 'macmini', event)">
+        <a class="product-card mac-mini-card" href="macbook.html?product=macmini" onclick="navigateTo('desktop', 'macmini', event)">
           <div class="product-card-img-wrap">
-            <img src="https://www.apple.com/v/mac-mini/aa/images/overview/hero/hero_static__ehi2pbtt5toy_large.png"
+            <img src="assets/card-mac-mini.png"
                  alt="Mac mini"
                  onerror="this.src='assets/mac-card-50-edu-savings-202605.png'">
           </div>
           <div class="product-card-body">
             <span class="product-card-badge">M4 / M4 Pro</span>
             <h3>Mac mini</h3>
-            <p class="product-desc">小巧桌上型 Mac，適合外接螢幕與工作站配置</p>
-            <p class="product-price">NT$23,400 起</p>
+            <p class="product-desc">小身形，大能耐。</p>
+            <p class="product-price">教育價 NT$23,400 起，BTS 活動待更新。</p>
             <div class="product-features">
               <span class="feature-tag">M4 / M4 Pro</span>
               <span class="feature-tag">16–64GB RAM</span>
