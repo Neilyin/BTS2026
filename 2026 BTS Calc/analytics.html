@@ -124,7 +124,7 @@
       <div class="panel"><h2>熱門顏色</h2><div id="byColor"></div></div>
     </div>
 
-    <div class="panel" style="margin-bottom:14px"><h2>近期紀錄（最新 50 筆）</h2>
+    <div class="panel" style="margin-bottom:14px"><h2>全部紀錄（<span id="recordCount">0</span> 筆）</h2>
       <div class="tablewrap">
         <table><thead><tr>
           <th>時間</th><th>產品</th><th>使用者選擇</th><th>最後推薦</th><th>顏色</th>
@@ -172,9 +172,25 @@
     });
   });
 
+  var loadVersion = 0;
   function load(){
-    btsAnalytics.db.collection(COLL).orderBy('createdAt','desc').limit(3000).get()
-      .then(function(snap){ ALL = []; snap.forEach(function(d){ ALL.push(d.data()); }); render(); })
+    var version = ++loadVersion;
+    ALL = [];
+    $('recordCount').textContent = '讀取中';
+
+    function loadPage(cursor){
+      var q = btsAnalytics.db.collection(COLL).orderBy('createdAt','desc').limit(500);
+      if (cursor) q = q.startAfter(cursor);
+      return q.get().then(function(snap){
+        if (version !== loadVersion) return;
+        snap.forEach(function(d){ ALL.push(d.data()); });
+        $('recordCount').textContent = ALL.length.toLocaleString();
+        if (snap.size === 500) return loadPage(snap.docs[snap.docs.length - 1]);
+      });
+    }
+
+    loadPage(null)
+      .then(function(){ if (version === loadVersion) render(); })
       .catch(function(e){ alert('讀取失敗：' + (e.code||e.message) + '\n（請確認已登入、且 Firestore 規則允許管理員讀取）'); });
   }
 
@@ -217,6 +233,7 @@
 
   function render(){
     var rows = ALL.filter(inRange);
+    $('recordCount').textContent = rows.length.toLocaleString();
     $('k-total').textContent = rows.length.toLocaleString();
     $('k-sessions').textContent = Object.keys(tally(rows, function(r){return r.sessionId;})).length.toLocaleString();
     var fins = rows.map(function(r){return r.final||0;}).filter(function(n){return n>0;});
@@ -229,7 +246,7 @@
     bars($('byStorage'), tally(rows, function(r){return r.storage;}));
     bars($('byColor'),   tally(rows, function(r){return r.color;}));
 
-    var recent = rows.slice(0,50).map(function(r){
+    var recent = rows.map(function(r){
       var s = r.selections || {};
       var specs = [
         s.size,
