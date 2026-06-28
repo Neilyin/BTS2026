@@ -334,23 +334,11 @@
 
     <!-- ══ Tab: 活動總設定 ══ -->
     <div class="tab-panel active" id="tab-meta">
-      <div class="section-header"><h2>活動總設定</h2><p>購買連結、回饋選項</p></div>
+      <div class="section-header"><h2>活動總設定</h2><p>購買連結、導購平台活動</p></div>
 
       <div class="card">
         <div class="card-title">購買連結</div>
         <div id="links-fields"></div>
-      </div>
-
-      <div class="card">
-        <div class="card-title">回饋選項（用逗號分隔，例：0,0.5,1,1.5,2）</div>
-        <div class="field-row">
-          <span class="field-label">信用卡回饋 (%)</span>
-          <input class="field-input" id="cc-rebate-opts" type="text">
-        </div>
-        <div class="field-row">
-          <span class="field-label">導購回饋 (%)</span>
-          <input class="field-input" id="ref-rebate-opts" type="text">
-        </div>
       </div>
 
       <div class="card">
@@ -528,12 +516,6 @@ function renderMeta() {
       <input class="field-input url-input" type="url" value="${escHtml(v)}"
              oninput="cfg.meta.purchaseLinks['${k}']=this.value">
     </div>`).join('');
-
-  document.getElementById('cc-rebate-opts').value  = cfg.meta.creditCardRebateOptions.join(',');
-  document.getElementById('ref-rebate-opts').value = cfg.meta.referralRebateOptions.join(',');
-
-  document.getElementById('cc-rebate-opts').oninput  = e => cfg.meta.creditCardRebateOptions = e.target.value.split(',').map(Number).filter(n=>!isNaN(n));
-  document.getElementById('ref-rebate-opts').oninput = e => cfg.meta.referralRebateOptions    = e.target.value.split(',').map(Number).filter(n=>!isNaN(n));
 
   const campaigns = cfg.meta.referralCampaigns || {};
   document.getElementById('referral-campaign-fields').innerHTML =
