@@ -10,12 +10,12 @@ window.BTS_ANALYTICS_CONFIG = {
 
   // Firebase 網頁應用程式設定（Firebase 主控台 → 專案設定 → 你的應用程式）
   firebase: {
-    apiKey:            '',
-    authDomain:        '',        // 例：'your-project.firebaseapp.com'
-    projectId:         '',
-    storageBucket:     '',
-    messagingSenderId: '',
-    appId:             ''
+    apiKey:            'AIzaSyBkrDFHrqRTJm97e3OfiNBGmPwxR03v3yk',
+    authDomain:        'bts2026-neilyin.firebaseapp.com',
+    projectId:         'bts2026-neilyin',
+    storageBucket:     'bts2026-neilyin.firebasestorage.app',
+    messagingSenderId: '842798369233',
+    appId:             '1:842798369233:web:c3d337bafd7d50f1fb38f0'
   },
 
   // Firestore 集合名稱（存放每一筆購買清單紀錄）
