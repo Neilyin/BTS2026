@@ -186,6 +186,11 @@
   var fb = cfg.firebase || {};
   var COLL = cfg.recordsCollection || 'records';
   var fbOn = !!(fb && fb.apiKey && fb.projectId);
+  var resolveReferralSettings;
+  window.BTS_REFERRAL_READY = new Promise(function (resolve) {
+    resolveReferralSettings = resolve;
+  });
+  window.BTS_REFERRAL_SETTINGS = null;
 
   var _db = null, _ready = false, _queue = [], _readyCbs = [];
   window.btsAnalytics = {
@@ -245,6 +250,21 @@
     document.head.appendChild(s);
   }
 
+  function applyReferralSettings(settings) {
+    window.BTS_REFERRAL_SETTINGS = settings || null;
+    var campaigns = settings && settings.campaigns;
+    if (campaigns && window.BTS_CONFIG && BTS_CONFIG.meta && BTS_CONFIG.meta.referralCampaigns) {
+      Object.keys(campaigns).forEach(function (key) {
+        if (!BTS_CONFIG.meta.referralCampaigns[key]) return;
+        Object.assign(BTS_CONFIG.meta.referralCampaigns[key], campaigns[key]);
+      });
+    }
+    document.dispatchEvent(new CustomEvent('bts:referral-settings', {
+      detail: settings || null
+    }));
+    resolveReferralSettings(settings || null);
+  }
+
   if (fbOn) {
     var BASE = 'https://www.gstatic.com/firebasejs/10.12.2/';
     loadScript(BASE + 'firebase-app-compat.js', function () {
@@ -257,9 +277,20 @@
             while (_queue.length) _write(_queue.shift());
             _readyCbs.forEach(function (cb) { try { cb(); } catch (e) {} });
             _readyCbs = [];
-          } catch (e) { console.warn('[bts-analytics] firebase init failed', e); }
+            _db.collection('settings').doc('referral').get()
+              .then(function (doc) { applyReferralSettings(doc.exists ? doc.data() : null); })
+              .catch(function (e) {
+                console.warn('[bts-analytics] referral settings load failed', e);
+                applyReferralSettings(null);
+              });
+          } catch (e) {
+            console.warn('[bts-analytics] firebase init failed', e);
+            applyReferralSettings(null);
+          }
         });
       });
     });
+  } else {
+    applyReferralSettings(null);
   }
 })();

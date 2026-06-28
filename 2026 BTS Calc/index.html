@@ -257,6 +257,7 @@ section.block{position:relative;padding:78px 0}
   background:var(--lime);color:var(--ink);font-family:"Space Mono",monospace;font-size:11px;
   font-weight:700;letter-spacing:.05em}
 .cash-copy{font-size:13.5px;line-height:1.7;color:#555;margin:16px 0 22px;max-width:24ch}
+.campaign-period{display:block;margin-top:8px;font-family:"Space Mono",monospace;font-size:10px;color:#777}
 .cash-link{margin-top:auto;font-weight:800;color:#0a52d6;text-decoration:none;font-size:14px}
 .cash.pending{background:var(--ink);color:var(--paper)}
 .cash.pending h3{color:var(--paper)}
@@ -743,18 +744,22 @@ footer a{color:var(--cyan);text-decoration:none}
           <img class="cash-logo line" src="assets/logo-line.svg" alt="LINE Logo" loading="lazy">
           <span class="cash-brand-name">LINE 購物</span>
         </div>
-        <div class="pct">1%</div>
+        <div class="pct"><span id="line-referral-rate">1</span>%</div>
         <span class="reward-type">LINE POINTS 回饋</span>
-        <p class="cash-copy">符合導購條件後，以 LINE POINTS 形式回饋至帳戶。</p>
+        <p class="cash-copy">符合導購條件後，以 LINE POINTS 形式回饋至帳戶。
+          <span class="campaign-period" id="line-referral-period">活動期間依平台公告</span>
+        </p>
         <a class="cash-link" href="https://neil.tw/btsline" target="_blank" rel="noopener">註冊 / 前往 LINE 購物 ↗</a>
       </article>
       <article class="cash reveal">
         <div class="cash-brand">
           <img class="cash-logo" src="assets/logo-shopback.png" alt="ShopBack Logo" loading="lazy">
         </div>
-        <div class="pct">1%</div>
+        <div class="pct"><span id="shopback-referral-rate">1</span>%</div>
         <span class="reward-type">現金回饋</span>
-        <p class="cash-copy">符合導購條件後，回饋累積於 ShopBack 帳戶並依平台規則提領。</p>
+        <p class="cash-copy">符合導購條件後，回饋累積於 ShopBack 帳戶並依平台規則提領。
+          <span class="campaign-period" id="shopback-referral-period">活動期間依平台公告</span>
+        </p>
         <a class="cash-link" href="https://app.shopback.com/ShUhrtB7tUb" target="_blank" rel="noopener">註冊 / 前往 ShopBack ↗</a>
       </article>
       <article class="cash featured reveal">
@@ -924,6 +929,26 @@ document.querySelectorAll('.flow-tab').forEach(tab=>{
     });
   });
 });
+
+function renderReferralCampaigns(settings){
+  const campaigns=settings?.campaigns;
+  if(!campaigns)return;
+  ['line','shopback'].forEach(key=>{
+    const campaign=campaigns[key];
+    if(!campaign)return;
+    const rate=document.getElementById(`${key}-referral-rate`);
+    const period=document.getElementById(`${key}-referral-period`);
+    if(rate)rate.textContent=campaign.enabled===false?'0':String(Number(campaign.rate)||0);
+    if(period){
+      if(campaign.enabled===false)period.textContent='目前暫停回饋';
+      else if(campaign.startDate&&campaign.endDate)period.textContent=`${campaign.startDate} 至 ${campaign.endDate}`;
+      else if(campaign.endDate)period.textContent=`截止至 ${campaign.endDate}`;
+      else if(campaign.startDate)period.textContent=`${campaign.startDate} 起`;
+      else period.textContent='活動期間依平台公告';
+    }
+  });
+}
+document.addEventListener('bts:referral-settings',e=>renderReferralCampaigns(e.detail));
 </script>
 </body>
 </html>

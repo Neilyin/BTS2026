@@ -25,6 +25,25 @@ const BTS_CONFIG = {
     creditCardRebateOptions: [0, 0.5, 1.0, 1.5, 2.0, 2.5, 3.0],
     // 導購回饋選項（百分比）
     referralRebateOptions: [0, 0.5, 1.0, 1.5, 2.0, 2.5, 3.0],
+    // 導購平台活動（後台發布至 Firestore settings/referral）
+    referralCampaigns: {
+      line: {
+        name: 'LINE 購物',
+        enabled: true,
+        rate: 1,
+        startDate: '',
+        endDate: '',
+        rewardType: 'LINE POINTS'
+      },
+      shopback: {
+        name: 'ShopBack',
+        enabled: true,
+        rate: 1,
+        startDate: '',
+        endDate: '',
+        rewardType: '現金'
+      }
+    },
     purchaseLinks: {
       line:      'https://lin.ee/example',
       btsAgent:  'https://script.google.com/macros/s/AKfycbz1wAnl3eSL5XPMHR7phlSp0-4BbFdb0znWZ-0N5dyycfwoKLXHqohRK-b_5h4UoO5X/exec',

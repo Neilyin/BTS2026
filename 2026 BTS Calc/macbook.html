@@ -719,6 +719,17 @@ const state = {
   giftPrice:    0
 };
 
+function getDefaultReferralRate() {
+  const campaigns = Object.values(BTS_CONFIG.meta.referralCampaigns || {});
+  const today = new Date().toISOString().slice(0, 10);
+  return campaigns.reduce((max, campaign) => {
+    const active = campaign.enabled !== false
+      && (!campaign.startDate || today >= campaign.startDate)
+      && (!campaign.endDate || today <= campaign.endDate);
+    return active ? Math.max(max, Number(campaign.rate) || 0) : max;
+  }, 0);
+}
+
 // ═══════════════════════════════════════
 //  Init
 // ═══════════════════════════════════════
@@ -735,7 +746,7 @@ function reset() {
     chipId:null, memId:null, storageId:null, powerId:null,
     chipFamily:null, chipObj:null, proMemAdj:0, proMemId:null, proStorAdj:0, proStorId:null,
     nano:null, imacChipId:null, standId:null, ethernetId:null, pointingId:null, keyboardId:null, gift:null,
-    creditCard:0, referral:0, sellGift:false, giftPrice:0
+    creditCard:0, referral:getDefaultReferralRate(), sellGift:false, giftPrice:0
   });
 }
 
@@ -2417,7 +2428,7 @@ function showToast(msg) {
   toastTimer = setTimeout(() => t.classList.remove('show'), 2000);
 }
 
-init();
+(window.BTS_REFERRAL_READY || Promise.resolve()).finally(init);
 </script>
 </body>
 </html>

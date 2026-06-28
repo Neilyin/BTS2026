@@ -352,6 +352,14 @@
           <input class="field-input" id="ref-rebate-opts" type="text">
         </div>
       </div>
+
+      <div class="card">
+        <div class="card-title">導購平台活動（全站同步）</div>
+        <p style="font-size:13px;color:var(--sub);margin-bottom:18px">儲存後發布至 Firebase，所有訪客都會套用；日期留空代表不限制。</p>
+        <div id="referral-campaign-fields"></div>
+        <button class="btn primary" type="button" onclick="publishReferralCampaigns()">發布導購設定</button>
+        <span id="referral-publish-status" style="margin-left:10px;font-size:12px;color:var(--sub)"></span>
+      </div>
     </div>
 
     <!-- ══ Tab: BTS 贈品 ══ -->
@@ -460,6 +468,8 @@
 
 <script src="bts-config.js"></script>
 <script src="config-override.js"></script>
+<script src="bts-analytics-config.js"></script>
+<script src="bts-analytics.js"></script>
 <script>
 // ═══════════════════════════════════════════
 //  工作用的可編輯 config 副本
@@ -524,6 +534,64 @@ function renderMeta() {
 
   document.getElementById('cc-rebate-opts').oninput  = e => cfg.meta.creditCardRebateOptions = e.target.value.split(',').map(Number).filter(n=>!isNaN(n));
   document.getElementById('ref-rebate-opts').oninput = e => cfg.meta.referralRebateOptions    = e.target.value.split(',').map(Number).filter(n=>!isNaN(n));
+
+  const campaigns = cfg.meta.referralCampaigns || {};
+  document.getElementById('referral-campaign-fields').innerHTML =
+    Object.entries(campaigns).map(([key, campaign]) => `
+      <div style="border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:14px">
+        <div class="field-row">
+          <span class="field-label">${escHtml(campaign.name || key)}</span>
+          <label style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700">
+            <input type="checkbox" ${campaign.enabled ? 'checked' : ''}
+              onchange="cfg.meta.referralCampaigns['${key}'].enabled=this.checked"> 啟用
+          </label>
+        </div>
+        <div class="field-row">
+          <span class="field-label">回饋 (%)</span>
+          <input class="field-input price-input" type="number" min="0" max="100" step="0.1"
+            value="${Number(campaign.rate) || 0}"
+            oninput="cfg.meta.referralCampaigns['${key}'].rate=Number(this.value)||0">
+        </div>
+        <div class="field-row">
+          <span class="field-label">開始日期</span>
+          <input class="field-input" type="date" value="${escHtml(campaign.startDate || '')}"
+            oninput="cfg.meta.referralCampaigns['${key}'].startDate=this.value">
+        </div>
+        <div class="field-row">
+          <span class="field-label">截止日期</span>
+          <input class="field-input" type="date" value="${escHtml(campaign.endDate || '')}"
+            oninput="cfg.meta.referralCampaigns['${key}'].endDate=this.value">
+        </div>
+      </div>
+    `).join('');
+}
+
+function publishReferralCampaigns() {
+  const status = document.getElementById('referral-publish-status');
+  status.textContent = '發布中…';
+  if (!window.btsAnalytics?.ready || !window.firebase) {
+    status.textContent = 'Firebase 尚未連線';
+    toast('Firebase 尚未連線，請稍後再試');
+    return;
+  }
+  const user = btsAnalytics.auth?.currentUser;
+  if (!user) {
+    status.textContent = '請先登入分析後台';
+    toast('請先到「查看分析」登入管理員帳號，再回來發布');
+    return;
+  }
+  btsAnalytics.db.collection('settings').doc('referral').set({
+    campaigns: cfg.meta.referralCampaigns,
+    updatedBy: user.uid,
+    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+  }, { merge: true }).then(() => {
+    saveConfigOverride(cfg);
+    status.textContent = '已發布';
+    toast('導購設定已同步至全站');
+  }).catch(e => {
+    status.textContent = '發布失敗';
+    toast('發布失敗：' + (e.code || e.message));
+  });
 }
 
 // ═══════════════════════════════════════════
@@ -1393,6 +1461,10 @@ function renderAll() {
   renderMacPrices();
 }
 
+document.addEventListener('bts:referral-settings', function () {
+  renderMeta();
+  document.getElementById('referral-publish-status').textContent = '已載入全站設定';
+});
 renderAll();
 updateStatus();
 </script>

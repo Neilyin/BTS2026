@@ -653,6 +653,17 @@ const state = {
 // 步驟定義（動態生成）
 const TOTAL_STEPS = 6; // size, color, storage, connectivity, nano(pro only), rebate
 
+function getDefaultReferralRate() {
+  const campaigns = Object.values(BTS_CONFIG.meta.referralCampaigns || {});
+  const today = new Date().toISOString().slice(0, 10);
+  return campaigns.reduce((max, campaign) => {
+    const active = campaign.enabled !== false
+      && (!campaign.startDate || today >= campaign.startDate)
+      && (!campaign.endDate || today <= campaign.endDate);
+    return active ? Math.max(max, Number(campaign.rate) || 0) : max;
+  }, 0);
+}
+
 // ═══════════════════════════════════════════
 //  初始化
 // ═══════════════════════════════════════════
@@ -680,7 +691,7 @@ function updateProductConfig() {
     size: null, color: null, storageId: null,
     connectivity: 'wifi', nano: productType === 'pro' ? null : false,
     gift: null,
-    creditCard: 0, referral: 0, sellGift: false, giftPrice: 0
+    creditCard: 0, referral: getDefaultReferralRate(), sellGift: false, giftPrice: 0
   });
 }
 
@@ -1409,7 +1420,7 @@ function showToast(msg) {
 }
 
 // ── 啟動 ──
-init();
+(window.BTS_REFERRAL_READY || Promise.resolve()).finally(init);
 </script>
 </body>
 </html>
