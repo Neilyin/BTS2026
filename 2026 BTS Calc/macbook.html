@@ -2244,6 +2244,32 @@ function openModal() {
     productLine: 'mac',
     product: productType,                 // 'air' | 'pro' | 'imac' | 'neo' | 'macmini'
     model: name,
+    recommendation: [name, chipStr, memStr, storStr].filter(Boolean).join(' · '),
+    selections: {
+      size: state.size,
+      color: state.color || null,
+      chipId: productType === 'imac' ? state.imacChipId : (productType === 'pro' ? state.chipObj?.id : state.chipId),
+      chipFamily: state.chipFamily || null,
+      chip: chipStr || null,
+      memoryId: productType === 'pro' ? state.proMemId : state.memId,
+      memory: memStr || null,
+      storageId: productType === 'pro' ? state.proStorId : state.storageId,
+      storage: storStr || null,
+      powerId: state.powerId || null,
+      displayGlass: (productType === 'pro' || productType === 'imac') ? (state.nano ? 'nano-texture' : 'standard') : null,
+      standId: state.standId || null,
+      ethernetId: state.ethernetId || null,
+      pointingId: state.pointingId || null,
+      keyboardId: state.keyboardId || null,
+      gift: state.gift ? {
+        id: state.gift.id,
+        name: state.gift.name,
+        price: Number(state.gift.price) || 0,
+        originalPrice: Number(state.gift.originalPrice) || 0
+      } : null,
+      sellGift: !!state.sellGift,
+      giftResaleValue: Number(state.giftPrice) || 0
+    },
     chip: chipStr, memory: memStr, storage: storStr,
     color: state.color || null,
     nano: !!state.nano,
@@ -2255,8 +2281,11 @@ function openModal() {
   const sig = JSON.stringify(rec);
   if (window.__btsLastSig !== sig) {
     window.__btsLastSig = sig;
-    if (window.btsTrack) btsTrack('view_result', { product: rec.product, model: rec.model, final: rec.final, saved: rec.totalSaved });
-    if (window.btsLogRecord) btsLogRecord(rec);
+    if (window.btsTrackResult) btsTrackResult(rec);
+    else {
+      if (window.btsTrack) btsTrack('generate_recommendation', { product: rec.product, model: rec.model, value: rec.final, currency: 'TWD' });
+      if (window.btsLogRecord) btsLogRecord(rec);
+    }
   }
 }
 

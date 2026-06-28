@@ -18,6 +18,16 @@
   // ════════════ GA4 ════════════
   var GA = cfg.gaMeasurementId;
   var gaOn = GA && /^G-/.test(GA);
+  var search = new URLSearchParams(location.search);
+  var attribution = {
+    source: search.get('utm_source') || null,
+    medium: search.get('utm_medium') || null,
+    campaign: search.get('utm_campaign') || null,
+    content: search.get('utm_content') || null
+  };
+  var device = /Mobi|Android/i.test(navigator.userAgent) ? 'mobile' :
+    (/iPad|Tablet/i.test(navigator.userAgent) ? 'tablet' : 'desktop');
+
   if (gaOn) {
     var g = document.createElement('script');
     g.async = true; g.src = 'https://www.googletagmanager.com/gtag/js?id=' + GA;
@@ -25,11 +35,32 @@
     window.dataLayer = window.dataLayer || [];
     window.gtag = function () { dataLayer.push(arguments); };
     gtag('js', new Date());
-    gtag('config', GA, { anonymize_ip: true });
+    gtag('config', GA, {
+      anonymize_ip: true,
+      send_page_view: true,
+      user_properties: { device_category: device }
+    });
   }
   window.btsTrack = function (event, params) {
     try { if (gaOn && window.gtag) gtag('event', event, params || {}); } catch (e) {}
   };
+
+  // 全站導流事件：計算機入口、站內導覽與外部連結。
+  document.addEventListener('click', function (e) {
+    var link = e.target.closest && e.target.closest('a[href]');
+    if (!link) return;
+    var href = link.getAttribute('href') || '';
+    var target;
+    try { target = new URL(href, location.href); } catch (err) { return; }
+    var external = target.origin !== location.origin;
+    var calculator = /(?:calculator|ipad|macbook)\.html/.test(target.pathname);
+    window.btsTrack(calculator ? 'select_calculator' : (external ? 'outbound_click' : 'navigation_click'), {
+      link_text: (link.textContent || '').trim().slice(0, 100),
+      link_url: target.href,
+      destination_host: target.host,
+      page_path: location.pathname
+    });
+  }, { passive: true });
 
   // ════════════ Firestore ════════════
   var fb = cfg.firebase || {};
@@ -49,8 +80,14 @@
   function _write(rec) {
     try {
       _db.collection(COLL).add(Object.assign({
+        schemaVersion: 2,
+        eventType: 'calculator_result',
         sessionId: SID,
         page: location.pathname,
+        pageUrl: location.href,
+        referrer: document.referrer || null,
+        attribution: attribution,
+        device: device,
         ua: navigator.userAgent,
         lang: navigator.language,
         ts: firebase.firestore.FieldValue.serverTimestamp(),
@@ -63,6 +100,23 @@
     if (!fbOn) return;            // 未設定 Firebase → 不記錄
     if (_db) _write(rec); else _queue.push(rec);
   };
+
+  window.btsTrackResult = function (rec) {
+    rec = rec || {};
+    window.btsTrack('generate_recommendation', {
+      product_line: rec.productLine || '',
+      product: rec.product || '',
+      model: rec.model || '',
+      recommendation: rec.recommendation || rec.model || '',
+      value: Number(rec.final) || 0,
+      currency: 'TWD',
+      savings: Number(rec.totalSaved) || 0
+    });
+    window.btsLogRecord(rec);
+  };
+  document.documentElement.setAttribute('data-bts-analytics', 'ready');
+  document.documentElement.setAttribute('data-bts-ga', gaOn ? 'enabled' : 'disabled');
+  document.documentElement.setAttribute('data-bts-database', fbOn ? 'enabled' : 'disabled');
 
   function loadScript(src, cb) {
     var s = document.createElement('script'); s.src = src;

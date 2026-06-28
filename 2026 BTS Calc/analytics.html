@@ -117,7 +117,7 @@
 
     <div class="grid2">
       <div class="panel"><h2>產品分布</h2><div id="byProduct"></div></div>
-      <div class="panel"><h2>熱門機型</h2><div id="byModel"></div></div>
+      <div class="panel"><h2>熱門推薦組合</h2><div id="byRecommendation"></div></div>
     </div>
     <div class="grid2">
       <div class="panel"><h2>熱門容量 / 儲存</h2><div id="byStorage"></div></div>
@@ -127,7 +127,7 @@
     <div class="panel" style="margin-bottom:14px"><h2>近期紀錄（最新 50 筆）</h2>
       <div class="tablewrap">
         <table><thead><tr>
-          <th>時間</th><th>產品</th><th>規格</th><th>顏色</th>
+          <th>時間</th><th>產品</th><th>使用者選擇</th><th>最後推薦</th><th>顏色</th>
           <th class="num">定價</th><th class="num">回饋</th><th class="num">實際入手</th><th class="num">省下</th>
         </tr></thead><tbody id="recentBody"></tbody></table>
       </div>
@@ -186,20 +186,34 @@
   }
   function plabel(r){
     if (r.productLine==='ipad') return 'iPad ' + (r.product==='pro'?'Pro':'Air');
-    if (r.productLine==='mac'){ return r.product==='imac' ? 'iMac' : 'MacBook ' + (r.product==='pro'?'Pro':'Air'); }
+    if (r.productLine==='mac'){
+      var labels = {
+        air: 'MacBook Air',
+        pro: 'MacBook Pro',
+        neo: 'MacBook Neo',
+        imac: 'iMac',
+        macmini: 'Mac mini'
+      };
+      return labels[r.product] || r.model || 'Mac';
+    }
     return r.model || '其他';
   }
   function bars(el, counts){
     var entries = Object.keys(counts).map(function(k){return [k,counts[k]];}).sort(function(a,b){return b[1]-a[1];}).slice(0,8);
     var max = entries.length ? entries[0][1] : 1;
     el.innerHTML = entries.length ? entries.map(function(e){
-      return '<div class="bar-row"><span class="nm" title="'+e[0]+'">'+e[0]+'</span>'+
+      return '<div class="bar-row"><span class="nm" title="'+esc(e[0])+'">'+esc(e[0])+'</span>'+
              '<span class="track"><span class="fill" style="width:'+Math.max(4,Math.round(e[1]/max*100))+'%"></span></span>'+
              '<span class="ct">'+e[1]+'</span></div>';
     }).join('') : '<p class="muted" style="font-size:13px">尚無資料</p>';
   }
   function tally(rows, fn){ var c={}; rows.forEach(function(r){ var k=fn(r); if(k){ c[k]=(c[k]||0)+1; } }); return c; }
   function ntd(n){ return 'NT$' + Math.round(n||0).toLocaleString(); }
+  function esc(v){
+    return String(v == null ? '' : v).replace(/[&<>"']/g, function(ch){
+      return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch];
+    });
+  }
 
   function render(){
     var rows = ALL.filter(inRange);
@@ -211,19 +225,31 @@
     $('k-saved').textContent = rows.length ? ntd(savs.reduce(function(a,b){return a+b;},0)/rows.length) : '–';
 
     bars($('byProduct'), tally(rows, plabel));
-    bars($('byModel'),   tally(rows, function(r){return r.model;}));
+    bars($('byRecommendation'), tally(rows, function(r){return r.recommendation || r.model;}));
     bars($('byStorage'), tally(rows, function(r){return r.storage;}));
     bars($('byColor'),   tally(rows, function(r){return r.color;}));
 
     var recent = rows.slice(0,50).map(function(r){
-      var specs = [r.chip, r.memory, r.storage, r.ram, r.connectivity].filter(Boolean).join(' · ');
+      var s = r.selections || {};
+      var specs = [
+        s.size,
+        s.chip || r.chip,
+        s.memory || r.memory,
+        s.storage || r.storage,
+        s.ram || r.ram,
+        s.connectivity || r.connectivity,
+        s.displayGlass,
+        s.powerId ? '電源：' + s.powerId : null,
+        s.ethernetId ? '網路：' + s.ethernetId : null,
+        s.gift && s.gift.name ? '贈品：' + s.gift.name : null
+      ].filter(Boolean).join(' · ');
       var t = r.createdAt ? new Date(r.createdAt).toLocaleString('zh-TW',{month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'}) : '–';
       var reb = (r.ccRebate||0)+(r.refRebate||0);
-      return '<tr><td class="muted">'+t+'</td><td>'+plabel(r)+'</td><td class="muted">'+(specs||'–')+
-        '</td><td>'+(r.color||'–')+'</td><td class="num">'+ntd(r.subtotal)+'</td><td class="num">'+(reb?'-'+ntd(reb):'–')+
+      return '<tr><td class="muted">'+esc(t)+'</td><td>'+esc(plabel(r))+'</td><td class="muted">'+esc(specs||'–')+
+        '</td><td><b>'+esc(r.recommendation||r.model||'–')+'</b></td><td>'+esc(r.color||'–')+'</td><td class="num">'+ntd(r.subtotal)+'</td><td class="num">'+(reb?'-'+ntd(reb):'–')+
         '</td><td class="num"><b>'+ntd(r.final)+'</b></td><td class="num">'+(r.totalSaved?ntd(r.totalSaved):'–')+'</td></tr>';
     }).join('');
-    $('recentBody').innerHTML = recent || '<tr><td colspan="8" class="muted" style="text-align:center;padding:20px">此區間尚無紀錄</td></tr>';
+    $('recentBody').innerHTML = recent || '<tr><td colspan="9" class="muted" style="text-align:center;padding:20px">此區間尚無紀錄</td></tr>';
   }
 })();
 </script>
