@@ -45,22 +45,142 @@
     try { if (gaOn && window.gtag) gtag('event', event, params || {}); } catch (e) {}
   };
 
-  // 全站導流事件：計算機入口、站內導覽與外部連結。
+  function cleanText(value, max) {
+    return String(value || '').replace(/\s+/g, ' ').trim().slice(0, max || 100);
+  }
+  function pageType() {
+    if (/ipad\.html$/.test(location.pathname)) return 'ipad_calculator';
+    if (/macbook\.html$/.test(location.pathname)) return 'mac_calculator';
+    if (/calculator\.html$/.test(location.pathname)) return 'calculator_hub';
+    if (/analytics\.html$/.test(location.pathname)) return 'analytics_admin';
+    return 'editorial';
+  }
+  var PAGE_TYPE = pageType();
+  var startedAt = Date.now();
+  var maxScroll = 0;
+  var resultGenerated = false;
+  if (/_calculator$/.test(PAGE_TYPE) || PAGE_TYPE === 'calculator_hub') {
+    window.btsTrack('calculator_start', {
+      calculator_type: PAGE_TYPE,
+      product: search.get('product') || null
+    });
+  }
+
+  // 全站導流與操作事件。
   document.addEventListener('click', function (e) {
     var link = e.target.closest && e.target.closest('a[href]');
-    if (!link) return;
-    var href = link.getAttribute('href') || '';
-    var target;
-    try { target = new URL(href, location.href); } catch (err) { return; }
-    var external = target.origin !== location.origin;
-    var calculator = /(?:calculator|ipad|macbook)\.html/.test(target.pathname);
-    window.btsTrack(calculator ? 'select_calculator' : (external ? 'outbound_click' : 'navigation_click'), {
-      link_text: (link.textContent || '').trim().slice(0, 100),
-      link_url: target.href,
-      destination_host: target.host,
-      page_path: location.pathname
+    if (link) {
+      var href = link.getAttribute('href') || '';
+      var target;
+      try { target = new URL(href, location.href); } catch (err) { return; }
+      var external = target.origin !== location.origin;
+      var calculator = /(?:calculator|ipad|macbook)\.html/.test(target.pathname);
+      window.btsTrack(calculator ? 'select_calculator' : (external ? 'outbound_click' : 'navigation_click'), {
+        link_text: cleanText(link.textContent),
+        link_url: target.href,
+        destination_host: target.host,
+        page_type: PAGE_TYPE,
+        page_path: location.pathname
+      });
+      return;
+    }
+
+    var option = e.target.closest && e.target.closest(
+      '[id^="size-"],[id^="color-"],[id^="chip-"],[id^="compute-"],[id^="mem-"],[id^="stor-"],' +
+      '[id^="power-"],[id^="disp-"],[id^="stand-"],[id^="eth-"],[id^="point-"],[id^="kbd-"],[id^="gift-item-"]'
+    );
+    if (option && option.id) {
+      var dash = option.id.indexOf('-');
+      window.btsTrack('select_option', {
+        option_group: dash > 0 ? option.id.slice(0, dash) : 'other',
+        option_id: dash > 0 ? option.id.slice(dash + 1) : option.id,
+        option_label: cleanText(option.textContent, 150),
+        page_type: PAGE_TYPE
+      });
+      return;
+    }
+
+    var button = e.target.closest && e.target.closest('button');
+    if (button) {
+      window.btsTrack('ui_click', {
+        button_id: button.id || null,
+        button_label: cleanText(button.textContent),
+        page_type: PAGE_TYPE
+      });
+    }
+  }, { passive: true });
+
+  // 只記錄欄位種類與數字，不記錄 Email、密碼或自由輸入文字。
+  document.addEventListener('change', function (e) {
+    var input = e.target;
+    if (!input || !/^(INPUT|SELECT)$/.test(input.tagName)) return;
+    var key = cleanText(input.id || input.name || input.type, 80);
+    var params = {
+      field_name: key,
+      field_type: input.type || input.tagName.toLowerCase(),
+      has_value: !!input.value,
+      page_type: PAGE_TYPE
+    };
+    if (input.type === 'number' || input.type === 'range') {
+      params.numeric_value = Number(input.value) || 0;
+    } else if (input.tagName === 'SELECT' || input.type === 'radio' || input.type === 'checkbox') {
+      params.selected_value = cleanText(input.value, 80);
+    }
+    window.btsTrack('adjust_field', params);
+  }, { passive: true });
+
+  // 內容區塊曝光。
+  if ('IntersectionObserver' in window) {
+    var viewedSections = {};
+    var sectionObserver = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        var sectionId = entry.target.id || entry.target.getAttribute('aria-label');
+        if (!sectionId || viewedSections[sectionId]) return;
+        viewedSections[sectionId] = true;
+        window.btsTrack('section_view', {
+          section_id: cleanText(sectionId, 80),
+          page_type: PAGE_TYPE
+        });
+        sectionObserver.unobserve(entry.target);
+      });
+    }, { threshold: 0.35 });
+    document.querySelectorAll('section[id],main[id]').forEach(function (section) {
+      sectionObserver.observe(section);
+    });
+  }
+
+  // 捲動深度與停留時間里程碑。
+  var depthSent = {};
+  window.addEventListener('scroll', function () {
+    var doc = document.documentElement;
+    var total = Math.max(1, doc.scrollHeight - innerHeight);
+    var pct = Math.min(100, Math.round((scrollY / total) * 100));
+    if (pct > maxScroll) maxScroll = pct;
+    [25, 50, 75, 90].forEach(function (depth) {
+      if (pct >= depth && !depthSent[depth]) {
+        depthSent[depth] = true;
+        window.btsTrack('scroll_depth', { percent_scrolled: depth, page_type: PAGE_TYPE });
+      }
     });
   }, { passive: true });
+  [10, 30, 60, 120].forEach(function (seconds) {
+    setTimeout(function () {
+      if (document.visibilityState === 'visible') {
+        window.btsTrack('engagement_milestone', { seconds_engaged: seconds, page_type: PAGE_TYPE });
+      }
+    }, seconds * 1000);
+  });
+
+  window.addEventListener('pagehide', function () {
+    window.btsTrack('page_exit', {
+      engagement_seconds: Math.round((Date.now() - startedAt) / 1000),
+      max_scroll_percent: maxScroll,
+      result_generated: resultGenerated,
+      page_type: PAGE_TYPE,
+      transport_type: 'beacon'
+    });
+  });
 
   // ════════════ Firestore ════════════
   var fb = cfg.firebase || {};
@@ -103,6 +223,7 @@
 
   window.btsTrackResult = function (rec) {
     rec = rec || {};
+    resultGenerated = true;
     window.btsTrack('generate_recommendation', {
       product_line: rec.productLine || '',
       product: rec.product || '',
