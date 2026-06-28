@@ -1507,7 +1507,7 @@ function buildAirUpgradeNotice(kind, id) {
       <div class="upgrade-kicker">需要更高階晶片</div>
       <div class="upgrade-title">${item.name} 會改用 M5 10 核心 GPU 版本</div>
       <div class="upgrade-copy">
-        接下來會切換到 10 核心 CPU、10 核心 GPU 的 M5 價格，起價為 NT$35,740。${stepLabel}「${item.name}」會使用此晶片版本的計價方式，你可以在接受更改前檢視新的配置。
+        接下來會切換到 10 核心 CPU、10 核心 GPU 的 M5 價格，起價為 NT$42,740。${stepLabel}「${item.name}」會使用此晶片版本的計價方式，你可以在接受更改前檢視新的配置。
       </div>
       <div class="upgrade-actions">
         <button class="upgrade-next" onclick="airUpgradeAndSelect('${kind}','${id}')">下一步</button>
@@ -2377,7 +2377,7 @@ function esc(s) { return s.replace(/\s/g,''); }
 
 function goBack() {
   window.location.href = typeof google!=='undefined' && google.script
-    ? '?' : 'index.html';
+    ? '?' : 'calculator.html';
 }
 
 let toastTimer;
