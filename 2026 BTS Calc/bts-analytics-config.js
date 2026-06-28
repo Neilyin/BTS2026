@@ -6,7 +6,7 @@
    ════════════════════════════════════════════════════════════════ */
 window.BTS_ANALYTICS_CONFIG = {
   // Google Analytics 4 — 量測 ID（GA4 → 管理 → 資料串流 → 網頁）
-  gaMeasurementId: '',            // 例：'G-XXXXXXXXXX'
+  gaMeasurementId: 'G-H78965ZTCF',
 
   // Firebase 網頁應用程式設定（Firebase 主控台 → 專案設定 → 你的應用程式）
   firebase: {
