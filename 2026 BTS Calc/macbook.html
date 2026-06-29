@@ -570,11 +570,11 @@
   </style>
   <script>
     if (!new URLSearchParams(location.search).has('classic')) {
-      document.write('<link rel="stylesheet" href="ui-refresh.css">');
+      document.write('<link rel="stylesheet" href="ui-refresh.css?v=4">');
     }
   </script>
 </head>
-<body>
+<body class="calculator-page">
 <div class="liquid-bg">
   <div class="blob blob-1"></div>
   <div class="blob blob-2"></div>
@@ -586,7 +586,10 @@
       <svg viewBox="0 0 10 16"><polyline points="8 14 2 8 8 2"/></svg>
       返回
     </button>
-    <span class="topbar-title" id="topbar-title">MacBook 計算機</span>
+    <span class="topbar-title-group">
+      <span class="topbar-title" id="topbar-title">MacBook 計算機</span>
+      <small>教育價格與優惠試算</small>
+    </span>
     <div class="designer-chip" aria-label="Designed by Neil尼歐">
       <span class="designer-chip-avatar">N</span>
       <span class="designer-chip-text">
@@ -598,7 +601,7 @@
 
   <div class="progress-wrap">
     <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
-    <p class="progress-label" id="progress-label">步驟 0 / 0</p>
+    <p class="progress-label" id="progress-label" aria-live="polite">步驟 0 / 0</p>
   </div>
 
   <div class="steps-wrap" id="steps-wrap"></div>
@@ -638,22 +641,23 @@
 <div class="price-bar">
   <div class="price-bar-inner">
     <div class="price-nums">
-      <div class="price-final" id="price-final">NT$0</div>
+      <div class="price-eyebrow">目前預估入手價</div>
+      <div class="price-final" id="price-final" aria-live="polite">NT$0</div>
       <div class="price-breakdown" id="price-breakdown">尚未選擇規格</div>
       <div class="price-saved" id="price-saved" style="display:none"></div>
     </div>
     <button class="gen-btn" id="gen-btn" onclick="startCalc()" disabled>
       <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-      查看清單
+      完成試算
     </button>
   </div>
 </div>
 
 <!-- Modal -->
 <div class="modal-overlay" id="modal-overlay" onclick="closeModalOutside(event)">
-  <div class="modal-sheet">
+  <div class="modal-sheet" role="dialog" aria-modal="true" aria-labelledby="result-title" tabindex="-1">
     <div class="modal-handle"></div>
-    <div class="modal-title">BTS 購買清單</div>
+    <div class="modal-title" id="result-title">你的 BTS 試算結果</div>
     <div id="modal-content"></div>
     <div class="modal-actions">
       <button class="modal-btn secondary" onclick="closeModal()">關閉</button>
@@ -680,7 +684,7 @@
 
 <script src="bts-config.js"></script>
 <script src="config-override.js"></script>
-<script src="bts-ui.js"></script>
+<script src="bts-ui.js?v=3"></script>
 <script src="bts-analytics-config.js"></script>
 <script src="bts-analytics.js"></script>
 <script>

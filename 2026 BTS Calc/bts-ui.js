@@ -378,4 +378,60 @@
     else { var a = document.createElement('a'); a.download = filename; a.href = dataURL; a.click(); }
     return dataURL;
   };
+
+  // Make dynamically rendered configurator choices keyboard-accessible.
+  var OPTION_SELECTOR = [
+    '.opt[onclick]', '.size-opt[onclick]', '.chip-opt[onclick]',
+    '.gift-item[onclick]', '.sell-opt[onclick]'
+  ].join(',');
+
+  function enhanceOptions(root) {
+    var scope = root && root.querySelectorAll ? root : document;
+    scope.querySelectorAll(OPTION_SELECTOR).forEach(function (el) {
+      if (!el.hasAttribute('role')) el.setAttribute('role', 'button');
+      if (!el.hasAttribute('tabindex')) el.setAttribute('tabindex', '0');
+      var selected = el.classList.contains('selected') || el.classList.contains('active');
+      if (el.getAttribute('aria-pressed') !== String(selected)) {
+        el.setAttribute('aria-pressed', String(selected));
+      }
+      if (el.dataset.keyboardReady) return;
+      el.dataset.keyboardReady = 'true';
+      el.addEventListener('keydown', function (event) {
+        if (event.key !== 'Enter' && event.key !== ' ') return;
+        event.preventDefault();
+        el.click();
+      });
+    });
+  }
+
+  enhanceOptions(document);
+  if ('MutationObserver' in window) {
+    new MutationObserver(function (mutations) {
+      mutations.forEach(function (mutation) {
+        if (mutation.type === 'attributes') {
+          if (mutation.target.classList.contains('modal-overlay') &&
+              mutation.target.classList.contains('open')) {
+            var dialog = mutation.target.querySelector('[role="dialog"]');
+            if (dialog) dialog.focus();
+          }
+          enhanceOptions(mutation.target.parentElement || document);
+        } else {
+          mutation.addedNodes.forEach(function (node) {
+            if (node.nodeType === 1) enhanceOptions(node.parentElement || node);
+          });
+        }
+      });
+    }).observe(document.documentElement, {
+      childList: true,
+      subtree: true,
+      attributes: true,
+      attributeFilter: ['class']
+    });
+  }
+
+  document.addEventListener('keydown', function (event) {
+    if (event.key !== 'Escape') return;
+    var overlay = document.querySelector('.modal-overlay.open');
+    if (overlay && typeof window.closeModal === 'function') window.closeModal();
+  });
 })();
