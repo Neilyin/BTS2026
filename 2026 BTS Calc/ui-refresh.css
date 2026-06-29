@@ -641,6 +641,19 @@ button:focus-visible, a:focus-visible, .opt:focus-visible,
   color: var(--ink) !important; font-weight: 800 !important;
 }
 
+/* on-screen receipt: savings chip → lime, ink border (matches saved image) */
+.receipt-saved-row {
+  background: var(--lime) !important;
+  border: 2px solid var(--ink) !important;
+  border-radius: var(--radius-sm) !important;
+}
+.receipt-saved-row span {
+  color: var(--ink) !important;
+  font-family: 'Space Mono', monospace !important;
+  font-weight: 700 !important;
+}
+.receipt-divider { border-top: 2px solid var(--ink) !important; }
+
 /* receipt creator credit */
 .receipt-brand {
   text-align: center;
