@@ -9,17 +9,23 @@
 const CONFIG_STORAGE_KEY = 'bts_config_2026';
 
 // 深層合併：把 src 的值蓋進 target（只蓋已存在的 key，不新增）
+// 若型別不相容（例如預設是物件、舊存檔卻是陣列），保留預設值不覆蓋，
+// 避免舊版本存檔破壞新的資料結構導致整個後台/計算機渲染失敗。
 function _deepMerge(target, src) {
   if (!src || typeof src !== 'object') return;
   Object.keys(src).forEach(k => {
-    if (k in target) {
-      if (typeof target[k] === 'object' && !Array.isArray(target[k])
-          && typeof src[k] === 'object' && !Array.isArray(src[k])) {
-        _deepMerge(target[k], src[k]);
-      } else {
-        target[k] = src[k];
-      }
+    if (!(k in target)) return;
+    const tv = target[k], sv = src[k];
+    const tObj = tv && typeof tv === 'object';
+    const sObj = sv && typeof sv === 'object';
+    const tArr = Array.isArray(tv), sArr = Array.isArray(sv);
+    if (tObj && sObj && tArr === sArr) {
+      if (tArr) target[k] = sv;       // 陣列：整批取代
+      else _deepMerge(tv, sv);        // 純物件：往下遞迴
+    } else if (!tObj && !sObj) {
+      target[k] = sv;                 // 純值：直接覆蓋
     }
+    // 其餘為型別不相容（物件↔陣列、物件↔純值）：保留預設值，略過
   });
 }
 

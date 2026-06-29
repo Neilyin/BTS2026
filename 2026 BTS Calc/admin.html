@@ -170,11 +170,19 @@
     /* Image preview */
     .img-preview { width: 56px; height: 42px; object-fit: contain; border-radius: 8px; border: 1.5px solid var(--border); background: var(--bg); flex-shrink: 0; transition: transform var(--transition); }
     .img-preview:hover { transform: scale(1.1); }
+    .img-preview.img-empty { border-style: dashed; opacity: .5; }
+    .img-preview.img-failed { border-color: rgba(255,59,48,.5); background: rgba(255,59,48,.06); }
+    .img-preview.img-failed::after { content: '✕'; }
 
     /* Grid for image rows */
     .img-grid { display: grid; gap: 12px; }
     .img-row { display: flex; align-items: center; gap: 12px; padding: 10px; background: rgba(0,0,0,0.02); border-radius: 10px; border: 1px solid var(--border); }
         .img-row-label { font-size: 12px; font-weight: 700; min-width: 70px; }
+    .img-row .field-input { min-width: 0; }
+    .img-actions { display: flex; gap: 4px; flex-shrink: 0; }
+    .img-btn { width: 30px; height: 30px; border-radius: 8px; border: 1px solid var(--border); background: transparent; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 13px; color: var(--sub); transition: all var(--transition); text-decoration: none; }
+    .img-btn:hover { border-color: var(--blue); color: var(--blue); background: rgba(0,113,227,.05); }
+    .img-btn.disabled { opacity: .35; pointer-events: none; }
 
     /* Price table */
     .price-table { width: 100%; border-collapse: collapse; }
@@ -399,7 +407,7 @@
 
     <!-- ══ Tab: iPad 圖片 ══ -->
     <div class="tab-panel" id="tab-images-ipad">
-      <div class="section-header"><h2>iPad 圖片連結</h2><p>每個尺寸 × 顏色 的圖片 URL（建議用 Google Drive thumbnail 格式）</p></div>
+      <div class="section-header"><h2>iPad 圖片連結</h2><p>每個尺寸 × 顏色 的圖片網址 — 直接貼任何圖片網址即可（imgur、自家圖床、CDN…）；若是 Google Drive 連結，離開欄位會自動轉成可內嵌格式</p></div>
       <div class="sub-tabs">
         <div class="sub-tab active" onclick="switchSubTab('img-ipad','air',this)">iPad Air</div>
         <div class="sub-tab"       onclick="switchSubTab('img-ipad','pro',this)">iPad Pro</div>
@@ -410,7 +418,7 @@
 
     <!-- ══ Tab: MacBook 圖片 ══ -->
     <div class="tab-panel" id="tab-images-mac">
-      <div class="section-header"><h2>Mac / iMac 圖片連結</h2><p>每個尺寸 × 顏色 的圖片 URL</p></div>
+      <div class="section-header"><h2>Mac / iMac 圖片連結</h2><p>每個尺寸 × 顏色 的圖片網址 — 直接貼任何圖片網址即可（imgur、自家圖床、CDN…）；若是 Google Drive 連結，離開欄位會自動轉成可內嵌格式</p></div>
       <div class="sub-tabs">
         <div class="sub-tab"       onclick="switchSubTab('img-mac','neo',this)">MacBook Neo</div>
         <div class="sub-tab active" onclick="switchSubTab('img-mac','air',this)">MacBook Air</div>
@@ -498,9 +506,15 @@ function escHtml(s) { return String(s).replace(/"/g, '&quot;'); }
 
 // ── 更新 img preview ──
 function updateImgPreview(inputEl) {
-  const previewId = inputEl.id + '-preview';
-  const prev = document.getElementById(previewId);
-  if (prev) prev.src = inputEl.value || '';
+  const val = (inputEl.value || '').trim();
+  const prev = document.getElementById(inputEl.id + '-preview');
+  if (prev) {
+    prev.classList.remove('img-failed');
+    prev.classList.toggle('img-empty', !val);
+    if (val) prev.src = val; else prev.removeAttribute('src');
+  }
+  const open = document.getElementById(inputEl.id + '-open');
+  if (open) { open.href = val || '#'; open.classList.toggle('disabled', !val); }
 }
 
 // ═══════════════════════════════════════════
@@ -904,13 +918,21 @@ function renderImgGrid(containerId, colorImages, productKey, sizesObj) {
       <div class="img-grid">
         ${colors.map(c => {
           const inputId = `img-${productKey}-${sz}-${c.replace(/\s/g,'')}`;
+          const val = colorMap[c] || '';
           return `<div class="img-row">
             <span class="img-row-label">${c}</span>
-            <img class="img-preview" id="${inputId}-preview" src="${escHtml(colorMap[c]||'')}" onerror="this.src=''">
+            <img class="img-preview ${val ? '' : 'img-empty'}" id="${inputId}-preview" src="${escHtml(val)}"
+                 onload="this.classList.remove('img-failed','img-empty')"
+                 onerror="if(this.getAttribute('src')){this.classList.add('img-failed');this.removeAttribute('src');}">
             <input class="field-input url-input" id="${inputId}" type="url"
-                   value="${escHtml(colorMap[c]||'')}"
-                   placeholder="貼上 ${escHtml(c)} 產品圖 URL，收據會使用這張圖"
-                   oninput="setImgUrl('${productKey}','${sz}','${c}',this.value);updateImgPreview(this)">
+                   value="${escHtml(val)}"
+                   placeholder="貼上 ${escHtml(c)} 產品圖網址（任何圖片網址都可；Google Drive 連結會自動轉檔）"
+                   oninput="setImgUrl('${productKey}','${sz}','${c}',this.value);updateImgPreview(this)"
+                   onchange="normalizeImgField('${productKey}','${sz}','${c}',this)">
+            <div class="img-actions">
+              <a class="img-btn ${val ? '' : 'disabled'}" id="${inputId}-open" href="${escHtml(val)}" target="_blank" rel="noopener" title="開新分頁預覽">↗</a>
+              <button type="button" class="img-btn" title="清除" onclick="clearImgField('${productKey}','${sz}','${c}','${inputId}')">✕</button>
+            </div>
           </div>`;
         }).join('')}
       </div>
@@ -932,6 +954,41 @@ function setImgUrl(productKey, sz, color, val) {
   if (!cImgs) return;
   if (!cImgs[sz]) cImgs[sz] = {};
   cImgs[sz][color] = val;
+}
+
+// 從各種 Google Drive 連結格式抽出檔案 ID
+function extractDriveId(url) {
+  let m;
+  if ((m = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/)))                return m[1]; // /file/d/<id>/view
+  if ((m = url.match(/[?&]id=([a-zA-Z0-9_-]+)/)))                    return m[1]; // open?id= / uc?id= / thumbnail?id=
+  if ((m = url.match(/googleusercontent\.com\/d\/([a-zA-Z0-9_-]+)/))) return m[1]; // lh3.googleusercontent.com/d/<id>
+  return '';
+}
+
+// 把任何 Google Drive 連結正規化成可直接內嵌的 thumbnail 格式；其他網址原樣保留
+function normalizeImageUrl(url) {
+  url = (url || '').trim();
+  if (!url) return '';
+  if (!/drive\.google\.com|googleusercontent\.com/.test(url)) return url;
+  const id = extractDriveId(url);
+  if (!id) return url;
+  const szMatch = url.match(/[?&]sz=(w\d+)/);
+  const sz = szMatch ? szMatch[1] : 'w400';
+  return `https://drive.google.com/thumbnail?id=${id}&sz=${sz}`;
+}
+
+// 欄位離開焦點時：正規化、寫回 config、刷新預覽與開啟連結
+function normalizeImgField(productKey, sz, color, inputEl) {
+  const norm = normalizeImageUrl(inputEl.value);
+  if (norm !== inputEl.value) inputEl.value = norm;
+  setImgUrl(productKey, sz, color, norm);
+  updateImgPreview(inputEl);
+}
+
+function clearImgField(productKey, sz, color, inputId) {
+  const input = document.getElementById(inputId);
+  if (input) { input.value = ''; updateImgPreview(input); }
+  setImgUrl(productKey, sz, color, '');
 }
 
 function renderImages() {
@@ -1433,14 +1490,22 @@ function toast(msg) {
 //  Init
 // ═══════════════════════════════════════════
 function renderAll() {
-  ensureImageSlots();
-  renderMeta();
-  ensureGiftCombos();
-  renderGiftCombos();
-  renderGifts();
-  renderImages();
-  renderIpadPrices();
-  renderMacPrices();
+  // 每個區塊獨立執行：就算某個區塊因為舊版本存檔資料而出錯，
+  // 也不會把整個後台畫面（含圖片）一起弄空白
+  const steps = [
+    ['ensureImageSlots', ensureImageSlots],
+    ['renderMeta',       renderMeta],
+    ['ensureGiftCombos', ensureGiftCombos],
+    ['renderGiftCombos', renderGiftCombos],
+    ['renderGifts',      renderGifts],
+    ['renderImages',     renderImages],
+    ['renderIpadPrices', renderIpadPrices],
+    ['renderMacPrices',  renderMacPrices],
+  ];
+  steps.forEach(([name, fn]) => {
+    try { fn(); }
+    catch (e) { console.error(`[BTS] 後台區塊「${name}」渲染失敗（可能是舊版存檔資料）：`, e); }
+  });
 }
 
 document.addEventListener('bts:referral-settings', function () {
