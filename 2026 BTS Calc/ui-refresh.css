@@ -213,8 +213,10 @@ button:focus-visible, a:focus-visible, .opt:focus-visible,
   -webkit-text-fill-color: currentColor !important;
   color: var(--ink) !important;
 }
-/* cyan marker highlight behind the title, zine-style */
-.header h1 { position: relative; display: inline-block; }
+/* cyan marker highlight behind the title, zine-style.
+   block + fit-content so the title sits on its own line (the BTS chip is
+   inline-flex; an inline-block h1 would share its line on wide screens) */
+.header h1 { position: relative; display: block; width: fit-content; max-width: 100%; }
 .header h1::after {
   content: "";
   position: absolute; left: -2px; right: -2px; bottom: .08em; height: .26em;
