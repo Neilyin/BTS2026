@@ -44,6 +44,11 @@ const BTS_CONFIG = {
         rewardType: '現金'
       }
     },
+    // 抽獎環節（訂閱人數由後台手動更新並發布至 Firestore settings/referral 的 lottery 欄位）
+    lottery: {
+      ytGoal: 10000,        // 目標訂閱數（破萬抽獎）
+      ytSubscribers: 0      // 目前訂閱人數（後台手動輸入）
+    },
     purchaseLinks: {
       line:      'https://lin.ee/example',
       btsAgent:  'https://script.google.com/macros/s/AKfycbz1wAnl3eSL5XPMHR7phlSp0-4BbFdb0znWZ-0N5dyycfwoKLXHqohRK-b_5h4UoO5X/exec',

@@ -402,6 +402,14 @@
         <button class="btn primary" type="button" onclick="publishReferralCampaigns()">發布導購設定</button>
         <span id="referral-publish-status" style="margin-left:10px;font-size:12px;color:var(--sub)"></span>
       </div>
+
+      <div class="card">
+        <div class="card-title">抽獎環節（YT 訂閱抽獎・全站同步）</div>
+        <p style="font-size:13px;color:var(--sub);margin-bottom:18px">手動輸入目前 YouTube 訂閱人數，發布後首頁「抽獎環節」區塊會即時顯示目前人數與達成率。</p>
+        <div id="lottery-fields"></div>
+        <button class="btn primary" type="button" onclick="publishLottery()">發布訂閱進度</button>
+        <span id="lottery-publish-status" style="margin-left:10px;font-size:12px;color:var(--sub)"></span>
+      </div>
     </div>
 
     <!-- ══ Tab: BTS 贈品 ══ -->
@@ -606,6 +614,69 @@ function renderMeta() {
         </div>
       </div>
     `).join('');
+
+  // 抽獎環節：舊存檔可能沒有 lottery 欄位，補上預設值
+  const lot = cfg.meta.lottery = cfg.meta.lottery || { ytGoal: 10000, ytSubscribers: 0 };
+  document.getElementById('lottery-fields').innerHTML = `
+    <div class="field-row">
+      <span class="field-label">目前訂閱人數</span>
+      <input class="field-input price-input" type="number" min="0" value="${Number(lot.ytSubscribers) || 0}"
+        oninput="cfg.meta.lottery.ytSubscribers=Number(this.value)||0;updateLotteryRate()">
+    </div>
+    <div class="field-row">
+      <span class="field-label">目標訂閱人數</span>
+      <input class="field-input price-input" type="number" min="1" value="${Number(lot.ytGoal) || 10000}"
+        oninput="cfg.meta.lottery.ytGoal=Number(this.value)||10000;updateLotteryRate()">
+    </div>
+    <div class="field-row">
+      <span class="field-label">達成率</span>
+      <span id="lottery-rate" style="font-size:14px;font-weight:700"></span>
+    </div>`;
+  updateLotteryRate();
+}
+
+function updateLotteryRate() {
+  const el = document.getElementById('lottery-rate');
+  if (!el) return;
+  const lot = cfg.meta.lottery || {};
+  const goal = Math.max(1, Number(lot.ytGoal) || 10000);
+  const cur = Number(lot.ytSubscribers) || 0;
+  const pct = Math.min(100, Math.round(cur / goal * 1000) / 10);
+  el.textContent = `${pct}%（${cur.toLocaleString()} / ${goal.toLocaleString()}）${cur >= goal ? '🎉 已達標' : ''}`;
+  el.style.color = cur >= goal ? 'var(--green)' : 'var(--text)';
+}
+
+function publishLottery() {
+  const status = document.getElementById('lottery-publish-status');
+  status.textContent = '發布中…';
+  if (!window.btsAnalytics?.ready || !window.firebase) {
+    status.textContent = 'Firebase 尚未連線';
+    toast('Firebase 尚未連線，請稍後再試');
+    return;
+  }
+  const user = btsAnalytics.auth?.currentUser;
+  if (!user) {
+    status.textContent = '請先登入';
+    toast('請先登入管理員帳號再發布');
+    return;
+  }
+  const lot = cfg.meta.lottery || { ytGoal: 10000, ytSubscribers: 0 };
+  btsAnalytics.db.collection('settings').doc('referral').set({
+    campaigns: cfg.meta.referralCampaigns,  // 安全規則要求文件必須包含 campaigns
+    lottery: {
+      ytGoal: Number(lot.ytGoal) || 10000,
+      ytSubscribers: Number(lot.ytSubscribers) || 0
+    },
+    updatedBy: user.uid,
+    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+  }, { merge: true }).then(() => {
+    saveConfigOverride(cfg);
+    status.textContent = '已發布';
+    toast('訂閱進度已同步至首頁');
+  }).catch(e => {
+    status.textContent = '發布失敗';
+    toast('發布失敗：' + (e.code || e.message));
+  });
 }
 
 function publishReferralCampaigns() {
