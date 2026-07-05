@@ -641,7 +641,7 @@
 <div class="price-bar">
   <div class="price-bar-inner">
     <div class="price-nums">
-      <div class="price-eyebrow">目前預估入手價</div>
+      <div class="price-eyebrow">目前價格</div>
       <div class="price-final" id="price-final" aria-live="polite">NT$0</div>
       <div class="price-breakdown" id="price-breakdown">尚未選擇規格</div>
       <div class="price-saved" id="price-saved" style="display:none"></div>
@@ -2116,12 +2116,12 @@ function updatePrice() {
   const br = document.getElementById('price-breakdown');
   const sv = document.getElementById('price-saved');
   if (!r) { fe.textContent='NT$–'; br.textContent='請完成規格選擇'; sv.style.display='none'; return; }
-  fe.textContent = `NT$${r.final.toLocaleString()}`;
+  fe.textContent = `NT$${r.subtotal.toLocaleString()}`;
   const parts = [];
-  if (r.ccR)  parts.push(`信用卡 -NT$${r.ccR.toLocaleString()}`);
-  if (r.refR) parts.push(`導購 -NT$${r.refR.toLocaleString()}`);
-  br.textContent = parts.length ? parts.join(' · ') : `定價 NT$${r.subtotal.toLocaleString()}`;
-  if (r.totalSaved > 0) { sv.style.display=''; sv.textContent=`合計省下 NT$${r.totalSaved.toLocaleString()}`; }
+  if (r.ccR)  parts.push(`信用卡扣掉 -NT$${r.ccR.toLocaleString()}`);
+  if (r.refR) parts.push(`導購扣掉 -NT$${r.refR.toLocaleString()}`);
+  br.textContent = parts.length ? parts.join(' · ') : '尚未套用任何回饋';
+  if (r.totalSaved > 0) { sv.style.display=''; sv.textContent=`最終入手約等於 NT$${r.final.toLocaleString()}`; }
   else sv.style.display='none';
   checkComplete();
 }

@@ -11,6 +11,12 @@
   var REDUCED = window.matchMedia &&
     window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+  // ── BTS 攻略 QR code（畫進購買清單用，載不到就直接略過）──
+  var QR_IMG = new Image();
+  var QR_READY = false;
+  QR_IMG.onload = function () { QR_READY = true; };
+  QR_IMG.src = 'assets/qr-bts-guide.png';
+
   // ── inject styles once ──
   if (!document.getElementById('bts-ui-style')) {
     var css = `
@@ -276,6 +282,8 @@
     if (data.savedText) cy += 40;
     cy += 20 + 1 + 24;                         // footer divider
     cy += 16 + 30 + 18 + 16 + 26;             // footer texts + bottom pad
+    var qrOn = QR_READY;
+    if (qrOn) cy += 154;                       // QR tile + caption
     var cardH = cy;
     var H = cardTop + cardH + 34;
 
@@ -381,6 +389,17 @@
     ctx.fillText('neil.tw  ·  @neil.tw_', W / 2, cy); cy += 16;
     ctx.fillStyle = '#6b685f'; ctx.font = font('normal', 12);
     ctx.fillText(data.footerProduct || '', W / 2, cy);
+
+    // BTS 攻略 QR code
+    if (qrOn) {
+      cy += 20;
+      var QRS = 96;
+      roundRect(W / 2 - QRS / 2 - 8, cy, QRS + 16, QRS + 16, 4, '#ffffff', { border: 2 });
+      try { ctx.drawImage(QR_IMG, W / 2 - QRS / 2, cy + 8, QRS, QRS); } catch (e) { /* ignore */ }
+      cy += QRS + 16 + 16;
+      ctx.fillStyle = '#44423d'; ctx.font = font('700', 12);
+      ctx.fillText('掃描看完整 BTS 攻略', W / 2, cy);
+    }
 
     // export → print animation
     var dataURL;
