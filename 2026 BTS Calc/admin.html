@@ -281,6 +281,39 @@
       .sidebar { display: none; }
       .main { margin-left: 0; padding: 20px 16px; }
     }
+    /* ── Login Gate ── */
+    body:not(.authed) .layout { display: none !important; }
+    body.authed #login-gate { display: none !important; }
+    #login-gate {
+      position: fixed; inset: 0; z-index: 999;
+      display: flex; align-items: center; justify-content: center;
+      background: var(--bg);
+    }
+    #login-gate .login-card {
+      width: min(380px, calc(100vw - 40px));
+      background: var(--glass-bg);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius);
+      box-shadow: var(--glass-shadow);
+      padding: 32px 28px;
+    }
+    #login-gate h1 { font-family: 'Outfit', sans-serif; font-size: 20px; font-weight: 800; margin-bottom: 4px; }
+    #login-gate .login-hint { font-size: 13px; color: var(--sub); margin-bottom: 20px; }
+    #login-gate input {
+      width: 100%; height: 46px; border: 1px solid var(--border); border-radius: 12px;
+      padding: 0 14px; font-size: 14px; margin-bottom: 12px; background: #fff; font-family: inherit;
+    }
+    #login-gate input:focus { outline: none; border-color: var(--blue); box-shadow: 0 0 0 3px rgba(0,113,227,.15); }
+    #login-gate .login-submit {
+      width: 100%; height: 46px; border: none; border-radius: 12px;
+      background: var(--blue); color: #fff; font-size: 14px; font-weight: 700; cursor: pointer;
+      font-family: inherit;
+    }
+    #login-gate .login-submit:hover { background: var(--blue-dark); }
+    #login-gate .login-submit:disabled { opacity: .5; cursor: default; }
+    #login-gate .login-err { margin-top: 12px; font-size: 13px; color: var(--red); min-height: 18px; }
   </style>
   <script>
     if (!new URLSearchParams(location.search).has('classic')) {
@@ -289,6 +322,18 @@
   </script>
 </head>
 <body>
+<!-- ── Login Gate ── -->
+<div id="login-gate">
+  <div class="login-card">
+    <h1>BTS 後台管理</h1>
+    <p class="login-hint" id="login-hint">請登入管理員帳號</p>
+    <input id="login-email" type="email" placeholder="Email" autocomplete="username">
+    <input id="login-pass" type="password" placeholder="密碼" autocomplete="current-password">
+    <button class="login-submit" id="login-btn" onclick="adminLogin()">登入</button>
+    <div class="login-err" id="login-err"></div>
+  </div>
+</div>
+
 <div class="liquid-bg">
   <div class="blob blob-1"></div>
   <div class="blob blob-2"></div>
@@ -334,6 +379,7 @@
     <div class="action-bar">
       <p id="status-text">讀取中...</p>
       <a class="btn secondary" href="analytics.html">查看分析</a>
+      <button class="btn secondary" onclick="adminLogout()">登出</button>
       <button class="btn secondary" onclick="runLogicCheck(true)">檢查邏輯</button>
       <button class="btn secondary" onclick="exportJSON()">匯出 JSON</button>
       <button class="btn danger"    onclick="resetAll()">清除覆蓋</button>
@@ -1509,11 +1555,84 @@ function renderAll() {
 }
 
 document.addEventListener('bts:referral-settings', function () {
+  if (!adminAuthed) return;
   renderMeta();
   document.getElementById('referral-publish-status').textContent = '已載入全站設定';
 });
-renderAll();
-updateStatus();
+
+// ═══════════════════════════════════════════
+//  登入保護（Firebase Auth + admins 集合）
+// ═══════════════════════════════════════════
+let adminAuthed = false;
+
+function showLoginError(msg) {
+  document.getElementById('login-err').textContent = msg || '';
+}
+
+function unlockAdmin() {
+  if (adminAuthed) return;
+  adminAuthed = true;
+  document.body.classList.add('authed');
+  renderAll();
+  updateStatus();
+}
+
+function lockAdmin() {
+  adminAuthed = false;
+  document.body.classList.remove('authed');
+}
+
+function adminLogin() {
+  showLoginError('');
+  const auth = window.btsAnalytics?.auth;
+  if (!auth) { showLoginError('Firebase 尚未連線，請稍後再試'); return; }
+  const btn = document.getElementById('login-btn');
+  btn.disabled = true;
+  auth.signInWithEmailAndPassword(
+    document.getElementById('login-email').value.trim(),
+    document.getElementById('login-pass').value
+  ).catch(e => {
+    showLoginError('登入失敗：' + (e.code || e.message));
+  }).finally(() => { btn.disabled = false; });
+}
+
+function adminLogout() {
+  const auth = window.btsAnalytics?.auth;
+  if (auth) auth.signOut();
+  lockAdmin();
+  location.reload();
+}
+
+(function initAuthGate() {
+  const hint = document.getElementById('login-hint');
+  document.getElementById('login-pass').addEventListener('keydown', e => {
+    if (e.key === 'Enter') adminLogin();
+  });
+
+  if (!window.btsAnalytics || !btsAnalytics.enabled) {
+    hint.textContent = '尚未設定 Firebase（bts-analytics-config.js），無法登入後台。';
+    document.getElementById('login-btn').disabled = true;
+    return;
+  }
+
+  btsAnalytics.onReady(function () {
+    const auth = btsAnalytics.auth;
+    if (!auth) { hint.textContent = 'Firebase 初始化失敗，請重新整理'; return; }
+    auth.onAuthStateChanged(function (user) {
+      if (!user) { lockAdmin(); return; }
+      // 登入成功後，還要確認 admins/{uid} 存在才算管理員
+      btsAnalytics.db.collection('admins').doc(user.uid).get()
+        .then(doc => {
+          if (doc.exists) unlockAdmin();
+          else { showLoginError('此帳號沒有管理權限'); auth.signOut(); }
+        })
+        .catch(e => {
+          showLoginError('權限確認失敗：' + (e.code || e.message));
+          auth.signOut();
+        });
+    });
+  });
+})();
 </script>
 </body>
 </html>
