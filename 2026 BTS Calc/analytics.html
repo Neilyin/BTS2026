@@ -46,11 +46,35 @@
     font-weight:700;color:var(--sub);cursor:pointer;font-family:inherit}
   .seg button.on{background:#fff;color:var(--brand-deep);box-shadow:var(--shadow)}
 
-  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px}
+  .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:14px;margin-bottom:18px}
   .kpi{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow)}
   .kpi .label{font-size:12px;color:var(--sub);font-weight:600}
-  .kpi .val{font-size:28px;font-weight:800;margin-top:6px}
+  .kpi .val{font-size:26px;font-weight:800;margin-top:6px}
   .kpi .val.blue{color:var(--brand)} .kpi .val.green{color:var(--green)}
+  .kpi .hint{font-size:11px;color:var(--sub);margin-top:4px}
+
+  /* 產品線總覽 */
+  .linecard{display:flex;flex-direction:column;gap:10px}
+  .linecard .lc-head{display:flex;align-items:baseline;gap:10px}
+  .linecard .lc-head .nm{font-size:16px;font-weight:800}
+  .linecard .lc-head .share{font-size:12px;color:var(--sub);font-weight:700}
+  .linecard .lc-bar{height:10px;background:#eef1f6;border-radius:999px;overflow:hidden}
+  .linecard .lc-bar i{display:block;height:100%;border-radius:999px;background:var(--brand)}
+  .linecard.mac .lc-bar i{background:var(--green)}
+  .linecard .lc-stats{display:flex;gap:18px;flex-wrap:wrap;font-size:12.5px;color:var(--sub)}
+  .linecard .lc-stats b{color:var(--text);font-variant-numeric:tabular-nums}
+
+  /* 有趣的數字 */
+  .fact{display:flex;align-items:baseline;gap:10px;padding:8px 0;border-bottom:1px dashed var(--line);font-size:13px}
+  .fact:last-child{border-bottom:none}
+  .fact .fl{color:var(--sub);font-weight:600}
+  .fact .fv{margin-left:auto;font-weight:800;font-variant-numeric:tabular-nums;text-align:right}
+
+  /* 24 小時分布 */
+  .hours{display:flex;align-items:flex-end;gap:3px;height:96px;margin-top:6px}
+  .hours i{flex:1;background:#d8e6f5;border-radius:3px 3px 0 0;min-height:3px;position:relative}
+  .hours i.peak{background:var(--brand)}
+  .hours-x{display:flex;justify-content:space-between;font-size:10px;color:var(--sub);margin-top:6px}
 
   .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px}
   .panel{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:18px 20px;box-shadow:var(--shadow)}
@@ -97,6 +121,11 @@
       <h1>📊 BTS 數據分析</h1>
       <span class="who" id="who"></span>
       <div class="filters">
+        <div class="seg" id="segLine">
+          <button data-l="all" class="on">全部</button>
+          <button data-l="ipad">iPad</button>
+          <button data-l="mac">Mac</button>
+        </div>
         <div class="seg" id="seg">
           <button data-r="today">今日</button>
           <button data-r="7">近 7 天</button>
@@ -109,19 +138,41 @@
     </div>
 
     <div class="kpis">
-      <div class="kpi"><div class="label">總筆數（區間）</div><div class="val" id="k-total">–</div></div>
-      <div class="kpi"><div class="label">不重複 session</div><div class="val" id="k-sessions">–</div></div>
+      <div class="kpi"><div class="label">試算筆數（區間）</div><div class="val" id="k-total">–</div></div>
+      <div class="kpi"><div class="label">不重複訪客</div><div class="val" id="k-sessions">–</div><div class="hint" id="k-per-session"></div></div>
       <div class="kpi"><div class="label">平均實際入手價</div><div class="val blue" id="k-avg">–</div></div>
       <div class="kpi"><div class="label">平均省下</div><div class="val green" id="k-saved">–</div></div>
+      <div class="kpi"><div class="label">累計幫大家省下</div><div class="val green" id="k-saved-sum">–</div><div class="hint">區間內 · 回饋合計</div></div>
+      <div class="kpi"><div class="label">試算總金額</div><div class="val" id="k-gmv">–</div><div class="hint">區間內 · 入手價合計</div></div>
+    </div>
+
+    <div class="grid2" id="lineOverview">
+      <div class="panel"><h2>📱 iPad 產品線</h2><div class="linecard ipad" id="lc-ipad"></div></div>
+      <div class="panel"><h2>💻 Mac 產品線</h2><div class="linecard mac" id="lc-mac"></div></div>
     </div>
 
     <div class="grid2">
-      <div class="panel"><h2>產品分布</h2><div id="byProduct"></div></div>
+      <div class="panel"><h2>機型分布</h2><div id="byProduct"></div></div>
       <div class="panel"><h2>熱門推薦組合</h2><div id="byRecommendation"></div></div>
+    </div>
+    <div class="grid2">
+      <div class="panel"><h2>晶片分布</h2><div id="byChip"></div></div>
+      <div class="panel"><h2>尺寸偏好</h2><div id="bySize"></div></div>
     </div>
     <div class="grid2">
       <div class="panel"><h2>熱門容量 / 儲存</h2><div id="byStorage"></div></div>
       <div class="panel"><h2>熱門顏色</h2><div id="byColor"></div></div>
+    </div>
+    <div class="grid2">
+      <div class="panel"><h2>記憶體規格</h2><div id="byMemory"></div></div>
+      <div class="panel"><h2>BTS 贈品人氣</h2><div id="byGift"></div></div>
+    </div>
+    <div class="grid2">
+      <div class="panel"><h2>🎲 有趣的數字</h2><div id="funFacts"></div></div>
+      <div class="panel"><h2>🕐 試算時段分布（24 小時）</h2><div class="hours" id="byHour"></div>
+        <div class="hours-x"><span>00</span><span>06</span><span>12</span><span>18</span><span>23</span></div>
+        <p class="muted" id="peakHourNote" style="font-size:12px;margin-top:8px"></p>
+      </div>
     </div>
 
     <div class="panel" style="margin-bottom:14px"><h2>全部紀錄（<span id="recordCount">0</span> 筆）</h2>
@@ -149,6 +200,7 @@
 
   var ALL = [];          // 已抓取的紀錄
   var range = '30';
+  var line = 'all';      // 產品線篩選：all | ipad | mac
 
   btsAnalytics.onReady(function(){
     var auth = btsAnalytics.auth;
@@ -169,6 +221,11 @@
       var b = e.target.closest('button'); if(!b) return;
       [].forEach.call($('seg').children, function(x){ x.classList.toggle('on', x===b); });
       range = b.dataset.r; render();
+    });
+    $('segLine').addEventListener('click', function(e){
+      var b = e.target.closest('button'); if(!b) return;
+      [].forEach.call($('segLine').children, function(x){ x.classList.toggle('on', x===b); });
+      line = b.dataset.l; render();
     });
   });
 
@@ -231,20 +288,112 @@
     });
   }
 
+  function sum(arr){ return arr.reduce(function(a,b){return a+b;},0); }
+  function pct(part, whole){ return whole ? Math.round(part/whole*100) + '%' : '–'; }
+
+  function renderLineCard(el, sub, total, color){
+    if (!sub.length){ el.innerHTML = '<p class="muted" style="font-size:13px">此區間尚無紀錄</p>'; return; }
+    var share = total ? Math.round(sub.length/total*100) : 0;
+    var fins = sub.map(function(r){return r.final||0;}).filter(function(n){return n>0;});
+    var avg = fins.length ? sum(fins)/fins.length : 0;
+    var topEntry = Object.entries(tally(sub, plabel)).sort(function(a,b){return b[1]-a[1];})[0];
+    var sess = Object.keys(tally(sub, function(r){return r.sessionId;})).length;
+    el.innerHTML =
+      '<div class="lc-head"><span class="nm">'+sub.length.toLocaleString()+' 筆試算</span><span class="share">佔整體 '+share+'%</span></div>'+
+      '<div class="lc-bar"><i style="width:'+share+'%"></i></div>'+
+      '<div class="lc-stats">'+
+        '<span>不重複訪客 <b>'+sess.toLocaleString()+'</b></span>'+
+        '<span>平均入手價 <b>'+ntd(avg)+'</b></span>'+
+        '<span>最熱門 <b>'+esc(topEntry ? topEntry[0]+'（'+topEntry[1]+'）' : '–')+'</b></span>'+
+      '</div>';
+  }
+
+  function renderFunFacts(rows){
+    var el = $('funFacts');
+    if (!rows.length){ el.innerHTML = '<p class="muted" style="font-size:13px">尚無資料</p>'; return; }
+    var facts = [];
+    var valid = rows.filter(function(r){return (r.final||0) > 0;});
+
+    var top = valid.slice().sort(function(a,b){return (b.final||0)-(a.final||0);})[0];
+    if (top) facts.push(['👑 最頂規的一筆', esc(plabel(top)) + ' · ' + ntd(top.final)]);
+    var low = valid.slice().sort(function(a,b){return (a.final||0)-(b.final||0);})[0];
+    if (low) facts.push(['🪙 最精打細算', esc(plabel(low)) + ' · ' + ntd(low.final)]);
+
+    var mob = rows.filter(function(r){return r.device==='mobile';}).length;
+    facts.push(['📱 用手機邊逛邊算', pct(mob, rows.length)]);
+
+    var cc  = rows.filter(function(r){return (r.creditCardPct||0) > 0;}).length;
+    var ref = rows.filter(function(r){return (r.referralPct||0) > 0;}).length;
+    facts.push(['💳 有算信用卡回饋', pct(cc, rows.length)]);
+    facts.push(['🔗 有算導購回饋', pct(ref, rows.length)]);
+
+    var proish = rows.filter(function(r){return r.productLine==='mac' && (r.product==='pro'||r.product==='imac');});
+    if (proish.length) facts.push(['✨ 奈米紋理玻璃選擇率', pct(proish.filter(function(r){return r.nano;}).length, proish.length)]);
+
+    var withGift = rows.filter(function(r){return r.selections && r.selections.gift && r.selections.gift.name;});
+    if (withGift.length) facts.push(['♻️ 打算把贈品賣掉', pct(withGift.filter(function(r){return r.selections.sellGift;}).length, withGift.length)]);
+
+    var bySess = tally(rows, function(r){return r.sessionId;});
+    var counts = Object.values(bySess);
+    if (counts.length){
+      facts.push(['🔁 平均每人試算', (Math.round(rows.length/counts.length*10)/10) + ' 次']);
+      facts.push(['🤯 最猶豫的訪客算了', Math.max.apply(null, counts) + ' 次']);
+    }
+    el.innerHTML = facts.map(function(f){
+      return '<div class="fact"><span class="fl">'+f[0]+'</span><span class="fv">'+f[1]+'</span></div>';
+    }).join('');
+  }
+
+  function renderHours(rows){
+    var el = $('byHour');
+    var byH = new Array(24).fill(0);
+    rows.forEach(function(r){ if (r.createdAt) byH[new Date(r.createdAt).getHours()]++; });
+    var max = Math.max.apply(null, byH) || 1;
+    var peak = byH.indexOf(Math.max.apply(null, byH));
+    el.innerHTML = byH.map(function(n,h){
+      return '<i class="'+(n===max&&n>0?'peak':'')+'" style="height:'+Math.max(3,Math.round(n/max*100))+'%" title="'+h+':00 · '+n+' 筆"></i>';
+    }).join('');
+    $('peakHourNote').textContent = rows.length
+      ? '尖峰時段 ' + String(peak).padStart(2,'0') + ':00–' + String(peak).padStart(2,'0') + ':59，共 ' + byH[peak] + ' 筆'
+      : '尚無資料';
+  }
+
   function render(){
-    var rows = ALL.filter(inRange);
+    var ranged = ALL.filter(inRange);
+    var rows = line==='all' ? ranged : ranged.filter(function(r){return r.productLine===line;});
     $('recordCount').textContent = rows.length.toLocaleString();
     $('k-total').textContent = rows.length.toLocaleString();
-    $('k-sessions').textContent = Object.keys(tally(rows, function(r){return r.sessionId;})).length.toLocaleString();
+    var sessN = Object.keys(tally(rows, function(r){return r.sessionId;})).length;
+    $('k-sessions').textContent = sessN.toLocaleString();
+    $('k-per-session').textContent = sessN ? '平均每人 ' + (Math.round(rows.length/sessN*10)/10) + ' 次試算' : '';
     var fins = rows.map(function(r){return r.final||0;}).filter(function(n){return n>0;});
     var savs = rows.map(function(r){return r.totalSaved||0;});
-    $('k-avg').textContent = fins.length ? ntd(fins.reduce(function(a,b){return a+b;},0)/fins.length) : '–';
-    $('k-saved').textContent = rows.length ? ntd(savs.reduce(function(a,b){return a+b;},0)/rows.length) : '–';
+    $('k-avg').textContent = fins.length ? ntd(sum(fins)/fins.length) : '–';
+    $('k-saved').textContent = rows.length ? ntd(sum(savs)/rows.length) : '–';
+    $('k-saved-sum').textContent = rows.length ? ntd(sum(savs)) : '–';
+    $('k-gmv').textContent = fins.length ? ntd(sum(fins)) : '–';
+
+    // 產品線總覽永遠以「全部產品線」計算，切到單一產品線時隱藏
+    $('lineOverview').classList.toggle('hidden', line!=='all');
+    renderLineCard($('lc-ipad'), ranged.filter(function(r){return r.productLine==='ipad';}), ranged.length);
+    renderLineCard($('lc-mac'),  ranged.filter(function(r){return r.productLine==='mac';}),  ranged.length);
 
     bars($('byProduct'), tally(rows, plabel));
     bars($('byRecommendation'), tally(rows, function(r){return r.recommendation || r.model;}));
+    bars($('byChip'), tally(rows, function(r){return r.chip || (r.selections&&r.selections.chip);}));
+    bars($('bySize'), tally(rows, function(r){
+      var s = (r.selections&&r.selections.size) || r.size;
+      return s ? s + ' 吋 · ' + plabel(r) : null;
+    }));
     bars($('byStorage'), tally(rows, function(r){return r.storage;}));
     bars($('byColor'),   tally(rows, function(r){return r.color;}));
+    bars($('byMemory'),  tally(rows, function(r){return r.memory || (r.selections&&r.selections.memory);}));
+    bars($('byGift'),    tally(rows, function(r){
+      var g = r.selections && r.selections.gift;
+      return g && g.name ? g.name : '未加購贈品';
+    }));
+    renderFunFacts(rows);
+    renderHours(rows);
 
     var recent = rows.map(function(r){
       var s = r.selections || {};
@@ -267,6 +416,11 @@
         '</td><td class="num"><b>'+ntd(r.final)+'</b></td><td class="num">'+(r.totalSaved?ntd(r.totalSaved):'–')+'</td></tr>';
     }).join('');
     $('recentBody').innerHTML = recent || '<tr><td colspan="9" class="muted" style="text-align:center;padding:20px">此區間尚無紀錄</td></tr>';
+  }
+
+  // 本機開發用：塞入假資料預覽版面（正式站不生效）
+  if (/^(localhost|127\.0\.0\.1)$/.test(location.hostname)) {
+    window.__btsDashDebug = function(rows){ ALL = rows || []; show('view-dash'); render(); };
   }
 })();
 </script>
