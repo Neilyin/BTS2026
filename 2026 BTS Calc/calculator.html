@@ -829,6 +829,15 @@
 
       </div>
 
+      <a class="compare-hint" style="margin-top:24px;max-width:640px;text-decoration:none;cursor:pointer"
+         href="https://applebg26.vercel.app/" target="_blank" rel="noopener"
+         onclick="if(window.btsTrack)btsTrack('buyers_guide_click',{from:'calculator_hub'})">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+        </svg>
+        <p><strong>還不知道自己適合哪款？</strong> 先玩玩 Neil 的「Apple 選購指南」小測驗，回答幾個問題就幫你配對機型，再回來這裡試算 BTS 實際入手價 →</p>
+      </a>
+
       <p class="footer-note">
         所有售價均為 Apple 台灣教育商店定價，BTS 活動內容待官方公布後更新。<br>
         計算結果供參考，實際優惠以官方為準。
@@ -1052,6 +1061,9 @@
         <p id="compare-hint-text"></p>
       </div>
 
+      <!-- 選購指南提示（依產品線帶不同測驗連結） -->
+      <a class="compare-hint" id="guide-hint" style="margin-top:12px;text-decoration:none;cursor:pointer" target="_blank" rel="noopener"></a>
+
     </section>
 
   </div><!-- /.screens -->
@@ -1101,6 +1113,13 @@
     desktop: '<strong>BTS 桌上型 Mac 活動：</strong>活動內容暫未套用，待開始後更新。'
   };
 
+  // Neil「Apple 選購指南」— 依產品線帶到對應的測驗（桌上型 Mac 沒有專屬測驗，導去首頁自選）
+  const guideLink = {
+    ipad:    { href: 'https://applebg26.vercel.app/quiz/ipad',    text: '還在猶豫 iPad Air 還是 Pro？先做「iPad 選購測驗」，依你的使用情境配對機型 →' },
+    macbook: { href: 'https://applebg26.vercel.app/quiz/macbook', text: '還在猶豫哪一台 MacBook？先做「MacBook 選購測驗」，依你的需求配對機型 →' },
+    desktop: { href: 'https://applebg26.vercel.app/',             text: '不確定 iMac 還是 Mac mini 適合你？先逛逛 Neil 的「Apple 選購指南」→' }
+  };
+
   function goToSub(line) {
     currentLine = line;
     if (window.btsTrack) btsTrack('select_product_line', { line: line });
@@ -1111,6 +1130,17 @@
     document.getElementById('sub-header-title').textContent =
       line === 'ipad' ? '選擇 iPad 機型' : line === 'desktop' ? '選擇桌上型 Mac' : '選擇 MacBook 機型';
     document.getElementById('compare-hint-text').innerHTML = hintText[line];
+
+    // 選購指南提示（依產品線切換連結與文案）
+    const guide = guideLink[line];
+    const guideEl = document.getElementById('guide-hint');
+    guideEl.href = guide.href;
+    guideEl.innerHTML = `
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+      </svg>
+      <p>${guide.text}</p>`;
+    guideEl.onclick = () => { if (window.btsTrack) btsTrack('buyers_guide_click', { from: 'sub_product_' + line }); };
 
     // 顯示對應子產品清單
     document.getElementById('ipad-sub').style.display    = line === 'ipad'    ? 'grid' : 'none';
