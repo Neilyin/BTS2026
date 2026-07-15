@@ -120,6 +120,15 @@ header.nav{
 .hero-lead{font-size:19px;max-width:52ch;color:#1a1a1a}
 .hero-lead b{background:var(--yellow);padding:0 4px}
 .hero-cta-row{display:flex;flex-wrap:wrap;gap:14px;margin-top:26px}
+/* 抽獎徽章（貼紙風，桌機手機都顯示） */
+.lottery-badge{display:inline-flex;align-items:center;gap:9px;margin-top:20px;
+  background:var(--lime);border:2.5px solid var(--ink);border-radius:4px;
+  padding:9px 14px;font-weight:900;font-size:14px;color:var(--ink);text-decoration:none;
+  box-shadow:4px 4px 0 var(--ink);transform:rotate(-2deg);transition:transform .2s var(--ease),box-shadow .2s var(--ease);
+  cursor:pointer}
+.lottery-badge:hover{transform:rotate(-2deg) translate(-2px,-2px);box-shadow:6px 6px 0 var(--pink)}
+.lottery-badge .lb-gift{font-size:18px;animation:wiggle 1.4s ease-in-out infinite;display:inline-block}
+.lottery-badge .lb-arrow{font-family:"Space Mono",monospace;font-weight:700}
 .btn{display:inline-flex;align-items:center;gap:9px;font-weight:800;text-decoration:none;
   font-size:15px;padding:14px 24px;border:2.5px solid var(--ink);border-radius:3px;
   background:var(--ink);color:var(--paper);transition:transform .2s var(--ease),box-shadow .2s var(--ease);
@@ -488,6 +497,11 @@ footer a{color:var(--cyan);text-decoration:none}
           <a href="calculator.html" class="btn">開啟優惠計算機 →</a>
           <a href="#eligibility" class="btn ghost">看我符不符合資格</a>
         </div>
+        <a href="#lottery" class="lottery-badge" onclick="window.btsTrack&&btsTrack('lottery_cta_click',{item:'hero_badge',from:'homepage_hero'})">
+          <span class="lb-gift">🎁</span>
+          <span>訂閱破萬抽 MacBook Neo</span>
+          <span class="lb-arrow">↓</span>
+        </a>
       </div>
 
       <aside class="hero-card">
@@ -512,8 +526,8 @@ footer a{color:var(--cyan);text-decoration:none}
 <!-- ===================== MARQUEE ===================== -->
 <div class="marquee" aria-hidden="true">
   <div class="marquee-track">
-    <span>EDUCATION PRICING <em class="star">✺</em> 學生折扣 <em class="star">✺</em> FREE GIFTS <em class="star">✺</em> UNiDAYS 認證 <em class="star">✺</em> iPad · MacBook · iMac <em class="star">✺</em> </span>
-    <span>EDUCATION PRICING <em class="star">✺</em> 學生折扣 <em class="star">✺</em> FREE GIFTS <em class="star">✺</em> UNiDAYS 認證 <em class="star">✺</em> iPad · MacBook · iMac <em class="star">✺</em> </span>
+    <span>EDUCATION PRICING <em class="star">✺</em> 學生折扣 <em class="star">✺</em> 訂閱破萬抽 MACBOOK NEO <em class="star">✺</em> FREE GIFTS <em class="star">✺</em> UNiDAYS 認證 <em class="star">✺</em> iPad · MacBook · iMac <em class="star">✺</em> </span>
+    <span>EDUCATION PRICING <em class="star">✺</em> 學生折扣 <em class="star">✺</em> 訂閱破萬抽 MACBOOK NEO <em class="star">✺</em> FREE GIFTS <em class="star">✺</em> UNiDAYS 認證 <em class="star">✺</em> iPad · MacBook · iMac <em class="star">✺</em> </span>
   </div>
 </div>
 

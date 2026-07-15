@@ -283,7 +283,7 @@
     cy += 20 + 1 + 24;                         // footer divider
     cy += 16 + 30 + 18 + 16 + 26;             // footer texts + bottom pad
     var qrOn = QR_READY;
-    if (qrOn) cy += 154;                       // QR tile + caption
+    if (qrOn) cy += 174;                       // QR tile + caption + 訂閱抽獎一行
     var cardH = cy;
     var H = cardTop + cardH + 34;
 
@@ -399,6 +399,9 @@
       cy += QRS + 16 + 16;
       ctx.fillStyle = '#44423d'; ctx.font = font('700', 12);
       ctx.fillText('掃描看完整 BTS 攻略', W / 2, cy);
+      cy += 20;
+      ctx.fillStyle = '#c2410c'; ctx.font = font('800', 12);
+      ctx.fillText('▶ 訂閱 Neil尼歐 YouTube・破萬抽 MacBook Neo 🎁', W / 2, cy);
     }
 
     // export → print animation

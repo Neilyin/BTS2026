@@ -556,6 +556,16 @@
     .purchase-link-btn.line    { background:#06c755; color:#fff; box-shadow:0 4px 12px rgba(6, 199, 85, 0.2); }
     .purchase-link-btn.official { background:var(--text); color:var(--bg); }
 
+    /* 訂閱抽獎 CTA */
+    .modal-sub-cta { display:flex; align-items:center; gap:10px; margin-top:14px; padding:13px 16px;
+      background:#fff8d6; border:1.5px solid rgba(0,0,0,.12); border-radius:12px;
+      text-decoration:none; color:var(--text); font-size:13.5px; font-weight:600; line-height:1.5;
+      transition:all var(--transition); }
+    .modal-sub-cta:hover { border-color:rgba(255,0,0,.35); background:#fff3bd; }
+    .modal-sub-cta:active { transform:scale(.98); }
+    .modal-sub-cta .yt-badge { flex-shrink:0; background:#f00; color:#fff; font-size:11px; font-weight:800;
+      padding:5px 9px; border-radius:8px; white-space:nowrap; }
+
     /* Toast */
     .toast { position:fixed; bottom:calc(100px + var(--safe-bottom)); left:50%; transform:translateX(-50%) translateY(20px); background:rgba(0,0,0,.85); color:#fff; font-size:13px; font-weight:600; padding:10px 20px; border-radius:20px; z-index:300; opacity:0; transition:all var(--transition); white-space:nowrap; pointer-events:none; }
     .toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
@@ -677,6 +687,11 @@
         Apple 教育商店
       </a>
     </div>
+    <a class="modal-sub-cta" href="https://www.youtube.com/channel/UCUn8VlPDRSq_7K3N4zbmHsQ?sub_confirmation=1" target="_blank" rel="noopener"
+       onclick="window.btsTrack&&btsTrack('lottery_cta_click',{item:'youtube_subscribe',from:'calc_result_modal_mac'})">
+      <span class="yt-badge">▶ 訂閱抽獎</span>
+      <span>覺得有幫到你？訂閱 <b>Neil尼歐</b>，YT 破萬抽 <b>MacBook Neo / AirPods Max</b> 🎁</span>
+    </a>
   </div>
 </div>
 
