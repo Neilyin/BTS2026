@@ -193,6 +193,12 @@ section.block{position:relative;padding:78px 0}
 .teaser h3 em{font-style:normal;color:transparent;-webkit-text-stroke:2px var(--lime)}
 .teaser .zh{font-family:"Noto Sans TC";font-weight:900;font-size:clamp(22px,4vw,34px);margin:18px 0 10px;position:relative}
 .teaser p{max-width:48ch;margin:0 auto;color:#cfcfcf;position:relative}
+.giftcard-table{max-width:460px;margin:26px auto 0;text-align:left;position:relative}
+.gc-row{display:flex;justify-content:space-between;align-items:baseline;padding:14px 4px;
+  border-bottom:1px solid rgba(255,255,255,.16);font-family:"Outfit",sans-serif}
+.gc-row:last-child{border-bottom:none}
+.gc-device{font-weight:800;font-size:17px;color:#fff}
+.gc-amt{font-family:"Anton",sans-serif;font-size:21px;color:var(--lime)}
 .calc-chips{display:flex;gap:18px;justify-content:center;flex-wrap:wrap;margin-top:30px;position:relative}
 .chip{background:var(--paper-2);border:3px solid var(--ink);color:var(--ink);
   border-radius:4px;padding:0;width:240px;overflow:hidden;text-decoration:none;text-align:left;
@@ -490,14 +496,14 @@ footer a{color:var(--cyan);text-decoration:none}
           <path d="M30 52l13 13 27-30" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
         <span class="badge">Status · 2026</span>
-        <h3>官方還沒公布 👀</h3>
+        <h3>官方已公布 🎉</h3>
         <ul>
-          <li>活動日期 — 待公告</li>
-          <li>贈品內容 — 待公告</li>
-          <li>適用型號 — 待公告</li>
-          <li>折抵金額 — 待公告</li>
+          <li>活動期間 — 即日起至 2026/08/27</li>
+          <li>贈品內容 — Apple 官方禮品卡 NT$3,200～4,800</li>
+          <li>適用型號 — MacBook Pro / Air、iPad Pro / Air</li>
+          <li>加碼優惠 — 官網結帳可選 3 期 0 利率</li>
         </ul>
-        <p style="font-family:'Space Mono',monospace;font-size:12px;margin:14px 0 0;color:#0a52d6">▲ 收藏本頁，公布後立即更新</p>
+        <p style="font-family:'Space Mono',monospace;font-size:12px;margin:14px 0 0;color:#0a52d6">▲ 完整贈品明細看下方「贈品與優惠」</p>
       </aside>
     </div>
   </div>
@@ -575,9 +581,17 @@ footer a{color:var(--cyan);text-decoration:none}
     <div class="teaser reveal">
       <div class="halftone-bg"></div>
       <svg class="sticker spin-slow" style="top:18px;left:6%;width:54px;filter:none" viewBox="0 0 100 100" aria-hidden="true"><path d="M50 0l8 42 42 8-42 8-8 42-8-42L0 50l42-8z" fill="#c6ff2e"/></svg>
-      <h3>COMING<br><em>SOON</em></h3>
-      <p class="zh">🎊 敬請期待</p>
-      <p>Apple Back To School 2026 的贈品、適用產品與折抵方式尚未公布。官方公告後，會更新實際活動日期、贈品內容、折抵金額與適用型號。</p>
+      <span class="tag" style="background:var(--lime);position:relative">🎉 官方已公布</span>
+      <h3 style="margin-top:14px">GIFT<br><em>CARD</em></h3>
+      <p class="zh">買就送 Apple 官方禮品卡</p>
+      <p>即日起至 <b style="color:#fff">2026/08/27</b>，購買指定機型即贈送 Apple 禮品卡，依裝置類別面額如下：</p>
+      <div class="giftcard-table">
+        <div class="gc-row"><span class="gc-device">MacBook Pro</span><span class="gc-amt">NT$4,800</span></div>
+        <div class="gc-row"><span class="gc-device">MacBook Air</span><span class="gc-amt">NT$3,200</span></div>
+        <div class="gc-row"><span class="gc-device">iPad Pro</span><span class="gc-amt">NT$3,200</span></div>
+        <div class="gc-row"><span class="gc-device">iPad Air</span><span class="gc-amt">NT$3,200</span></div>
+      </div>
+      <p style="font-size:12.5px;margin-top:22px;color:#999">僅列出的機型適用；MacBook Neo、iMac、Mac mini 目前不在官方禮品卡活動內。禮品卡可用於 Apple 線上商店或直營店未來消費，計算機已自動算入試算結果的回饋中。</p>
     </div>
   </div>
 </section>

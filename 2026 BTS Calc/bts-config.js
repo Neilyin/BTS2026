@@ -49,6 +49,18 @@ const BTS_CONFIG = {
       ytGoal: 10000,        // 目標訂閱數（破萬抽獎）
       ytSubscribers: 0      // 目前訂閱人數（後台手動輸入）
     },
+    // Apple 官方 BTS 2026 禮品卡活動 — 買指定機型送 Apple Store 禮品卡（依裝置類別）
+    // 只有下列機型官方有公布贈送，MacBook Neo / iMac / Mac mini 不適用
+    appleGiftCard: {
+      enabled: true,
+      endDate: '2026-08-27',
+      amounts: {
+        ipad_air:    3200,
+        ipad_pro:    3200,
+        macbook_air: 3200,
+        macbook_pro: 4800
+      }
+    },
     purchaseLinks: {
       line:      'https://lin.ee/example',
       btsAgent:  'https://script.google.com/macros/s/AKfycbz1wAnl3eSL5XPMHR7phlSp0-4BbFdb0znWZ-0N5dyycfwoKLXHqohRK-b_5h4UoO5X/exec',
