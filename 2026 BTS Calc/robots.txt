@@ -3,4 +3,4 @@ Allow: /
 Disallow: /admin.html
 Disallow: /analytics.html
 
-Sitemap: https://bts2026.vercel.app/sitemap.xml
+Sitemap: https://bts2026-sigma.vercel.app/sitemap.xml
