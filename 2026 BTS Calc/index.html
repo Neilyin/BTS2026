@@ -255,6 +255,19 @@ section.block{position:relative;padding:78px 0}
 .gc-warn{margin:14px 0 0;padding:11px 14px;background:rgba(255,46,126,.14);
   border-left:3px solid var(--pink);border-radius:0 8px 8px 0;font-size:12.5px;line-height:1.65;color:#ffd9e6}
 .gc-warn b{color:#fff}
+.straighta-calc-cta{display:flex;align-items:center;justify-content:space-between;gap:22px;
+  max-width:760px;min-height:72px;margin:22px auto 0;padding:16px 20px;
+  background:var(--cyan);color:var(--ink);border:3px solid var(--ink);border-radius:5px;
+  box-shadow:6px 6px 0 var(--ink);text-decoration:none;position:relative;
+  transition:transform .2s var(--ease),box-shadow .2s var(--ease)}
+.straighta-calc-cta:hover{transform:translate(-2px,-2px);box-shadow:8px 8px 0 var(--pink)}
+.straighta-calc-cta:focus-visible{outline:4px solid var(--pink);outline-offset:4px}
+.straighta-calc-copy{display:grid;gap:3px;text-align:left}
+.straighta-calc-copy strong{font-family:"Noto Sans TC",sans-serif;font-size:clamp(17px,2.5vw,22px);font-weight:900}
+.straighta-calc-copy span{font-size:13px;font-weight:700;color:#16323a}
+.straighta-calc-arrow{display:grid;place-items:center;flex:0 0 44px;width:44px;height:44px;
+  background:var(--ink);color:var(--paper);border-radius:50%}
+.straighta-calc-arrow svg{width:20px;height:20px}
 .calc-chips{display:flex;gap:18px;justify-content:center;flex-wrap:wrap;margin-top:30px;position:relative}
 .chip{background:var(--paper-2);border:3px solid var(--ink);color:var(--ink);
   border-radius:4px;padding:0;width:240px;overflow:hidden;text-decoration:none;text-align:left;
@@ -467,6 +480,8 @@ footer a{color:var(--cyan);text-decoration:none}
   .sec-num{width:38px;height:38px;font-size:13px}
   .card-c{padding:22px}
   .teaser{padding:42px 22px}
+  .straighta-calc-cta{align-items:flex-start;padding:15px 16px;box-shadow:4px 4px 0 var(--ink)}
+  .straighta-calc-copy span{font-size:12px;line-height:1.5}
   .offer-l,.offer-r{padding:26px}
   .code-box{flex-wrap:wrap;gap:10px}
   .code-box .code{font-size:21px;letter-spacing:.14em}
@@ -668,6 +683,15 @@ footer a{color:var(--cyan);text-decoration:none}
 
       <p style="font-size:12.5px;margin-top:22px;color:#999">僅列出的機型適用；MacBook Neo、iMac、Mac mini 目前不在官方禮品卡活動內。禮品卡可用於 Apple 線上商店或直營店未來消費，計算機已自動算入試算結果的回饋中。</p>
     </div>
+    <a class="straighta-calc-cta reveal" href="#calc" aria-label="前往優惠計算機比較 Straight A 方案">
+      <span class="straighta-calc-copy">
+        <strong>想要對決 Straight A 方案？</strong>
+        <span>試試下面的優惠計算機</span>
+      </span>
+      <span class="straighta-calc-arrow" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M6 13l6 6 6-6"/></svg>
+      </span>
+    </a>
   </div>
 </section>
 
