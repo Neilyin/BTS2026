@@ -537,6 +537,7 @@
       document.write('<link rel="stylesheet" href="ui-refresh.css?v=8">');
     }
   </script>
+  <link rel="stylesheet" href="plan-comparison.css?v=1">
 </head>
 <body class="calculator-page">
 <div class="liquid-bg">
@@ -633,7 +634,7 @@
       <button class="modal-btn secondary" onclick="closeModal()">關閉</button>
       <button class="modal-btn primary" onclick="generateImage()">
         <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-        保存購買清單
+        保存雙方案對比清單
       </button>
     </div>
     <div class="purchase-links">
@@ -661,9 +662,10 @@
 <!-- ── bts-config.js ── -->
 <script src="bts-config.js"></script>
 <script src="config-override.js"></script>
-<script src="bts-ui.js?v=4"></script>
+<script src="bts-ui.js?v=9"></script>
+<script src="campaign-comparison.js?v=7"></script>
 <script src="bts-analytics-config.js"></script>
-<script src="bts-analytics.js"></script>
+<script src="bts-analytics.js?v=2"></script>
 
 <script>
 // ═══════════════════════════════════════════
@@ -681,8 +683,8 @@ const state = {
   gift:         null,
   creditCard:   0,
   referral:     0,
-  sellGift:     false,
-  giftPrice:    0
+  sellGiftCard:      false,
+  giftCardSalePrice: 0
 };
 
 // 步驟定義（動態生成）
@@ -726,7 +728,7 @@ function updateProductConfig() {
     size: null, color: null, storageId: null,
     connectivity: 'wifi', nano: productType === 'pro' ? null : false,
     gift: null,
-    creditCard: 0, referral: getDefaultReferralRate(), sellGift: false, giftPrice: 0
+    creditCard: 0, referral: getDefaultReferralRate(), sellGiftCard: false, giftCardSalePrice: 0
   });
 }
 
@@ -987,17 +989,20 @@ function renderRebateStep() {
       <span class="rebate-unit">%</span>
     </div>
   </div>
-  <p class="rebate-note">⚠️ 導購回饋以未稅價（÷1.05）粗估，數字僅供參考，實際金額依導購系統回饋為主${gcAmount ? '；Apple 禮品卡為購買後獲得的官方消費金（非現金折抵），即日起至 ' + BTS_CONFIG.meta.appleGiftCard.endDate.replace(/-/g,'/') + ' 適用，已自動算入試算' : ''}</p>
-  <div class="sell-gift-section" style="margin-top:16px">
-    <p class="sell-section-label">贈品用途</p>
+  <p class="rebate-note">⚠️ 導購回饋以未稅價（÷1.05）粗估，數字僅供參考，實際金額依導購系統回饋為主${gcAmount ? '；Apple 禮品卡為購買後獲得的官方消費金（非現金折抵），即日起至 ' + BTS_CONFIG.meta.appleGiftCard.endDate.replace(/-/g,'/') + ' 適用。自用按完整面額計入，轉售則只按實際售價計入' : ''}</p>
+  ${gcAmount ? `<div class="sell-gift-section" style="margin-top:16px">
+    <p class="sell-section-label">Apple 禮品卡用途</p>
     <div class="sell-opts">
-      <button class="sell-opt${!state.sellGift ? ' active' : ''}" onclick="setSellGift(false)">🤍 自己留著</button>
-      <button class="sell-opt${state.sellGift ? ' active' : ''}" onclick="setSellGift(true)">💰 轉售變現</button>
+      <button class="sell-opt${!state.sellGiftCard ? ' active' : ''}" onclick="setSellGiftCard(false)">🤍 自己使用（面額全額計入）</button>
+      <button class="sell-opt${state.sellGiftCard ? ' active' : ''}" onclick="setSellGiftCard(true)">💰 轉售（輸入實收金額）</button>
     </div>
-    ${state.sellGift ? `<input class="gift-price-input" type="number" inputmode="numeric"
-      placeholder="預估轉售金額（NT$）" min="0" value="${state.giftPrice || ''}"
-      oninput="setGiftPrice(this.value)" style="margin-top:10px">` : ''}
-  </div>
+    ${state.sellGiftCard ? `<label class="sell-section-label" for="gift-card-sale-price" style="margin-top:12px">預估可以賣多少？</label>
+      <input id="gift-card-sale-price" class="gift-price-input" type="number" inputmode="numeric"
+        placeholder="輸入實際轉售金額（NT$）" min="1" required aria-required="true"
+        aria-describedby="gift-card-sale-help" value="${state.giftCardSalePrice || ''}"
+        oninput="setGiftCardSalePrice(this.value)" style="margin-top:6px">
+      <p id="gift-card-sale-help" class="rebate-note" style="margin-top:8px">只會計入這筆轉售金額，不會再重複計入完整面額。</p>` : ''}
+  </div>` : ''}
   <button class="rebate-cta-btn" onclick="startCalc()">
     查看計算結果
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
@@ -1149,16 +1154,16 @@ function setRebate(type, val) {
   checkComplete();
 }
 
-function setSellGift(val) {
-  state.sellGift = val;
-  if (!val) state.giftPrice = 0;
+function setSellGiftCard(val) {
+  state.sellGiftCard = val;
+  if (!val) state.giftCardSalePrice = 0;
   const body = document.getElementById('step-body-rebate');
   if (body && body.classList.contains('open')) body.innerHTML = renderRebateStep();
   updatePrice();
 }
 
-function setGiftPrice(val) {
-  state.giftPrice = parseFloat(val) || 0;
+function setGiftCardSalePrice(val) {
+  state.giftCardSalePrice = Math.max(0, parseFloat(val) || 0);
   updatePrice();
 }
 
@@ -1201,11 +1206,12 @@ function calcPrice() {
   const refRebate = Math.round((subtotal / 1.05)     * (state.referral   / 100)); // 導購以未稅價計算
   const giftSale  = 0;
   const appleGiftCard = getAppleGiftCardAmount();
-  const final     = subtotal - ccRebate - refRebate - appleGiftCard;
+  const appleGiftCardValue = state.sellGiftCard ? state.giftCardSalePrice : appleGiftCard;
+  const final     = subtotal - ccRebate - refRebate - appleGiftCardValue;
 
-  const totalSaved = ccRebate + refRebate + appleGiftCard;
+  const totalSaved = ccRebate + refRebate + appleGiftCardValue;
 
-  return { base, giftCost: 0, subtotal, ccRebate, refRebate, giftSale, appleGiftCard, final, totalSaved };
+  return { base, giftCost: 0, subtotal, ccRebate, refRebate, giftSale, appleGiftCard, appleGiftCardValue, final, totalSaved };
 }
 
 function getBtsGiftOriginalTotal() {
@@ -1238,7 +1244,9 @@ function updatePrice() {
   const parts = [];
   if (r.ccRebate)  parts.push(`信用卡扣掉 -NT$${r.ccRebate.toLocaleString()}`);
   if (r.refRebate) parts.push(`導購扣掉 -NT$${r.refRebate.toLocaleString()}`);
-  if (r.appleGiftCard) parts.push(`Apple 禮品卡 -NT$${r.appleGiftCard.toLocaleString()}`);
+  if (r.appleGiftCardValue) {
+    parts.push(`${state.sellGiftCard ? '禮品卡轉售' : 'Apple 禮品卡'} -NT$${r.appleGiftCardValue.toLocaleString()}`);
+  }
   breakEl.textContent = parts.length ? parts.join(' · ') : '尚未套用任何回饋';
 
   if (r.totalSaved > 0) {
@@ -1268,6 +1276,11 @@ function checkComplete() {
 function startCalc() {
   const r = calcPrice();
   if (!r) { showToast('請先完成所有選擇'); return; }
+  if (state.sellGiftCard && state.giftCardSalePrice <= 0) {
+    showToast('請輸入 Apple 禮品卡預估轉售金額');
+    document.getElementById('gift-card-sale-price')?.focus();
+    return;
+  }
   if (typeof btsCalcAnimation === 'function') {
     btsCalcAnimation(r.final, openModal);
   } else {
@@ -1319,11 +1332,11 @@ function openModal() {
 
   html += `<div class="receipt-item"><span class="receipt-label">信用卡回饋 (${state.creditCard || 0}%)</span><span class="receipt-value ${r.ccRebate ? 'deduct' : 'muted'}">${r.ccRebate ? '-NT$' + r.ccRebate.toLocaleString() : '—'}</span></div>`;
   html += `<div class="receipt-item"><span class="receipt-label">導購回饋 (${state.referral || 0}%・未稅估算)</span><span class="receipt-value ${r.refRebate ? 'deduct' : 'muted'}">${r.refRebate ? '-NT$' + r.refRebate.toLocaleString() : '—'}</span></div>`;
-  if (r.appleGiftCard) {
-    html += `<div class="receipt-item"><span class="receipt-label">Apple 官方禮品卡（BTS 活動）</span><span class="receipt-value deduct">-NT$${r.appleGiftCard.toLocaleString()}</span></div>`;
-  }
-  if (state.sellGift && state.giftPrice > 0) {
-    html += `<div class="receipt-item"><span class="receipt-label">贈品轉售估值</span><span class="receipt-value deduct">-NT$${Number(state.giftPrice).toLocaleString()}</span></div>`;
+  if (r.appleGiftCard && state.sellGiftCard) {
+    html += `<div class="receipt-item"><span class="receipt-label">Apple 官方禮品卡面額</span><span class="receipt-value">NT$${r.appleGiftCard.toLocaleString()}</span></div>`;
+    html += `<div class="receipt-item"><span class="receipt-label">禮品卡預估轉售收入</span><span class="receipt-value deduct">-NT$${r.appleGiftCardValue.toLocaleString()}</span></div>`;
+  } else if (r.appleGiftCardValue) {
+    html += `<div class="receipt-item"><span class="receipt-label">Apple 官方禮品卡（自用面額）</span><span class="receipt-value deduct">-NT$${r.appleGiftCardValue.toLocaleString()}</span></div>`;
   }
 
   html += `<div class="receipt-total">
@@ -1335,13 +1348,37 @@ function openModal() {
     html += `<div class="receipt-saved-row"><span>合計省下 NT$${r.totalSaved.toLocaleString()}</span></div>`;
   }
 
-  html += `<div class="receipt-brand">
+  html += `<div id="plan-comparison-slot"></div>
+  <div class="receipt-brand">
     <span class="receipt-brand-kicker">Designed by</span>
     <span class="receipt-brand-name">Neil尼歐</span>
     <a class="receipt-brand-link" href="https://neil.tw" target="_blank" rel="noopener">neil.tw</a>
   </div>`;
 
   document.getElementById('modal-content').innerHTML = html;
+  if (window.BTSPlanComparison) {
+    BTSPlanComparison.mount(document.getElementById('plan-comparison-slot'), {
+      productLine: 'ipad',
+      productType,
+      model: productName,
+      subtotal: r.subtotal,
+      currentFinal: r.final,
+      currentSavings: r.totalSaved,
+      currentBenefits: [
+        { label: `信用卡回饋 ${state.creditCard || 0}%`, value: r.ccRebate },
+        { label: `導購回饋 ${state.referral || 0}%`, value: r.refRebate },
+        { label: state.sellGiftCard ? 'Apple 禮品卡轉售收入' : 'Apple 官方禮品卡', value: r.appleGiftCardValue },
+        { label: '所選贈品標示價值', value: Number(state.gift?.originalPrice) || 0 }
+      ],
+      currentGift: {
+        name: state.gift?.name || '',
+        cost: Number(state.gift?.price) || 0,
+        advertisedValue: Number(state.gift?.originalPrice) || 0,
+        useResale: false,
+        resaleValue: 0
+      }
+    });
+  }
   document.getElementById('link-bts-agent').href = BTS_CONFIG.meta.purchaseLinks.btsAgent;
   document.getElementById('modal-overlay').classList.add('open');
 
@@ -1366,8 +1403,8 @@ function openModal() {
         price: Number(state.gift.price) || 0,
         originalPrice: Number(state.gift.originalPrice) || 0
       } : null,
-      sellGift: !!state.sellGift,
-      giftResaleValue: Number(state.giftPrice) || 0
+      giftCardDisposition: state.sellGiftCard ? 'resale' : 'self-use',
+      giftCardResaleValue: state.sellGiftCard ? Number(state.giftCardSalePrice) || 0 : 0
     },
     storage: (storageCfg?.name || null),
     ram: (storageCfg?.ram || null),
@@ -1378,6 +1415,7 @@ function openModal() {
     referralPct: Number(state.referral) || 0,
     subtotal: r.subtotal, ccRebate: r.ccRebate || 0, refRebate: r.refRebate || 0,
     appleGiftCard: r.appleGiftCard || 0,
+    appleGiftCardValue: r.appleGiftCardValue || 0,
     final: r.final, totalSaved: r.totalSaved || 0
   };
   const sig = JSON.stringify(rec);
@@ -1433,25 +1471,31 @@ function _drawIpadReceipt(productImg, r) {
   const specs = `${storageCfg?.name || ''}${storageCfg?.ram ? ' / ' + storageCfg.ram : ''} · ${state.connectivity === 'wifi' ? 'Wi-Fi' : 'Wi-Fi + 行動網路'}`;
   const colorLine = (state.color || '–') + (productType === 'pro' && state.nano ? ' · 奈米紋理玻璃' : '');
 
-  const sellRow = (state.sellGift && state.giftPrice > 0);
   const rows = [
     { label: '教育商店定價', value: `NT$${r.subtotal.toLocaleString()}` },
     { label: `信用卡回饋 (${state.creditCard || 0}%)`, value: r.ccRebate ? `-NT$${r.ccRebate.toLocaleString()}` : '—', kind: r.ccRebate ? 'deduct' : 'muted' },
     { label: `導購回饋 (${state.referral || 0}%・未稅估算)`, value: r.refRebate ? `-NT$${r.refRebate.toLocaleString()}` : '—', kind: r.refRebate ? 'deduct' : 'muted' }
   ];
-  if (r.appleGiftCard) rows.push({ label: 'Apple 官方禮品卡（BTS 活動）', value: `-NT$${r.appleGiftCard.toLocaleString()}`, kind: 'deduct' });
-  if (sellRow) rows.push({ label: '贈品轉售估值', value: `-NT$${Number(state.giftPrice).toLocaleString()}`, kind: 'deduct' });
+  if (r.appleGiftCard && state.sellGiftCard) {
+    rows.push({ label: 'Apple 官方禮品卡面額', value: `NT$${r.appleGiftCard.toLocaleString()}` });
+    rows.push({ label: '禮品卡預估轉售收入', value: `-NT$${r.appleGiftCardValue.toLocaleString()}`, kind: 'deduct' });
+  } else if (r.appleGiftCardValue) {
+    rows.push({ label: 'Apple 官方禮品卡（自用面額）', value: `-NT$${r.appleGiftCardValue.toLocaleString()}`, kind: 'deduct' });
+  }
 
   btsDrawReceipt({
+    title: 'BTS 方案對比',
     productName: name,
     productImg: productImg,
     specString: specs,
     colorString: colorLine,
     priceRows: rows,
+    finalLabel: 'Apple 官網等價入手',
     finalValue: `NT$${r.final.toLocaleString()}`,
     savedText: r.totalSaved > 0 ? `合計省下 NT$${r.totalSaved.toLocaleString()}` : null,
+    comparison: window.BTSPlanComparison?.getReceiptData?.() || null,
     footerProduct: 'iPad BTS優惠計算機',
-    filename: `iPad_BTS購買清單_${new Date().toLocaleDateString('zh-TW').replace(/\//g, '')}.png`
+    filename: `iPad_BTS方案對比_${new Date().toLocaleDateString('zh-TW').replace(/\//g, '')}.png`
   });
 }
 

@@ -17,7 +17,8 @@
 
   // ════════════ GA4 ════════════
   var GA = cfg.gaMeasurementId;
-  var gaOn = GA && /^G-/.test(GA);
+  var isLocalPreview = /^(localhost|127\.0\.0\.1|::1)$/.test(location.hostname);
+  var gaOn = !isLocalPreview && GA && /^G-/.test(GA);
   var search = new URLSearchParams(location.search);
   var attribution = {
     source: search.get('utm_source') || null,
@@ -185,7 +186,8 @@
   // ════════════ Firestore ════════════
   var fb = cfg.firebase || {};
   var COLL = cfg.recordsCollection || 'records';
-  var fbOn = !!(fb && fb.apiKey && fb.projectId);
+  // 本機預覽不寫入正式分析，也避免離線時阻塞計算機初始化。
+  var fbOn = !isLocalPreview && !!(fb && fb.apiKey && fb.projectId);
   var resolveReferralSettings;
   window.BTS_REFERRAL_READY = new Promise(function (resolve) {
     resolveReferralSettings = resolve;

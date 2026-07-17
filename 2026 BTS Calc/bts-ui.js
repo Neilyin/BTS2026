@@ -265,6 +265,19 @@
     var hasImg = !!data.productImg;
     var specLines = data.specString ? wrap(data.specString, font('normal', 15), innerW) : [];
     var rows = data.priceRows || [];
+    var comparison = data.comparison || null;
+    var comparisonOptionLines = [];
+    var comparisonDetailLines = [];
+    var comparisonSummaryLines = [];
+    var comparisonNoteLines = [];
+    if (comparison) {
+      comparisonOptionLines = wrap(comparison.option || '', font('800', 13), innerW);
+      comparisonSummaryLines = wrap(comparison.summary || '', font('800', 12), innerW);
+      (comparison.details || []).forEach(function (item) {
+        comparisonDetailLines = comparisonDetailLines.concat(wrap('• ' + item, font('normal', 13), innerW - 12));
+      });
+      comparisonNoteLines = wrap(comparison.note || '', font('normal', 11), innerW);
+    }
 
     // ── measure height ──
     var topPad = 38;
@@ -280,10 +293,15 @@
     cy += 8 + 2 + 22;                          // strong divider
     cy += 72;                                  // final band
     if (data.savedText) cy += 40;
+    if (comparison) {
+      cy += 28 + 34 + comparisonOptionLines.length * 19 + 5;
+      cy += (comparison.rows || []).length * 29;
+      cy += comparisonDetailLines.length * 19 + 34;
+      cy += 62 + comparisonSummaryLines.length * 18 + comparisonNoteLines.length * 17 + 18;
+    }
     cy += 20 + 1 + 24;                         // footer divider
-    cy += 16 + 30 + 18 + 16 + 26;             // footer texts + bottom pad
     var qrOn = QR_READY;
-    if (qrOn) cy += 174;                       // QR tile + caption + 訂閱抽獎一行
+    cy += qrOn ? 154 : (16 + 30 + 18 + 16 + 26); // QR 開啟時改用橫向品牌區
     var cardH = cy;
     var H = cardTop + cardH + 34;
 
@@ -373,35 +391,87 @@
       cy += 36;
     }
 
+    // second plan — Straight A comparison snapshot
+    if (comparison) {
+      cy += 20;
+      hline(x0, x1, cy, '#0a0a0a', 3); cy += 28;
+      ctx.textAlign = 'left'; ctx.fillStyle = '#005fcc'; ctx.font = font('900', 20);
+      ctx.fillText(comparison.title || 'Straight A 活動試算', x0, cy); cy += 26;
+      ctx.fillStyle = '#44423d'; ctx.font = font('800', 13);
+      comparisonOptionLines.forEach(function (line) {
+        ctx.fillText(line, x0, cy); cy += 19;
+      });
+      cy += 5;
+      (comparison.rows || []).forEach(function (rw) {
+        var muted = rw.kind === 'muted';
+        ctx.textAlign = 'left'; ctx.font = font('700', 14);
+        ctx.fillStyle = muted ? '#9a978d' : '#44423d'; ctx.fillText(rw.label, x0, cy);
+        ctx.textAlign = 'right'; ctx.font = fontMono('700', 14);
+        ctx.fillStyle = muted ? '#9a978d' : (rw.kind === 'deduct' ? '#ff2e7e' : '#0a0a0a');
+        ctx.fillText(rw.value, x1, cy); cy += 29;
+      });
+      cy += 2;
+      ctx.textAlign = 'left'; ctx.fillStyle = '#0a0a0a'; ctx.font = font('900', 13);
+      ctx.fillText('另外會拿到', x0, cy); cy += 21;
+      ctx.fillStyle = '#44423d'; ctx.font = font('normal', 13);
+      comparisonDetailLines.forEach(function (line) { ctx.fillText(line, x0 + 6, cy); cy += 19; });
+      ctx.fillStyle = '#6b685f'; ctx.font = font('700', 11.5);
+      ctx.fillText(comparison.giftValue || '', x0, cy); cy += 18;
+
+      roundRect(x0 - 14, cy, (x1 - x0) + 28, 56, 4, '#42d9ff', { border: 2.5 });
+      ctx.textAlign = 'left'; ctx.fillStyle = '#0a0a0a'; ctx.font = font('900', 16);
+      ctx.fillText(comparison.finalLabel || 'Straight A 等價入手', x0, cy + 34);
+      ctx.textAlign = 'right'; ctx.font = fontDisplay(28);
+      ctx.fillText(comparison.finalValue || '', x1, cy + 37); cy += 72;
+      ctx.textAlign = 'left'; ctx.fillStyle = '#0a0a0a'; ctx.font = font('800', 12);
+      comparisonSummaryLines.forEach(function (line) { ctx.fillText('比較結果：' + line, x0, cy); cy += 18; });
+      ctx.textAlign = 'left'; ctx.fillStyle = '#6b685f'; ctx.font = font('normal', 11);
+      comparisonNoteLines.forEach(function (line) { ctx.fillText(line, x0, cy); cy += 17; });
+    }
+
     // footer
     cy += 20;
     ctx.strokeStyle = '#0a0a0a'; ctx.lineWidth = 2; ctx.setLineDash([4, 4]);
     ctx.beginPath(); ctx.moveTo(x0, cy); ctx.lineTo(x1, cy); ctx.stroke(); ctx.setLineDash([]);
     cy += 24;
     ctx.textAlign = 'center';
-    try { ctx.letterSpacing = '2px'; } catch (e) {}
-    ctx.fillStyle = '#6b685f'; ctx.font = fontMono('700', 11);
-    ctx.fillText('DESIGNED BY', W / 2, cy); cy += 30;
-    try { ctx.letterSpacing = '0px'; } catch (e) {}
-    ctx.fillStyle = '#0a0a0a'; ctx.font = font('900', 26);
-    ctx.fillText('Neil尼歐', W / 2, cy); cy += 18;
-    ctx.fillStyle = '#0a52d6'; ctx.font = fontMono('700', 12);
-    ctx.fillText('neil.tw  ·  @neil.tw_', W / 2, cy); cy += 16;
-    ctx.fillStyle = '#6b685f'; ctx.font = font('normal', 12);
-    ctx.fillText(data.footerProduct || '', W / 2, cy);
-
-    // BTS 攻略 QR code
     if (qrOn) {
-      cy += 20;
-      var QRS = 96;
-      roundRect(W / 2 - QRS / 2 - 8, cy, QRS + 16, QRS + 16, 4, '#ffffff', { border: 2 });
-      try { ctx.drawImage(QR_IMG, W / 2 - QRS / 2, cy + 8, QRS, QRS); } catch (e) { /* ignore */ }
-      cy += QRS + 16 + 16;
+      // 橫向品牌區：左側 Neil尼歐、右側 QR，縮短雙方案收據高度。
+      var footerTop = cy - 8;
+      var brandX = x0;
+      var qrX = x1 - 50;
+      ctx.textAlign = 'left';
+      try { ctx.letterSpacing = '2px'; } catch (e) {}
+      ctx.fillStyle = '#6b685f'; ctx.font = fontMono('700', 11);
+      ctx.fillText('DESIGNED BY', brandX, footerTop + 22);
+      try { ctx.letterSpacing = '0px'; } catch (e) {}
+      ctx.fillStyle = '#0a0a0a'; ctx.font = font('900', 28);
+      ctx.fillText('Neil尼歐', brandX, footerTop + 58);
+      ctx.fillStyle = '#0a52d6'; ctx.font = fontMono('700', 12);
+      ctx.fillText('neil.tw', brandX, footerTop + 82);
+      ctx.fillStyle = '#6b685f'; ctx.font = font('normal', 12);
+      ctx.fillText(data.footerProduct || '', brandX, footerTop + 100);
+      ctx.fillStyle = '#c2410c'; ctx.font = font('900', 15);
+      ctx.fillText('▶ 訂閱破萬抽 MacBook Neo 🎁', brandX, footerTop + 122);
+
+      var QRS = 84;
+      roundRect(qrX - QRS / 2 - 8, footerTop, QRS + 16, QRS + 16, 4, '#ffffff', { border: 2 });
+      try { ctx.drawImage(QR_IMG, qrX - QRS / 2, footerTop + 8, QRS, QRS); } catch (e) { /* ignore */ }
+      ctx.textAlign = 'right';
       ctx.fillStyle = '#44423d'; ctx.font = font('700', 12);
-      ctx.fillText('掃描看完整 BTS 攻略', W / 2, cy);
-      cy += 20;
-      ctx.fillStyle = '#c2410c'; ctx.font = font('800', 12);
-      ctx.fillText('▶ 訂閱 Neil尼歐 YouTube・破萬抽 MacBook Neo 🎁', W / 2, cy);
+      ctx.fillText('掃描看完整 BTS 攻略', x1, footerTop + 120);
+      cy = footerTop + 142;
+    } else {
+      try { ctx.letterSpacing = '2px'; } catch (e) {}
+      ctx.fillStyle = '#6b685f'; ctx.font = fontMono('700', 11);
+      ctx.fillText('DESIGNED BY', W / 2, cy); cy += 30;
+      try { ctx.letterSpacing = '0px'; } catch (e) {}
+      ctx.fillStyle = '#0a0a0a'; ctx.font = font('900', 26);
+      ctx.fillText('Neil尼歐', W / 2, cy); cy += 18;
+      ctx.fillStyle = '#0a52d6'; ctx.font = fontMono('700', 12);
+      ctx.fillText('neil.tw  ·  @neil.tw_', W / 2, cy); cy += 16;
+      ctx.fillStyle = '#6b685f'; ctx.font = font('normal', 12);
+      ctx.fillText(data.footerProduct || '', W / 2, cy);
     }
 
     // export → print animation
