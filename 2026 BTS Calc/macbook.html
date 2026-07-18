@@ -600,6 +600,7 @@
     }
   </script>
   <link rel="stylesheet" href="plan-comparison.css?v=1">
+<link rel="stylesheet" href="comparison-update.css?v=1">
 </head>
 <body class="calculator-page">
 <div class="liquid-bg">
@@ -717,7 +718,7 @@
 <script src="bts-config.js"></script>
 <script src="config-override.js"></script>
 <script src="bts-ui.js?v=9"></script>
-<script src="campaign-comparison.js?v=7"></script>
+<script src="campaign-comparison.js?v=8"></script>
 <script src="bts-analytics-config.js"></script>
 <script src="bts-analytics.js?v=2"></script>
 <script>
@@ -2419,6 +2420,10 @@ function generateImage() {
   const r = calcPrice();
   if (!r) { showToast('請先完成所有選擇'); return; }
   if (window.btsTrack) btsTrack('save_list', { product: productType, final: r.final });
+  if (window.btsTrack && window.BTSPlanComparison?.getAnalyticsData) {
+    const comparisonAnalytics = BTSPlanComparison.getAnalyticsData();
+    if (comparisonAnalytics) btsTrack('save_plan_comparison', { ...comparisonAnalytics, apple_equivalent: r.final });
+  }
 
   const imgUrl = productType === 'imac'
     ? BTS_CONFIG.products.imac.colorImages?.['24']?.[state.color]
@@ -2544,5 +2549,6 @@ function showToast(msg) {
 
 (window.BTS_REFERRAL_READY || Promise.resolve()).finally(init);
 </script>
+<script src="comparison-update.js?v=2"></script>
 </body>
 </html>

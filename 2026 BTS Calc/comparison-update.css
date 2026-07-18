@@ -1,0 +1,122 @@
+.comparison-update-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: grid;
+  place-items: center;
+  padding: 22px;
+  background: rgba(10, 10, 10, .72);
+  backdrop-filter: blur(5px);
+  opacity: 0;
+  transition: opacity .2s ease;
+}
+
+.comparison-update-overlay.is-open { opacity: 1; }
+
+.comparison-update-dialog {
+  position: relative;
+  width: min(100%, 470px);
+  padding: 30px;
+  border: 3px solid #0a0a0a;
+  border-radius: 7px;
+  background: #f4f1ea;
+  color: #0a0a0a;
+  box-shadow: 10px 10px 0 #42d9ff;
+  transform: translateY(14px) rotate(-.5deg);
+  transition: transform .2s ease;
+  font-family: "Noto Sans TC", -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.comparison-update-overlay.is-open .comparison-update-dialog {
+  transform: translateY(0) rotate(-.5deg);
+}
+
+.comparison-update-badge {
+  display: inline-block;
+  margin-bottom: 15px;
+  padding: 5px 10px;
+  border: 2px solid #0a0a0a;
+  background: #c6ff2e;
+  font-family: "Space Mono", monospace;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .1em;
+}
+
+.comparison-update-dialog h2 {
+  margin: 0;
+  font-size: clamp(27px, 7vw, 39px);
+  font-weight: 900;
+  line-height: 1.15;
+  letter-spacing: -.03em;
+}
+
+.comparison-update-dialog p {
+  margin: 13px 0 0;
+  color: #45423d;
+  font-size: 16px;
+  line-height: 1.7;
+}
+
+.comparison-update-actions {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+  margin-top: 24px;
+}
+
+.comparison-update-primary,
+.comparison-update-dismiss,
+.comparison-update-close {
+  min-height: 44px;
+  border: 2px solid #0a0a0a;
+  cursor: pointer;
+  font: 800 14px/1.3 "Noto Sans TC", sans-serif;
+}
+
+.comparison-update-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 16px;
+  background: #0a0a0a;
+  color: #fff;
+  text-decoration: none;
+  box-shadow: 4px 4px 0 #ff2e7e;
+}
+
+.comparison-update-primary:hover { transform: translate(-1px, -1px); }
+.comparison-update-dismiss { padding: 10px 14px; background: transparent; color: #0a0a0a; }
+.comparison-update-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  padding: 0;
+  border-radius: 50%;
+  background: #fff;
+}
+
+.comparison-update-primary:focus-visible,
+.comparison-update-dismiss:focus-visible,
+.comparison-update-close:focus-visible {
+  outline: 4px solid #005fcc;
+  outline-offset: 3px;
+}
+
+body.comparison-update-locked { overflow: hidden; }
+
+@media (max-width: 520px) {
+  .comparison-update-dialog { padding: 26px 20px 22px; box-shadow: 7px 7px 0 #42d9ff; }
+  .comparison-update-actions { grid-template-columns: 1fr; }
+  .comparison-update-dismiss { order: 2; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .comparison-update-overlay,
+  .comparison-update-dialog,
+  .comparison-update-primary { transition: none; }
+}

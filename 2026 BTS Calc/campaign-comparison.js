@@ -154,13 +154,13 @@
     const protectionControl = campaign.protectionOptions ? `
       <label class="plan-field" for="plan-protection">
         <span>保護禮（二選一）</span>
-        <select id="plan-protection" data-plan-protection onchange="BTSPlanComparison.update()">
+        <select id="plan-protection" data-plan-protection onchange="BTSPlanComparison.update('protection')">
           ${campaign.protectionOptions.map((option, index) => `<option value="${option.id}"${index === 0 ? ' selected' : ''}>${safe(option.label)}</option>`).join('')}
         </select>
       </label>` : '';
     const cardControl = campaign.maxCardRate ? `
       <label class="plan-card-toggle">
-        <input type="checkbox" data-plan-max-card onchange="BTSPlanComparison.update()">
+        <input type="checkbox" data-plan-max-card onchange="BTSPlanComparison.update('max_card')">
         <span>
           <b>套用${safe(campaign.cardName)}海報最高 ${campaign.maxCardRate}%</b>
           <small>未勾選時不計；實際門檻與回饋上限需向通路確認</small>
@@ -171,7 +171,7 @@
       <div class="plan-controls" aria-label="Straight A 優惠條件">
         <label class="plan-field" for="plan-gift">
           <span>開學禮方案</span>
-          <select id="plan-gift" data-plan-gift onchange="BTSPlanComparison.update()">${giftOptions}</select>
+          <select id="plan-gift" data-plan-gift onchange="BTSPlanComparison.update('gift')">${giftOptions}</select>
         </label>
         ${protectionControl}
         ${cardControl}
@@ -263,12 +263,22 @@
       </section>`;
   }
 
-  function update() {
+  function update(source) {
     const root = document.querySelector('.bts-plan-comparison');
     if (!root || !currentInput || !isEligible(currentInput)) return;
 
     const current = currentPlan(currentInput);
     const external = externalPlan(currentInput, root);
+    if (source && window.btsTrack) {
+      btsTrack('plan_comparison_adjust', {
+        control: source,
+        product_line: currentInput.productLine,
+        product_type: currentInput.productType,
+        straight_a_option: external.gift.id,
+        max_card_enabled: external.useMaxCard,
+        straight_a_equivalent: Math.round(external.equivalent)
+      });
+    }
     root.querySelector('[data-current-equivalent]').textContent = money(current.equivalent);
     root.querySelector('[data-current-checkout]').textContent = money(current.checkout);
     root.querySelector('[data-current-gift]').textContent = current.giftValue ? money(current.giftValue) : '未計／無';
@@ -361,13 +371,34 @@
     };
   }
 
+  function getAnalyticsData() {
+    const root = document.querySelector('.bts-plan-comparison');
+    if (!root || !currentInput || !isEligible(currentInput)) return null;
+    const external = externalPlan(currentInput, root);
+    return {
+      product_line: currentInput.productLine,
+      product_type: currentInput.productType,
+      straight_a_option: external.gift.id,
+      straight_a_equivalent: Math.round(external.equivalent),
+      max_card_enabled: external.useMaxCard
+    };
+  }
+
   function mount(target, input) {
     if (!target || !input) return;
     currentInput = input;
     target.innerHTML = shell(input);
     target.closest('.modal-sheet')?.classList.add('has-plan-comparison');
     update();
+    if (window.btsTrack && isEligible(input)) {
+      btsTrack('plan_comparison_view', {
+        product_line: input.productLine,
+        product_type: input.productType,
+        model: input.model,
+        apple_equivalent: Math.round(input.currentFinal)
+      });
+    }
   }
 
-  window.BTSPlanComparison = { mount, update, getReceiptData };
+  window.BTSPlanComparison = { mount, update, getReceiptData, getAnalyticsData };
 })();

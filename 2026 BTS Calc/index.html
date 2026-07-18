@@ -500,6 +500,7 @@ footer a{color:var(--cyan);text-decoration:none}
   .reveal{opacity:1;transform:none}
 }
 </style>
+<link rel="stylesheet" href="comparison-update.css?v=1">
 </head>
 <body class="">
 
@@ -683,7 +684,7 @@ footer a{color:var(--cyan);text-decoration:none}
 
       <p style="font-size:12.5px;margin-top:22px;color:#999">僅列出的機型適用；MacBook Neo、iMac、Mac mini 目前不在官方禮品卡活動內。禮品卡可用於 Apple 線上商店或直營店未來消費，計算機已自動算入試算結果的回饋中。</p>
     </div>
-    <a class="straighta-calc-cta reveal" href="#calc" aria-label="前往優惠計算機比較 Straight A 方案">
+    <a class="straighta-calc-cta reveal" href="#calc" aria-label="前往優惠計算機比較 Straight A 方案" onclick="window.btsTrack&&btsTrack('comparison_cta_click',{placement:'gifts_section'})">
       <span class="straighta-calc-copy">
         <strong>想要對決 Straight A 方案？</strong>
         <span>試試下面的優惠計算機</span>
@@ -1195,5 +1196,6 @@ function renderLottery(settings){
 document.addEventListener('bts:referral-settings',e=>renderLottery(e.detail));
 if(window.BTS_REFERRAL_SETTINGS)renderLottery(window.BTS_REFERRAL_SETTINGS);
 </script>
+<script src="comparison-update.js?v=2"></script>
 </body>
 </html>
