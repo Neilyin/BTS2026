@@ -51,7 +51,7 @@
   .kpi{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow)}
   .kpi .label{font-size:12px;color:var(--sub);font-weight:600}
   .kpi .val{font-size:26px;font-weight:800;margin-top:6px}
-  .kpi .val.blue{color:var(--brand)} .kpi .val.green{color:var(--green)}
+  .kpi .val.blue{color:var(--brand)} .kpi .val.green{color:var(--green)} .kpi .val.amber{color:var(--amber)}
   .kpi .hint{font-size:11px;color:var(--sub);margin-top:4px}
 
   /* 產品線總覽 */
@@ -147,6 +147,15 @@
       <div class="kpi"><div class="label">試算總金額</div><div class="val" id="k-gmv">–</div><div class="hint">區間內 · 入手價合計</div></div>
     </div>
 
+    <div class="kpis" aria-label="優惠互動成效">
+      <div class="kpi"><div class="label">優惠碼複製次數</div><div class="val blue" id="k-coupon-clicks">–</div><div class="hint" id="k-coupon-users"></div></div>
+      <div class="kpi"><div class="label">信用卡申辦點擊</div><div class="val amber" id="k-card-clicks">–</div><div class="hint" id="k-card-users"></div></div>
+    </div>
+    <div class="grid2">
+      <div class="panel"><h2>🏷️ 優惠碼複製明細</h2><div id="byCoupon"></div></div>
+      <div class="panel"><h2>💳 信用卡點擊明細</h2><div id="byCreditCard"></div></div>
+    </div>
+
     <div class="grid2" id="lineOverview">
       <div class="panel"><h2>📱 iPad 產品線</h2><div class="linecard ipad" id="lc-ipad"></div></div>
       <div class="panel"><h2>💻 Mac 產品線</h2><div class="linecard mac" id="lc-mac"></div></div>
@@ -189,17 +198,19 @@
 
 </div>
 
-<script src="bts-analytics-config.js"></script>
-<script src="bts-analytics.js"></script>
+<script src="bts-analytics-config.js?v=2"></script>
+<script src="bts-analytics.js?v=3"></script>
 <script>
 (function(){
   var COLL = (window.BTS_ANALYTICS_CONFIG||{}).recordsCollection || 'records';
+  var EVENTS_COLL = (window.BTS_ANALYTICS_CONFIG||{}).eventsCollection || 'events';
   var $ = function(id){ return document.getElementById(id); };
   function show(v){ ['view-notice','view-login','view-dash'].forEach(function(x){ $(x).classList.toggle('hidden', x!==v); }); }
 
   if (!window.btsAnalytics || !btsAnalytics.enabled) { show('view-notice'); return; }
 
   var ALL = [];          // 已抓取的紀錄
+  var ALL_EVENTS = [];   // 優惠碼與信用卡互動
   var range = '30';
   var line = 'all';      // 產品線篩選：all | ipad | mac
 
@@ -234,20 +245,21 @@
   function load(){
     var version = ++loadVersion;
     ALL = [];
+    ALL_EVENTS = [];
     $('recordCount').textContent = '讀取中';
 
-    function loadPage(cursor){
-      var q = btsAnalytics.db.collection(COLL).orderBy('createdAt','desc').limit(500);
+    function loadPage(collection, target, cursor){
+      var q = btsAnalytics.db.collection(collection).orderBy('createdAt','desc').limit(500);
       if (cursor) q = q.startAfter(cursor);
       return q.get().then(function(snap){
         if (version !== loadVersion) return;
-        snap.forEach(function(d){ ALL.push(d.data()); });
-        $('recordCount').textContent = ALL.length.toLocaleString();
-        if (snap.size === 500) return loadPage(snap.docs[snap.docs.length - 1]);
+        snap.forEach(function(d){ target.push(d.data()); });
+        if (collection === COLL) $('recordCount').textContent = ALL.length.toLocaleString();
+        if (snap.size === 500) return loadPage(collection, target, snap.docs[snap.docs.length - 1]);
       });
     }
 
-    loadPage(null)
+    Promise.all([loadPage(COLL, ALL, null), loadPage(EVENTS_COLL, ALL_EVENTS, null)])
       .then(function(){ if (version === loadVersion) render(); })
       .catch(function(e){ alert('讀取失敗：' + (e.code||e.message) + '\n（請確認已登入、且 Firestore 規則允許管理員讀取）'); });
   }
@@ -361,6 +373,9 @@
 
   function render(){
     var ranged = ALL.filter(inRange);
+    var interactions = ALL_EVENTS.filter(inRange);
+    var couponEvents = interactions.filter(function(r){return r.eventType==='coupon_copy';});
+    var cardEvents = interactions.filter(function(r){return r.eventType==='credit_card_apply';});
     var rows = line==='all' ? ranged : ranged.filter(function(r){return r.productLine===line;});
     $('recordCount').textContent = rows.length.toLocaleString();
     $('k-total').textContent = rows.length.toLocaleString();
@@ -373,6 +388,14 @@
     $('k-saved').textContent = rows.length ? ntd(sum(savs)/rows.length) : '–';
     $('k-saved-sum').textContent = rows.length ? ntd(sum(savs)) : '–';
     $('k-gmv').textContent = fins.length ? ntd(sum(fins)) : '–';
+    $('k-coupon-clicks').textContent = couponEvents.length.toLocaleString();
+    $('k-card-clicks').textContent = cardEvents.length.toLocaleString();
+    var couponUsers = Object.keys(tally(couponEvents, function(r){return r.sessionId;})).length;
+    var cardUsers = Object.keys(tally(cardEvents, function(r){return r.sessionId;})).length;
+    $('k-coupon-users').textContent = couponUsers.toLocaleString() + ' 位不重複訪客';
+    $('k-card-users').textContent = cardUsers.toLocaleString() + ' 位不重複訪客';
+    bars($('byCoupon'), tally(couponEvents, function(r){return r.itemLabel || r.itemId;}));
+    bars($('byCreditCard'), tally(cardEvents, function(r){return r.itemLabel || r.itemId;}));
 
     // 產品線總覽永遠以「全部產品線」計算，切到單一產品線時隱藏
     $('lineOverview').classList.toggle('hidden', line!=='all');
@@ -421,7 +444,7 @@
 
   // 本機開發用：塞入假資料預覽版面（正式站不生效）
   if (/^(localhost|127\.0\.0\.1)$/.test(location.hostname)) {
-    window.__btsDashDebug = function(rows){ ALL = rows || []; show('view-dash'); render(); };
+    window.__btsDashDebug = function(rows, events){ ALL = rows || []; ALL_EVENTS = events || []; show('view-dash'); render(); };
   }
 })();
 </script>

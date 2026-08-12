@@ -14,6 +14,8 @@
 - `navigation_click`：站內導覽。
 - `select_calculator`：進入任一計算機。
 - `outbound_click`：前往 Apple、導購平台或社群。
+- `coupon_copy`：複製 eiP、JTLEGEND 或 MLTIX 優惠碼。
+- `credit_card_apply`：點擊信用卡申辦按鈕。
 - `generate_recommendation`：完成計算並產生最終推薦。
 
 ## 2. 建立 Firebase
@@ -27,7 +29,7 @@
 
 ## 3. 部署安全規則
 
-已提供 `firestore.rules`。規則只允許前台新增格式正確的匿名計算結果，僅 `admins` 集合內的帳號可以讀取，任何人都不能從前台修改或刪除紀錄。
+已提供 `firestore.rules`。規則只允許前台新增格式正確的匿名計算結果與指定互動事件，僅 `admins` 集合內的帳號可以讀取，任何人都不能從前台修改或刪除紀錄。
 
 ```bash
 firebase use YOUR_PROJECT_ID
@@ -38,4 +40,4 @@ firebase deploy --only firestore:rules
 
 部署後開啟 `/analytics.html`，使用 Firebase Authentication 建立的管理員帳號登入。
 
-每筆紀錄包含匿名 session、來源與 UTM、裝置、完整選項、贈品、回饋、價格、節省金額及最終推薦摘要；不記錄姓名、Email、電話或付款資料。
+後台除了試算資料，也會顯示優惠碼複製與信用卡申辦點擊的總數、不重複訪客與項目明細。每筆紀錄只包含匿名 session、頁面、裝置與操作項目；不記錄姓名、Email、電話或付款資料。

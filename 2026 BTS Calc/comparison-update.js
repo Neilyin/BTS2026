@@ -1,18 +1,27 @@
 (function () {
   'use strict';
 
-  var STORAGE_KEY = 'bts_comparison_update_seen_v1';
+  var STORAGE_KEY = 'bts_campaign_extension_seen_v3';
+  var REMIND_AFTER_MS = 5 * 24 * 60 * 60 * 1000;
+  var CAMPAIGN_END_MS = new Date('2026-09-24T23:59:59+08:00').getTime();
   var overlay = null;
   var previousFocus = null;
 
   function hasSeen() {
-    try { return localStorage.getItem(STORAGE_KEY) === '1'; }
+    try {
+      var seenAt = Number(localStorage.getItem(STORAGE_KEY));
+      return Number.isFinite(seenAt) && seenAt > 0 && Date.now() - seenAt < REMIND_AFTER_MS;
+    }
     catch (error) { return false; }
   }
 
   function remember() {
-    try { localStorage.setItem(STORAGE_KEY, '1'); }
+    try { localStorage.setItem(STORAGE_KEY, String(Date.now())); }
     catch (error) { /* Storage may be unavailable in private browsing. */ }
+  }
+
+  function remainingDays() {
+    return Math.max(0, Math.ceil((CAMPAIGN_END_MS - Date.now()) / (24 * 60 * 60 * 1000)));
   }
 
   function track(event, params) {
@@ -47,23 +56,27 @@
   }
 
   function showUpdate() {
-    if (hasSeen() || document.querySelector('.comparison-update-overlay')) return;
+    var daysLeft = remainingDays();
+    if (Date.now() > CAMPAIGN_END_MS || hasSeen() || document.querySelector('.comparison-update-overlay')) return;
     previousFocus = document.activeElement;
     overlay = document.createElement('div');
     overlay.className = 'comparison-update-overlay';
     overlay.innerHTML = '<section class="comparison-update-dialog" role="dialog" aria-modal="true" aria-labelledby="comparison-update-title" aria-describedby="comparison-update-copy">' +
       '<button class="comparison-update-close" type="button" aria-label="關閉更新通知"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>' +
-      '<span class="comparison-update-badge">NEW UPDATE</span>' +
-      '<h2 id="comparison-update-title">現在有對比方案<br>可以玩玩看了</h2>' +
-      '<p id="comparison-update-copy">完成 Apple 官網優惠試算後，還能直接和 Straight A 活動方案比較，看看回饋、現折與贈品怎麼選。</p>' +
+      '<span class="comparison-update-badge">活動延長通知</span>' +
+      '<h2 id="comparison-update-title">Apple BTS 延長啦！<br>活動到 9/24</h2>' +
+      '<div class="comparison-update-countdown" role="status" aria-label="活動還剩 ' + daysLeft + ' 天">' +
+        '<span>活動還剩</span><strong>' + daysLeft + '</strong><span>天</span>' +
+      '</div>' +
+      '<p id="comparison-update-copy">活動期間已延長至 <strong>2026/9/24</strong>。想知道怎麼買更划算？完成 Apple 官網優惠試算後，還能直接和 Straight A 方案比較回饋、現折與贈品。</p>' +
       '<div class="comparison-update-actions">' +
         '<a class="comparison-update-primary" href="calculator.html">開始玩方案對比 <span aria-hidden="true">→</span></a>' +
-        '<button class="comparison-update-dismiss" type="button">我知道了</button>' +
+        '<button class="comparison-update-dismiss" type="button">5 天內不再顯示</button>' +
       '</div>' +
     '</section>';
     document.body.appendChild(overlay);
     document.body.classList.add('comparison-update-locked');
-    track('comparison_update_view', { update_id: 'straight_a_comparison_v1' });
+    track('comparison_update_view', { update_id: 'bts_extension_20260924_v3', remaining_days: daysLeft });
     overlay.addEventListener('keydown', keepFocus);
     overlay.querySelector('.comparison-update-close').addEventListener('click', function () { closeUpdate('close_button'); });
     overlay.querySelector('.comparison-update-dismiss').addEventListener('click', function () { closeUpdate('acknowledge'); });

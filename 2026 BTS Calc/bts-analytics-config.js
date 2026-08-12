@@ -18,6 +18,7 @@ window.BTS_ANALYTICS_CONFIG = {
     appId:             '1:842798369233:web:c3d337bafd7d50f1fb38f0'
   },
 
-  // Firestore 集合名稱（存放每一筆購買清單紀錄）
-  recordsCollection: 'records'
+  // Firestore 集合名稱
+  recordsCollection: 'records',
+  eventsCollection: 'events'
 };

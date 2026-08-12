@@ -1,7 +1,7 @@
 /* ════════════════════════════════════════════════════════════════
    bts-analytics.js — 共用追蹤層
    · GA4：行為事件（按了什麼）+ 內建互動時間（按多久）
-   · Firestore：把「查看計算結果」的完整設定寫成一筆紀錄供後台分析
+   · Firestore：記錄試算結果，以及優惠碼／信用卡等重點互動供後台分析
    設計：未設定金鑰時全部 no-op，不影響網站。Author: Neil尼歐
    ════════════════════════════════════════════════════════════════ */
 (function () {
@@ -69,6 +69,20 @@
 
   // 全站導流與操作事件。
   document.addEventListener('click', function (e) {
+    var tracked = e.target.closest && e.target.closest('[data-bts-interaction]');
+    if (tracked) {
+      var interactionType = cleanText(tracked.getAttribute('data-bts-interaction'), 40);
+      var itemId = cleanText(tracked.getAttribute('data-bts-item'), 80);
+      var itemLabel = cleanText(tracked.getAttribute('data-bts-label') || tracked.textContent, 120);
+      window.btsTrack(interactionType, {
+        item_id: itemId,
+        item_name: itemLabel,
+        page_type: PAGE_TYPE,
+        page_path: location.pathname
+      });
+      window.btsLogInteraction(interactionType, itemId, itemLabel);
+    }
+
     var link = e.target.closest && e.target.closest('a[href]');
     if (link) {
       var href = link.getAttribute('href') || '';
@@ -186,6 +200,7 @@
   // ════════════ Firestore ════════════
   var fb = cfg.firebase || {};
   var COLL = cfg.recordsCollection || 'records';
+  var EVENTS_COLL = cfg.eventsCollection || 'events';
   // 本機預覽不寫入正式分析，也避免離線時阻塞計算機初始化。
   var fbOn = !isLocalPreview && !!(fb && fb.apiKey && fb.projectId);
   var resolveReferralSettings;
@@ -194,7 +209,7 @@
   });
   window.BTS_REFERRAL_SETTINGS = null;
 
-  var _db = null, _ready = false, _queue = [], _readyCbs = [];
+  var _db = null, _ready = false, _queue = [], _eventQueue = [], _readyCbs = [];
   window.btsAnalytics = {
     sessionId: SID,
     enabled: fbOn,
@@ -226,6 +241,31 @@
     rec = rec || {};
     if (!fbOn) return;            // 未設定 Firebase → 不記錄
     if (_db) _write(rec); else _queue.push(rec);
+  };
+
+  function _writeInteraction(rec) {
+    try {
+      _db.collection(EVENTS_COLL).add({
+        schemaVersion: 1,
+        eventType: rec.eventType,
+        sessionId: SID,
+        itemId: rec.itemId,
+        itemLabel: rec.itemLabel,
+        page: location.pathname,
+        device: device,
+        ts: firebase.firestore.FieldValue.serverTimestamp(),
+        createdAt: Date.now()
+      });
+    } catch (e) { console.warn('[bts-analytics] interaction write failed', e); }
+  }
+  window.btsLogInteraction = function (eventType, itemId, itemLabel) {
+    var rec = {
+      eventType: cleanText(eventType, 40),
+      itemId: cleanText(itemId, 80),
+      itemLabel: cleanText(itemLabel, 120)
+    };
+    if (!fbOn || !rec.eventType || !rec.itemId) return;
+    if (_db) _writeInteraction(rec); else _eventQueue.push(rec);
   };
 
   window.btsTrackResult = function (rec) {
@@ -277,6 +317,7 @@
             _db = firebase.firestore();
             _ready = true;
             while (_queue.length) _write(_queue.shift());
+            while (_eventQueue.length) _writeInteraction(_eventQueue.shift());
             _readyCbs.forEach(function (cb) { try { cb(); } catch (e) {} });
             _readyCbs = [];
             _db.collection('settings').doc('referral').get()

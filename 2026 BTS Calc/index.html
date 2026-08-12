@@ -500,7 +500,7 @@ footer a{color:var(--cyan);text-decoration:none}
   .reveal{opacity:1;transform:none}
 }
 </style>
-<link rel="stylesheet" href="comparison-update.css?v=1">
+<link rel="stylesheet" href="comparison-update.css?v=2">
 </head>
 <body class="">
 
@@ -575,7 +575,7 @@ footer a{color:var(--cyan);text-decoration:none}
         <span class="badge">Status · 2026</span>
         <h3>官方已公布 🎉</h3>
         <ul>
-          <li>活動期間 — 即日起至 2026/08/27</li>
+          <li>活動期間 — 即日起至 2026/09/24</li>
           <li>贈品內容 — Apple 官方禮品卡 NT$3,200～4,800</li>
           <li>適用型號 — MacBook Pro / Air、iPad Pro / Air</li>
           <li>加碼優惠 — 官網結帳可選 3 期 0 利率</li>
@@ -661,7 +661,7 @@ footer a{color:var(--cyan);text-decoration:none}
       <span class="tag" style="background:var(--lime);position:relative">🎉 官方已公布</span>
       <h3 style="margin-top:14px">GIFT<br><em>CARD</em></h3>
       <p class="zh">買就送 Apple 官方禮品卡</p>
-      <p>即日起至 <b style="color:#fff">2026/08/27</b>，購買指定機型即贈送 Apple 禮品卡，依裝置類別面額如下：</p>
+      <p>即日起至 <b style="color:#fff">2026/09/24</b>，購買指定機型即贈送 Apple 禮品卡，依裝置類別面額如下：</p>
       <div class="giftcard-table">
         <div class="gc-row"><span class="gc-device">MacBook Pro</span><span class="gc-amt">NT$4,800</span></div>
         <div class="gc-row"><span class="gc-device">MacBook Air</span><span class="gc-amt">NT$3,200</span></div>
@@ -829,7 +829,7 @@ footer a{color:var(--cyan);text-decoration:none}
         <div class="code-box">
           <span style="font-size:12px;letter-spacing:.1em">折扣碼</span>
           <span class="code" id="eipcode">neilhk</span>
-          <button onclick="navigator.clipboard&&navigator.clipboard.writeText('neilhk');this.textContent='已複製 ✓'">複製</button>
+          <button data-bts-interaction="coupon_copy" data-bts-item="eip_neilhk" data-bts-label="eiP：neilhk" onclick="navigator.clipboard&&navigator.clipboard.writeText('neilhk');this.textContent='已複製 ✓'">複製</button>
         </div>
       </div>
       <div class="offer-r">
@@ -848,7 +848,7 @@ footer a{color:var(--cyan);text-decoration:none}
         <div class="code-box">
           <span style="font-size:12px;letter-spacing:.1em">折扣碼</span>
           <span class="code">neil2026</span>
-          <button onclick="navigator.clipboard&&navigator.clipboard.writeText('neil2026');this.textContent='已複製 ✓'">複製</button>
+          <button data-bts-interaction="coupon_copy" data-bts-item="jtlegend_neil2026" data-bts-label="JTLEGEND：neil2026" onclick="navigator.clipboard&&navigator.clipboard.writeText('neil2026');this.textContent='已複製 ✓'">複製</button>
         </div>
       </div>
       <div class="offer-r">
@@ -867,7 +867,7 @@ footer a{color:var(--cyan);text-decoration:none}
         <div class="code-box">
           <span style="font-size:12px;letter-spacing:.1em">通關密語</span>
           <span class="code">neilbts2026</span>
-          <button onclick="navigator.clipboard&&navigator.clipboard.writeText('neilbts2026');this.textContent='已複製 ✓'">複製</button>
+          <button data-bts-interaction="coupon_copy" data-bts-item="mltix_neilbts2026" data-bts-label="MLTIX：neilbts2026" onclick="navigator.clipboard&&navigator.clipboard.writeText('neilbts2026');this.textContent='已複製 ✓'">複製</button>
         </div>
       </div>
       <div class="offer-r">
@@ -923,7 +923,7 @@ footer a{color:var(--cyan);text-decoration:none}
         <div class="pct">4.5%</div>
         <h3>玉山 Unicard</h3>
         <p style="font-size:13.5px;color:#555;margin:6px 0 0">ONE FOR ALL · 最高 <b style="color:#0a0a0a">4.5%</b> 點數回饋，刷教育優惠再賺一筆。</p>
-        <a href="https://card.esunbank.com.tw/EsunCreditweb/txnproc/selApplyCard?PRJCD=APYCRD0070&param=641783401147373" target="_blank" rel="noopener" class="apply-btn">🔗 立即申辦 Unicard ↗</a>
+        <a href="https://card.esunbank.com.tw/EsunCreditweb/txnproc/selApplyCard?PRJCD=APYCRD0070&param=641783401147373" target="_blank" rel="noopener" class="apply-btn" data-bts-interaction="credit_card_apply" data-bts-item="esun_unicard" data-bts-label="玉山 Unicard">🔗 立即申辦 Unicard ↗</a>
       </article>
     </div>
     <p style="font-size:13px;color:#999;margin-top:20px">提醒：需從導購平台連入 Apple 教育商店才會追蹤回饋；信用卡回饋比例、上限與排除條款以玉山銀行及各平台公告為準。</p>
@@ -1121,8 +1121,8 @@ footer a{color:var(--cyan);text-decoration:none}
   </div>
 </footer>
 
-<script src="bts-analytics-config.js"></script>
-<script src="bts-analytics.js"></script>
+<script src="bts-analytics-config.js?v=2"></script>
+<script src="bts-analytics.js?v=3"></script>
 <script>
 /* ---- scroll reveal ---- */
 const io=new IntersectionObserver((es)=>{
@@ -1196,6 +1196,6 @@ function renderLottery(settings){
 document.addEventListener('bts:referral-settings',e=>renderLottery(e.detail));
 if(window.BTS_REFERRAL_SETTINGS)renderLottery(window.BTS_REFERRAL_SETTINGS);
 </script>
-<script src="comparison-update.js?v=2"></script>
+<script src="comparison-update.js?v=5"></script>
 </body>
 </html>

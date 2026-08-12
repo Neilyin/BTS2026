@@ -58,6 +58,27 @@
   line-height: 1.7;
 }
 
+.comparison-update-countdown {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  width: fit-content;
+  margin-top: 18px;
+  padding: 9px 13px;
+  border: 2px solid #0a0a0a;
+  background: #ffe600;
+  box-shadow: 4px 4px 0 #0a0a0a;
+  font-family: "Space Mono", monospace;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.comparison-update-countdown strong {
+  color: #d81862;
+  font-size: 30px;
+  line-height: 1;
+}
+
 .comparison-update-actions {
   display: grid;
   grid-template-columns: 1fr auto;

@@ -53,7 +53,7 @@ const BTS_CONFIG = {
     // 只有下列機型官方有公布贈送，MacBook Neo / iMac / Mac mini 不適用
     appleGiftCard: {
       enabled: true,
-      endDate: '2026-08-27',
+      endDate: '2026-09-24',
       amounts: {
         ipad_air:    3200,
         ipad_pro:    3200,
